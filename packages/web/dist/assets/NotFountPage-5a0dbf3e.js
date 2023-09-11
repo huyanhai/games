@@ -1,1 +1,0 @@
-import{_ as t,o as e,c as s,a as c}from"./index-e7a96292.js";const n={},o={class:"tw-flex tw-items-center tw-justify-center tw-h-screen tw-w-screen tw-text-8xl"},a=c("p",{class:"-tw-translate-y-20 tw-text-cyan-700"},"404",-1),r=[a];function _(i,l){return e(),s("div",o,r)}const d=t(n,[["render",_]]);export{d as default};

@@ -1,25 +1,13 @@
 <template>
-  <NTabs
-    :value="showItem"
-    type="segment"
-    class="meta-box"
-    @updateValue="change"
-  >
-    <NTabPane
-      v-for="item in gameList"
-      :key="item.key"
-      :name="item.key"
-      :tab="item.name"
-    >
+  <NTabs :value="showItem" type="segment" class="meta-box" @updateValue="change">
+    <NTabPane v-for="item in gameList" :key="item.key" :name="item.key" :tab="item.name">
       <div class="btns">
-        <NSpace>
+        <NSpace v-if="item.key < 2">
           <NButton color="rgb(31, 34, 37)">游戏介绍</NButton>
-          <NButton color="rgb(31, 34, 37)" @click="showModal = true">
-            开始游戏
-          </NButton>
+          <NButton color="rgb(31, 34, 37)" @click="showModal = true"> 开始游戏 </NButton>
         </NSpace>
       </div>
-      <img src="@/assets/p1.jpg" alt="" srcset="" />
+      <img :src="item.img" alt="" srcset="" />
     </NTabPane>
   </NTabs>
   <NModal v-model:show="showModal">
@@ -27,7 +15,7 @@
       class="iframe-container"
       :style="{
         '--iframe-width': `${width * 0.8}px`,
-        '--iframe-height': `${height * 0.8}px`
+        '--iframe-height': `${height * 0.8}px`,
       }"
     >
       <NButton class="close" circle color="#00c3ff" @click="showModal = false">
@@ -38,33 +26,19 @@
         </template>
       </NButton>
       <NCard :bordered="false" class="iframe-card">
-        <iframe
-          :src="iframeUrl"
-          width="100%"
-          height="100%"
-          frameborder="0"
-        ></iframe>
+        <iframe :src="iframeUrl" width="100%" height="100%" frameborder="0"></iframe>
       </NCard>
     </div>
   </NModal>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import {
-  NModal,
-  NCard,
-  NButton,
-  NIcon,
-  NTabs,
-  NTabPane,
-  NSpace,
-  useMessage
-} from 'naive-ui';
-import { useWindowSize } from '@vueuse/core';
-import { MdClose } from '@vicons/ionicons4';
+import { computed, ref } from "vue";
+import { NModal, NCard, NButton, NIcon, NTabs, NTabPane, NSpace, useMessage } from "naive-ui";
+import { useWindowSize } from "@vueuse/core";
+import { MdClose } from "@vicons/ionicons4";
 
-import P1 from '@/assets/p1.jpg';
-import P2 from '@/assets/p2.jpg';
+import P1 from "@/assets/p1.jpg";
+import P2 from "@/assets/p2.jpg";
 
 const { width, height } = useWindowSize();
 
@@ -74,34 +48,34 @@ const message = useMessage();
 const gameList = [
   {
     key: 1,
-    name: '火星前哨站',
+    name: "火星前哨站",
     img: P1,
-    url: 'https://shui.one/demo'
+    url: "https://shui.one/demo",
   },
   {
     key: 2,
-    name: '太空浮岛',
+    name: "太空浮岛",
     img: P2,
-    url: 'https://shui.one/demo'
+    url: "https://shui.one/demo",
   },
   {
     key: 3,
-    name: '移动矿场',
+    name: "移动矿场",
     img: P1,
-    url: 'https://shui.one/demo'
+    url: "https://shui.one/demo",
   },
   {
     key: 4,
-    name: '异星战场',
+    name: "异星战场",
     img: P1,
-    url: 'https://shui.one/demo'
+    url: "https://shui.one/demo",
   },
   {
     key: 5,
-    name: '暗黑森林',
+    name: "暗黑森林",
     img: P1,
-    url: 'https://shui.one/demo'
-  }
+    url: "https://shui.one/demo",
+  },
 ];
 
 const showItem = ref(1);
@@ -110,11 +84,9 @@ const iframeUrl = computed(() => {
 });
 
 const change = (v: number) => {
-  if (v > 1) {
-    return message.error('暂未开放');
+  if (v > 2) {
+    return message.error("暂未开放");
   }
-  console.log('xxx', v);
-
   showItem.value = v;
 };
 </script>
