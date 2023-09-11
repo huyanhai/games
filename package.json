@@ -1,0 +1,79 @@
+{
+    "name": "game-web",
+    "version": "0.0.1",
+    "packageManager": "pnpm@7.1.0",
+    "description": "",
+    "main": "index.js",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "prepare": "husky install",
+        "rm": "rm -rf node_modules **/*/node_modules",
+        "lint": "Diff=$(git diff --cached --diff-filter=d --name-only -- '*.ts' '*.tsx' '*.js' '*.vue') && eslint --fix $Diff --ext .js,.ts,.vue,.tsx",
+        "gen": "bash scripts/gen-pkg.sh",
+        "clean:dist": "pnpm run -r --parallel clean:dist",
+        "build": "pnpm run -r --parallel build",
+        "pkg": "bash scripts/run-pkg.sh"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@commitlint/cli": "^17.7.1",
+        "@commitlint/config-conventional": "^17.7.0",
+        "@types/js-cookie": "^3.0.3",
+        "@types/node": "^20.5.1",
+        "@typescript-eslint/eslint-plugin": "^6.4.1",
+        "@typescript-eslint/parser": "^6.4.1",
+        "@vitejs/plugin-vue": "^4.3.3",
+        "autoprefixer": "^10.4.15",
+        "change-case": "^4.1.2",
+        "eslint": "^8.47.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "eslint-plugin-vue": "^9.17.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^14.0.1",
+        "postcss": "^8.4.28",
+        "prettier": "^3.0.2",
+        "sass": "^1.66.1",
+        "stylelint": "^15.10.3",
+        "stylelint-config-standard": "^34.0.0",
+        "tailwindcss": "^3.3.3",
+        "typescript": "^5.1.6",
+        "vite": "^4.4.9",
+        "vue-tsc": "^1.8.8"
+    },
+    "dependencies": {
+        "@game-web/base": "workspace:^",
+        "@game-web/web": "workspace:^",
+        "@mysten/sui.js": "0.33.0",
+        "@mysten/wallet-standard": "^0.5.10",
+        "@vicons/ionicons4": "^0.12.0",
+        "@vueuse/core": "^10.3.0",
+        "axios": "^1.4.0",
+        "dayjs": "^1.11.9",
+        "echarts": "^5.4.3",
+        "ethers": "^6.7.1",
+        "js-cookie": "^3.0.5",
+        "lodash-es": "^4.17.21",
+        "naive-ui": "^2.34.4",
+        "nprogress": "^0.2.0",
+        "pinia": "^2.1.6",
+        "store2": "^2.14.2",
+        "vitest": "^0.34.2",
+        "vue": "^3.3.4",
+        "vue-i18n": "^9.2.2",
+        "vue-router": "^4.2.4",
+        "web3": "^4.1.1"
+    },
+    "lint-staged": {
+        "*.{less,sass}": [
+            "stylelint --config  ./.stylelintrc --fix"
+        ],
+        "*.{ts,js,tsx}": [
+            "npm run lint",
+            "prettier --write"
+        ]
+    }
+}

@@ -1,0 +1,1 @@
+import{_ as t}from"./_plugin-vue_export-helper-c27b6911.js";import{o as e,c as s,a as c}from"./index-62dc1295.js";const o={},n={class:"tw-flex tw-items-center tw-justify-center tw-h-screen tw-w-screen tw-text-8xl"},r=c("p",{class:"-tw-translate-y-20 tw-text-cyan-700"},"404",-1),a=[r];function _(i,f){return e(),s("div",n,a)}const d=t(o,[["render",_]]);export{d as default};

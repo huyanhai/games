@@ -1,0 +1,13 @@
+{
+  "name": "@game-web/web",
+  "main": "index.ts",
+  "author": "",
+  "license": "ISC",
+  "version": "2.0.0",
+  "scripts": {
+    "serve": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "clean:dist": "rm -rf dist"
+  }
+}

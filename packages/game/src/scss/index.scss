@@ -1,0 +1,17 @@
+$size__site_content_width: 1400px;
+
+@function vwTopx($vw) {
+  @return calc($vw / 1vw) * 16px;
+}
+
+@mixin for_breakpoint($type: 'min', $breakpoints: $size__site_content_width) {
+  @if ($type == 'min') {
+    @media only screen and (min-width: (#{$breakpoints})) {
+      @content;
+    }
+  } @else {
+    @media only screen and (max-width: (#{$breakpoints})) {
+      @content;
+    }
+  }
+}
