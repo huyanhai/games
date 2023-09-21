@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    test
+    <script>
+        // 发送方法
+        // target - 方法地址
+        // args - 方法参数
+        window.parent.postMessage({ data: { target: "xxx:xxx:xx", args: [1, 2] }, type: "SUI_MESSAGE" }, "*")
+
+        // 监听方法
+        window.addEventListener('message', (e) => {
+            const { type, data } = e.data;
+            if (type === 'SUI_MESSAGE_RESPONSE') {
+                console.log(data);
+            }
+            // 获取钱包地址
+            if (type === 'SUI_MESSAGE_ADDRESS') {
+                console.log(data);
+            }
+        })
+
+    </script>
+</body>
+
+</html>

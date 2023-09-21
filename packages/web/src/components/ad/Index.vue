@@ -1,48 +1,40 @@
 <template>
   <div class="user-ad-box">
-    <NTabs
-      v-model:value="active"
-      type="segment"
-      class="user-pane"
-      @update:value="(v) => (active = v)"
-    >
-      <NTab
-        v-for="(item, name, index) in lists"
-        :key="index"
-        :name="name"
-        :tab="item.name"
-      >
-      </NTab>
+    <NTabs v-model:value="active" type="segment" class="user-pane" @update:value="(v) => (active = v)">
+      <NTab v-for="(item, name, index) in lists" :key="index" :name="name" :tab="item.name"> </NTab>
     </NTabs>
-    <component :is="renderComName" />
+    <component :is="renderComName" type="Model" />
   </div>
+  {{ test1 }}
+  <button @click="handler">add</button>
 </template>
 <script lang="ts" setup>
-import { NTabs, NTab } from 'naive-ui';
-import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import { NTabs, NTab } from "naive-ui";
+import { useI18n } from "vue-i18n";
+import { ref, watch } from "vue";
 
-import { queryOpenseaNft } from '@/api';
-import { useBaseStore } from '@/store';
-import { useWallet } from '@game-web/base';
+import { queryOpenseaNft } from "@/api";
+import { useBaseStore } from "@/store";
+import { useWallet } from "@game-web/base";
 
-import Home from './Home.vue';
+import Home from "./Home.vue";
 // import Game from './Game.vue';
 // import Nft from './Nft.vue';
-import Meta from './Meta.vue';
-import Swap from './Swap.vue';
-import AirDrop from './AirDrop.vue';
-import { computed, onBeforeMount } from 'vue';
+import GameTab from "./GameTab.vue";
+import Swap from "./Swap.vue";
+import AirDrop from "./AirDrop.vue";
+import { computed, onBeforeMount } from "vue";
 // import Github from './Github.vue';
 
-import Market from '@/views/Market.vue';
+import Market from "@/views/Market.vue";
+import { info } from "console";
 
 const baseStore = useBaseStore();
 const { address } = useWallet();
 
 const { t } = useI18n();
 
-const active = ref('home');
+const active = ref("home");
 const renderComName = computed(() => {
   const name: any = active.value;
   return (lists.value as any)[name].com;
@@ -51,33 +43,37 @@ const renderComName = computed(() => {
 const lists = computed(() => {
   return {
     home: {
-      name: t('home.home'),
-      com: Home
+      name: t("home.home"),
+      com: Home,
     },
     meta: {
-      name: t('home.meta'),
-      com: Meta
+      name: t("home.meta"),
+      com: "meta",
+    },
+    game: {
+      name: t("home.game"),
+      com: GameTab,
     },
     market: {
-      name: t('home.market'),
-      com: Market
+      name: t("home.market"),
+      com: Market,
     },
     airdrop: {
-      name: t('home.airdrop'),
-      com: AirDrop
+      name: t("home.airdrop"),
+      com: AirDrop,
     },
     swap: {
-      name: t('home.swap'),
-      com: Swap
+      name: t("home.swap"),
+      com: Swap,
     },
     dao: {
-      name: 'DAO',
-      com: 'DAO'
+      name: "DAO",
+      com: "DAO",
     },
     github: {
-      name: t('home.github'),
-      com: 'Github'
-    }
+      name: t("home.github"),
+      com: "Github",
+    },
   };
 });
 
@@ -97,6 +93,35 @@ onBeforeMount(async () => {
     baseStore.fetchAirdropCheck({ wallet_addr: address.value });
   }
 });
+
+const test = ref("test");
+const obj = ref({ info: { city: 123 } });
+
+const test1 = computed(() => {
+  return `${test.value}${Math.random()}`;
+});
+
+watch(
+  () => test1.value,
+  (v1, v2) => {
+    console.log("info2", v1, v2);
+  }
+);
+
+watch(
+  () => obj.value,
+  (o, n) => {
+    console.log(o, n);
+  },
+  {
+    deep: true,
+  }
+);
+
+const handler = () => {
+  obj.value.info.city += 1;
+  console.log("test", test1.value);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -124,17 +149,17 @@ onBeforeMount(async () => {
       color: #fff;
       padding: 2vw;
       font-size: 1.2vw;
-      @include for_breakpoint('min') {
+      @include for_breakpoint("min") {
         padding: vwTopx(2vw);
         font-size: vwTopx(1.2vw);
       }
-      @include for_breakpoint('max', 800px) {
+      @include for_breakpoint("max", 800px) {
         padding: 10px 20px;
         font-size: 16px;
       }
       .carousel-box {
         min-height: 10vw;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           min-height: vwTopx(10vw);
         }
       }
