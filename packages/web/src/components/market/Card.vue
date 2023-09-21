@@ -25,7 +25,7 @@
     </div>
     <NModal v-model:show="showModal" class="market-modal" :mask-closable="false">
       <NCard closable :title="'我要出售'" @close="close">
-        <NForm ref="formRef" :show-label="false" :rules="rules">
+        <NForm :model="form" ref="formRef" :show-label="false" :rules="rules">
           <NFormItem path="price">
             <NInput v-model:value="form.price" placeholder="请输入价格" @keyup="check('money')" />
           </NFormItem>
@@ -37,7 +37,7 @@
           </NFormItem>
           <NFormItem>
             <NSpace>
-              <NButton type="primary" @click="assetHandler">确定</NButton>
+              <NButton type="primary" @click="assetHandler" :loading="loading">确定</NButton>
               <NButton @click="close">取消</NButton>
             </NSpace>
           </NFormItem>
@@ -158,6 +158,8 @@ const assetHandler = async () => {
 
       const target = `${CONTRACT_PACKAGE}::${module}::${funName}`;
 
+      loading.value = true;
+
       try {
         tx.moveCall(target, args);
         const { digest } = await signAndSendTxn(tx);
@@ -167,6 +169,7 @@ const assetHandler = async () => {
         close();
       } catch (error) {
         message.error("上架失败");
+        loading.value = false;
       }
     }
   });
@@ -191,6 +194,9 @@ const sell = () => {
 };
 
 const close = () => {
+  form.num = "";
+  form.price = "";
+  loading.value = false;
   showModal.value = false;
 };
 </script>

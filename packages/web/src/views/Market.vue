@@ -127,8 +127,8 @@ const queryMarketList = async () => {
   const query: QueryMarket = { type: market.value, use: listType.value === CardType.all ? undefined : listType.value };
 
   if (listType.value !== CardType.all) {
-    // query.wallet_addr = address.value;
-    query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
+    query.wallet_addr = address.value;
+    // query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
   }
 
   const { data } = await queryMarketItems(query);
