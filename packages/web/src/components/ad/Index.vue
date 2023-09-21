@@ -5,8 +5,6 @@
     </NTabs>
     <component :is="renderComName" type="Model" />
   </div>
-  {{ test1 }}
-  <button @click="handler">add</button>
 </template>
 <script lang="ts" setup>
 import { NTabs, NTab } from "naive-ui";
@@ -93,35 +91,6 @@ onBeforeMount(async () => {
     baseStore.fetchAirdropCheck({ wallet_addr: address.value });
   }
 });
-
-const test = ref("test");
-const obj = ref({ info: { city: 123 } });
-
-const test1 = computed(() => {
-  return `${test.value}${Math.random()}`;
-});
-
-watch(
-  () => test1.value,
-  (v1, v2) => {
-    console.log("info2", v1, v2);
-  }
-);
-
-watch(
-  () => obj.value,
-  (o, n) => {
-    console.log(o, n);
-  },
-  {
-    deep: true,
-  }
-);
-
-const handler = () => {
-  obj.value.info.city += 1;
-  console.log("test", test1.value);
-};
 </script>
 
 <style lang="scss" scoped>
