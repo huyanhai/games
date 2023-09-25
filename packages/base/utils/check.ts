@@ -9,3 +9,13 @@ export function isStandardWalletAdapterCompatibleWallet(wallet: Wallet): wallet 
 }
 
 export const checkMoney = (value: string) => value.replace(/\D|^0/g, "");
+export const checkMoneyDot = (value: string) => {
+  const reg = /^(([1-9]{1}\d*)|(0{1}))(\.\d{1,10})?$/;
+  return reg.test(value);
+};
+export const checkNum = (value: string) => {
+  const reg = /^[1-9]*$/;
+  console.log(reg.test(value),value);
+  
+  return reg.test(value);
+};

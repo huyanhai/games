@@ -79,7 +79,7 @@ const items = computed(() => [
     cardTotal: t('home.total', { num: shui.value.total_num }),
     cardBalance: t('home.balance', { num: shui.value.remain_num }),
     cardImg:
-      'https://bafybeibzoi4kzr4gg75zhso5jespxnwespyfyakemrwibqorjczkn23vpi.ipfs.nftstorage.link/NFT-CARD.png',
+      'https://bafybeihfcwhw3tkqunx4xocesulhtmixjh4pc5kroangrdhrd3v4lxhfhq.ipfs.nftstorage.link/',
     progress: parseInt(
       `${(1 - shui.value.remain_num / shui.value.total_num) * 100}`
     ),

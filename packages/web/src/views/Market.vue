@@ -33,6 +33,7 @@ import { type CardItem, CardType } from "@/components/market/types";
 
 import { queryMarketItems } from "@/api";
 import { useWallet } from "@game-web/base";
+import { useBaseStore } from "@/store/index";
 
 type PageType = "Model" | "Page";
 
@@ -41,6 +42,7 @@ withDefaults(defineProps<{ type?: PageType }>(), { type: "Page" });
 const market = ref<QueryMarket["type"]>("gamefi");
 const listType = ref<CardType>(CardType.all);
 const { address } = useWallet();
+const baseStore = useBaseStore();
 
 const list = ref<CardItem[]>([]);
 const recordList = ref([]);
@@ -92,6 +94,9 @@ const columns = ref<any>([
   },
 ]);
 
+// 获取用户信息
+const META_ID_ADDRESS = computed(() => baseStore.getUserInfo?.id?.id);
+
 const options = computed<{ label: string; value: CardType }[]>(() => {
   let list = [
     {
@@ -99,7 +104,7 @@ const options = computed<{ label: string; value: CardType }[]>(() => {
       value: CardType.all,
     },
   ];
-  if (address.value) {
+  if (META_ID_ADDRESS.value) {
     list = [
       ...list,
       {
@@ -127,8 +132,8 @@ const queryMarketList = async () => {
   const query: QueryMarket = { type: market.value, use: listType.value === CardType.all ? undefined : listType.value };
 
   if (listType.value !== CardType.all) {
-    query.wallet_addr = address.value;
-    // query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
+    // query.wallet_addr = address.value;
+    query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
   }
 
   const { data } = await queryMarketItems(query);

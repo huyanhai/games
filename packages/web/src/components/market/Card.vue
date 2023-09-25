@@ -13,7 +13,7 @@
         <!-- <img src="@/assets/xy.svg" alt="" srcset="" /> -->
       </span>
       <p class="price" v-if="type === CardType.asset">{{ item.description }}</p>
-      <p class="price" v-else>{{ item.price }}</p>
+      <p class="price" v-else>{{ Number(item.price) / 1e9 }}SUI</p>
     </div>
     <div class="count" v-if="item.num">{{ item.num }}</div>
     <div class="mask">
@@ -27,13 +27,13 @@
       <NCard closable :title="'我要出售'" @close="close">
         <NForm :model="form" ref="formRef" :show-label="false" :rules="rules">
           <NFormItem path="price">
-            <NInput v-model:value="form.price" placeholder="请输入价格" @keyup="check('money')" />
+            <NInput v-model:value="form.price" placeholder="请输入价格" />
           </NFormItem>
           <!-- <NFormItem path="type">
             <NSelect style="text-align: left" v-model:value="form.type" placeholder="请选择类型" :options="options" />
           </NFormItem> -->
           <NFormItem path="num" v-if="dataType === 'gamefi'">
-            <NInput v-model:value="form.num" placeholder="请输入数量" @keyup="check('num')" />
+            <NInput v-model:value="form.num" placeholder="请输入数量" />
           </NFormItem>
           <NFormItem>
             <NSpace>
@@ -47,11 +47,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
+import { useBaseStore } from "@/store/index";
 import { NModal, NCard, NForm, NFormItem, NInput, NSelect, NButton, NSpace, useMessage } from "naive-ui";
 import { type CardItem, CardType } from "./types";
-import { checkMoney, SuiTxBlock, useWallet } from "@game-web/base";
-import { CONTRACT_PACKAGE, MARKET_POLICY, BOAT_TICKET_ID_ADDRESS, META_ID_ADDRESS } from "@/constants";
+import { checkMoneyDot, checkNum, SuiTxBlock, useWallet } from "@game-web/base";
+import { CONTRACT_PACKAGE, GAME_TRANSFER_POLICY, BOAT_TRANSFER_POLICY, BOAT_TICKET_ID_ADDRESS } from "@/constants";
 
 const props = defineProps<{
   item: CardItem;
@@ -70,42 +71,67 @@ const message = useMessage();
 const formRef = ref();
 const rules = {
   // type: { required: true, message: "请选择类型", trigger: "blur" },
-  price: { required: true, message: "请输入金额", trigger: "blur" },
-  num: { required: true, message: "请输入数量", trigger: "blur" },
-};
+  price: {
+    required: true,
+    trigger: ["blur", "chang"],
+    validator(rule: any, value: any) {
+      console.log(value);
 
-const check = (type: "money" | "num") => {
-  if (type === "money") {
-    form.price = checkMoney(form.price);
-  } else {
-    form.num = checkMoney(form.num);
-  }
+      if (!value) {
+        return new Error("请输入金额");
+      } else if (!checkMoneyDot(value)) {
+        return new Error("请输入正确的金额");
+      }
+      return true;
+    },
+  },
+  num: {
+    required: true,
+    trigger: ["blur", "chang"],
+    validator(rule: any, value: any) {
+      if (!value) {
+        return new Error("请输入数量");
+      } else if (!checkNum(value)) {
+        return new Error("请输入正确的数量");
+      }
+      return true;
+    },
+  },
 };
 
 const options = [{ label: "SUI", value: "SUI" }];
-const { signAndSendTxn, address } = useWallet();
+const { signAndSendTxn } = useWallet();
+const baseStore = useBaseStore();
+
+// 获取用户信息
+const META_ID_ADDRESS = computed(() => baseStore.getUserInfo?.id?.id);
 
 // 下架操作
 const sellHandler = async () => {
   const tx = new SuiTxBlock();
   const module = "market";
   let funName = undefined;
+  let args: any[] = [];
 
   if (props.dataType === "gamefi") {
     funName = "take_and_transfer_gamefis";
+    args = [props.item.kioskId, props.item.kioskcap, META_ID_ADDRESS.value, props.item.item_id].filter(Boolean);
   } else {
     funName = "take_and_transfer_boat_ticket";
+    args = [props.item.kioskId, props.item.kioskcap, props.item.item_id].filter(Boolean);
   }
 
   const target = `${CONTRACT_PACKAGE}::${module}::${funName}`;
+  console.log("下架参数", target, args);
 
   try {
-    tx.moveCall(target, [props.item.kioskId, props.item.kioskcap, props.dataType === "gamefi" && META_ID_ADDRESS, props.item.item_id].filter(Boolean));
+    tx.moveCall(target, args);
     const { digest } = await signAndSendTxn(tx);
     if (digest) {
       message.success("下架成功");
     }
   } catch (error) {
+    console.log("error", error);
     message.error("下架失败");
   }
 };
@@ -123,15 +149,23 @@ const bugHandler = async () => {
   }
 
   const target = `${CONTRACT_PACKAGE}::${module}::${funName}`;
-
   try {
-    const [coins] = tx.splitSUIFromGas([Number(form.price) * 1_000_000_000]);
-    tx.moveCall(target, [props.dataType === "gamefi" && META_ID_ADDRESS, MARKET_POLICY, props.item.kioskId, props.item.item_id, tx.makeMoveVec([coins])].filter(Boolean));
+    const [coins] = tx.splitSUIFromGas([Number(props.item.price)]);
+    let args: any[] = [];
+    if (props.dataType === "gamefi") {
+      args = [META_ID_ADDRESS.value, GAME_TRANSFER_POLICY, props.item.kioskId, tx.pure(props.item.item_id), tx.makeMoveVec([coins])].filter(Boolean);
+    } else {
+      args = [BOAT_TRANSFER_POLICY, props.item.kioskId, tx.pure(props.item.item_id), tx.makeMoveVec([coins])].filter(Boolean);
+    }
+    console.log("购买参数", target, args);
+    tx.moveCall(target, args);
     const { digest } = await signAndSendTxn(tx);
     if (digest) {
       message.success("购买成功");
     }
   } catch (error) {
+    console.log("error", error);
+
     message.error("购买失败");
   }
 };
@@ -146,19 +180,19 @@ const assetHandler = async () => {
 
       let args: any = [];
 
-      const [coins] = tx.splitSUIFromGas([Number(props.item.price) * 1_000_000_000]);
-
       if (props.dataType === "gamefi") {
         funName = "place_and_list_game_items";
-        args = [META_ID_ADDRESS, MARKET_POLICY, tx.makeMoveVec([coins]), props.item.name, Number(form.num)].filter(Boolean);
+        args = [META_ID_ADDRESS.value, Number(form.price) * 1_000_000_000, props.item.name, Number(form.num)].filter(Boolean);
       } else {
         funName = "place_and_list_boat_ticket";
-        args = [props.item.objectId, tx.makeMoveVec([coins])].filter(Boolean);
+        args = [props.item.objectId, Number(form.price) * 1_000_000_000].filter(Boolean);
       }
 
       const target = `${CONTRACT_PACKAGE}::${module}::${funName}`;
 
       loading.value = true;
+
+      console.log("上架参数", target, args);
 
       try {
         tx.moveCall(target, args);
@@ -168,6 +202,7 @@ const assetHandler = async () => {
         }
         close();
       } catch (error) {
+        console.log("error", error);
         message.error("上架失败");
         loading.value = false;
       }
@@ -176,7 +211,7 @@ const assetHandler = async () => {
 };
 
 const sell = () => {
-  if (!address.value) {
+  if (!META_ID_ADDRESS.value) {
     return message.error("请先登录");
   }
   // 列表 - 购买

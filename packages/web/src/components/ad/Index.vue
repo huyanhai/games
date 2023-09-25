@@ -68,10 +68,10 @@ const lists = computed(() => {
       name: "DAO",
       com: "DAO",
     },
-    github: {
-      name: t("home.github"),
-      com: "Github",
-    },
+    // github: {
+    //   name: t("home.github"),
+    //   com: "Github",
+    // },
   };
 });
 

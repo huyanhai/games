@@ -9,6 +9,8 @@ export const BOAT_GLOBAL_ADDRESS = window.config.BOAT_GLOBAL_ADDRESS;
 
 export const APP_BASE_API = VITE_APP_BASE_API;
 
-export const MARKET_POLICY = window.config.MARKET_POLICY;
-export const BOAT_TICKET_ID_ADDRESS = window.config.BOAT_TICKET_ID_ADDRESS;
+export const GAME_TRANSFER_POLICY = window.config.GAME_TRANSFER_POLICY;
+export const BOAT_TRANSFER_POLICY = window.config.BOAT_TRANSFER_POLICY;
 export const META_ID_ADDRESS = window.config.META_ID_ADDRESS;
+
+export const BOAT_TICKET_ID_ADDRESS = window.config.BOAT_TICKET_ID_ADDRESS;
