@@ -6,20 +6,21 @@
           <Garid>
             <template #left>
               <div class="info">
-                <div class="top" style="text-align: center">
-                  <b>{{ $t('home.stake') }}</b>
+                <div class="card">
+                  <h3>NFT- PASS (白名单)</h3>
+                  <ul>
+                    <li>“火星飞船”GameFi总量为 10,000 售完为止。</li>
+                    <li>持有“火星飞船”GameFi的用户才能加入“白名单”并获得一“探索者一号”飞船。</li>
+                    <li>只有“白名单”用户才能按照 1 SUI= 100 SHUI比例兑换资格</li>
+                    <li>我们还为“白名单”用户预留了 10000~20000 的 Meta 身份ID 编号。</li>
+                  </ul>
                 </div>
-                <div class="info-items" v-html="$t('home.stake_text1')"></div>
               </div>
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
             <template #right>
               <Nft class="m-home-nft" />
-              <img
-                style="opacity: 0"
-                class="big-img"
-                src="@/assets/img1.png"
-                alt=""
-              />
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
           </Garid>
         </div>
@@ -28,133 +29,160 @@
         <div class="container">
           <Garid>
             <template #left>
-              <img class="big-img" src="@/assets/img2.png" alt="" />
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
             <template #right>
-              <div class="info">
-                <b class="title">{{ $t('home.tree_title') }}</b>
-                <div
-                  v-for="(item, index) in p2Item"
-                  :key="index"
-                  class="p2-item"
-                >
-                  <span>{{ item.title }}</span>
-                  <p>
-                    {{ item.text }}
-                  </p>
-                </div>
-              </div>
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
           </Garid>
+          <div class="container-box">
+            <div class="card">
+              <h3>黄金储备”计划</h3>
+              <p>为了建立良好的信用体系，我们计划将所有兑换所得 SUI 全部置换成 BTC 进行锁仓，<br />作为项目风险控制资产由 SHUI 基金会和 SHUI DAO 组织共同监管，公开透明,</p>
+            </div>
+          </div>
         </div>
       </div>
       <div class="carousel-item pic-box3">
         <div class="container">
           <Garid>
             <template #left>
-              <div class="more-link">
-                <a v-for="item in 5" :key="item" class="link">
-                  <img :src="getAssetsFile(`shui${item}.png`)" alt="" />
-                </a>
-              </div>
-              <img class="big-img" src="@/assets/img3.png" alt="" />
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
             <template #right>
-              <div class="info">
-                <b class="title">{{ $t('home.magical') }}</b>
-                <div class="p3-box">
-                  <a
-                    v-for="(item, index) in p3Item"
-                    :key="index"
-                    :style="{ background: item.color }"
-                  >
-                    {{ item.text }}
-                  </a>
-                </div>
-              </div>
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
           </Garid>
+          <div class="container-box">
+            <div class="card">
+              <h3>3亿空投免费送</h3>
+              <ul>
+                <li>领取空投需要支付 Gas 费，所以你钱包里的 SUI不能为 0</li>
+                <li>领取空投需要激活“Meta ID”和 KYC 认证</li>
+                <li>每个用户24小时只能领取一次</li>
+                <li>每天发放的空投数量有限，送完为止</li>
+                <li>每天剩余空投数量将分配到下一个周期</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div class="carousel-item pic-box4">
         <div class="container">
           <Garid>
             <template #left>
-              <div class="info">
-                <p>{{ $t('home.reshape') }}</p>
-                <img class="img" src="@/assets/img6.png" alt="" />
-              </div>
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
             <template #right>
-              <img class="big-img" src="@/assets/img5.png" alt="" />
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
             </template>
           </Garid>
+          <div class="container-box">
+            <div class="card">
+              <h3>3亿空投免费送</h3>
+              <ul>
+                <li>“生命之树”浇一次水需要 1SHUI，浇水时间每次间隔 8 小时。浇满十次以后才能进行收获一次果实。</li>
+                <li>“生命之树”的果实为盲盒的形式打开</li>
+                <li>奖励如下<br />50~5000 SHUITOKEN 、战宠孵化材料五种不同的水元素、元素碎片</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item pic-box5">
+        <div class="container">
+          <Garid>
+            <template #left>
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
+            </template>
+            <template #right>
+              <img style="opacity: 0" class="big-img" src="@/assets/img1.png" alt="" />
+            </template>
+          </Garid>
+          <div class="container-box">
+            <div class="card">
+              <h3>Android</h3>
+              <p>
+                Kiwi Browser 浏览器下载https://kiwi-browser.uptodown.com/android/descargar<br />
+                安装 SUI Wallet 官方插件，需要打开加速器。<br />
+                注意: 必须在 Kiwi Browser 浏览器里输入网址: https:/chrome.google.com/webstore/detail/sui-wallet/opcgpfmipidbgpenhmajoajpbobppdil
+              </p>
+              <h3>iOS</h3>
+              <p>
+                注意:不只支持中国大陆用户 Apple ID<br />
+                其他国家 ID 可以在 App Store 正常下载 Kiwi Browser 浏览器安装 SUI Wallet 官方插件，需要打开加速器。<br />
+                注意:必须在 Kiwi Browser浏览器里输入网址:https:/chrome.google.com/webstore/detail/sui-wallet/opcgpfmipidbgpenhmajoaipbobppdi
+              </p>
+              <h3>pc</h3>
+              <p>通过 Google Chrome 浏览器安装 SUI Wallet 官方插件，需要打开加速器https://chrome.google.com/webstore/detail/sui-wallet/opcgpfmipidbgpenhmajoajpbobppdil</p>
+            </div>
+          </div>
         </div>
       </div>
     </NCarousel>
   </div>
 </template>
 <script lang="ts" setup>
-import { NCarousel } from 'naive-ui';
-import Garid from './Garid.vue';
-import { ref, computed } from 'vue';
-import { getAssetsFile } from '@/utils/files';
+import { NCarousel } from "naive-ui";
+import Garid from "./Garid.vue";
+import { ref, computed } from "vue";
+import { getAssetsFile } from "@/utils/files";
 
-import Nft from './Nft.vue';
+import Nft from "./Nft.vue";
 
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 const p2Item = computed(() => [
   {
-    title: t('home.tree_t1'),
-    text: t('home.tree_i1')
+    title: t("home.tree_t1"),
+    text: t("home.tree_i1"),
   },
   {
-    title: t('home.tree_t2'),
-    text: t('home.tree_i2')
+    title: t("home.tree_t2"),
+    text: t("home.tree_i2"),
   },
   {
-    title: t('home.tree_t3'),
-    text: t('home.tree_i3')
+    title: t("home.tree_t3"),
+    text: t("home.tree_i3"),
   },
   {
-    title: t('home.tree_t4'),
-    text: t('home.tree_i4')
+    title: t("home.tree_t4"),
+    text: t("home.tree_i4"),
   },
   {
-    title: t('home.tree_t5'),
-    text: t('home.tree_i5')
-  }
+    title: t("home.tree_t5"),
+    text: t("home.tree_i5"),
+  },
 ]);
 
 const p3Item = ref([
   {
-    text: t('home.magical_1'),
-    link: '',
-    color: '#d7bf7c'
+    text: t("home.magical_1"),
+    link: "",
+    color: "#d7bf7c",
   },
   {
-    text: t('home.magical_2'),
-    link: '',
-    color: '#747474'
+    text: t("home.magical_2"),
+    link: "",
+    color: "#747474",
   },
   {
-    text: t('home.magical_3'),
-    link: '',
-    color: '#a83a37'
+    text: t("home.magical_3"),
+    link: "",
+    color: "#a83a37",
   },
   {
-    text: t('home.magical_4'),
-    link: '',
-    color: '#449956'
+    text: t("home.magical_4"),
+    link: "",
+    color: "#449956",
   },
   {
-    text: t('home.magical_5'),
-    link: '',
-    color: '#48a0e4'
-  }
+    text: t("home.magical_5"),
+    link: "",
+    color: "#48a0e4",
+  },
 ]);
 </script>
 
@@ -176,315 +204,80 @@ const p3Item = ref([
   }
 
   &.pic-box1 {
-    background: linear-gradient(45deg, #383838, #5275eb);
+    background: url("@/assets/bg1.jpg") no-repeat;
+    background-size: cover;
     .m-home-nft {
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
       z-index: 1;
-      @include for_breakpoint('max', 800px) {
+      @include for_breakpoint("max", 800px) {
         transform: translate(-50%, -60%);
       }
     }
 
     .container {
       width: 100%;
-      .info-items {
-        ::v-deep(ul) {
-          list-style: inside;
-        }
-      }
       .info {
-        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        inset: 0;
         display: flex;
-        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        margin: 0 20px;
-        @include for_breakpoint('min') {
-        }
-        @include for_breakpoint('max', 800px) {
-          height: 350px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-        h4 {
-          font-weight: bold;
-          font-size: 20px;
-          margin-bottom: 10px;
-        }
-        p {
-          font-size: 16px;
-        }
-        .top {
-          font-size: 3vw;
-          margin-bottom: 20px;
-          margin-top: 0vw;
-          flex-wrap: wrap;
-          @include for_breakpoint('min') {
-            font-size: 48px;
-            margin-bottom: 20px;
-            // margin-top: 40px;
-          }
-          @include for_breakpoint('max', 800px) {
-            font-size: 16px;
-            margin-bottom: 20px;
-            margin-top: 0px;
-          }
-          b {
-            text-align: center;
-            margin: 0 auto;
-            font-size: 30px;
-            @include for_breakpoint('min') {
-            }
-            @include for_breakpoint('max', 800px) {
-              font-size: 30px;
-            }
-          }
-          p {
-            font-size: 14px;
-          }
-          button {
-            height: 3vw;
-            background: #00c3ff;
-            color: #fff;
-            font-size: 1.2vw;
-            padding: 0 2vw;
-            border-radius: 0.4vw;
-            display: block;
-            @include for_breakpoint('min') {
-              height: 48px;
-              font-size: 19px;
-              padding: 0 32px;
-              border-radius: 6px;
-            }
-            @include for_breakpoint('max', 800px) {
-              height: 30px;
-              font-size: 12px;
-              padding: 0 10px;
-              border-radius: 6px;
-            }
-          }
-        }
-        p {
-          font-size: 14px;
-          line-height: 2vw;
-          margin-bottom: 1vw;
-          @include for_breakpoint('min') {
-            font-size: 19px;
-            line-height: 32px;
-            margin-bottom: 16px;
-          }
-          @include for_breakpoint('max', 800px) {
-            font-size: 12px;
-            line-height: 20px;
-            margin-bottom: 5px;
-          }
-        }
       }
     }
   }
   &.pic-box2 {
-    background: #333;
-    .info {
-      margin-top: 2vw;
-      overflow: hidden;
-      margin-right: 2vw;
-      @include for_breakpoint('min') {
-        margin-top: 32px;
-        margin-right: 32px;
-      }
-      @include for_breakpoint('max', 800px) {
-        margin: 0 2vw;
-        height: 350px;
-      }
-      .title {
-        text-align: center;
-        display: block;
-        font-size: 2vw;
-        margin-bottom: 2vw;
-        @include for_breakpoint('min') {
-          font-size: 32px;
-          margin-bottom: 32px;
-        }
-        @include for_breakpoint('max', 800px) {
-          font-size: 16px;
-          margin: 10px 0;
-        }
-      }
-      .p2-item {
-        margin-bottom: 1vw;
-        @include for_breakpoint('min') {
-          margin-bottom: 16px;
-        }
-        @include for_breakpoint('max', 800px) {
-          margin-bottom: 10px;
-        }
-      }
-      span {
-        display: inline-block;
-        border-top-right-radius: 2vw;
-        border-bottom-right-radius: 2vw;
-        height: 2vw;
-        background: #fff;
-        color: #383838;
-        padding: 0 1vw;
-        font-size: 1vw;
-        line-height: 2vw;
-        margin-bottom: 0.5vw;
-        width: 15vw;
-        display: block;
-        @include for_breakpoint('min') {
-          border-top-right-radius: 32px;
-          border-bottom-right-radius: 32px;
-          height: 32px;
-          padding: 0 16px;
-          font-size: 16px;
-          line-height: 32px;
-          margin-bottom: 8px;
-          width: 240px;
-        }
-        @include for_breakpoint('max', 800px) {
-          border-radius: 20px;
-          height: 20px;
-          padding: 0 5px;
-          font-size: 14px;
-          line-height: 20px;
-          margin-bottom: 5px;
-          width: 200px;
-        }
-      }
-      p {
-        font-size: 0.9vw;
-        columns: #fff;
-        margin-left: 4vw;
-        display: block;
-        @include for_breakpoint('min') {
-          font-size: 14px;
-          margin-left: 64px;
-        }
-        @include for_breakpoint('max', 800px) {
-          font-size: 12px;
-          margin-left: 10px;
-        }
-      }
-    }
+    background: url("@/assets/bg2.jpg") no-repeat;
+    background-size: cover;
   }
   &.pic-box3 {
-    background: #333;
-    .more-link {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      display: flex;
-      align-items: center;
-      bottom: 6vw;
-      justify-content: center;
-      @include for_breakpoint('min') {
-        bottom: 97px;
-      }
-      @include for_breakpoint('max', 800px) {
-        bottom: 50px;
-      }
-      .link {
-        width: 6vw;
-        height: 6vw;
-        margin: 0 1vw;
-        @include for_breakpoint('min') {
-          width: 96px;
-          height: 96px;
-          margin: 0 16px;
-        }
-        @include for_breakpoint('max', 800px) {
-          width: 40px;
-          height: 40px;
-          margin: 0 10px;
-        }
-      }
-    }
-    .info {
-      width: 100%;
-      @include for_breakpoint('max', 800px) {
-        height: 350px;
-      }
-      .title {
-        display: block;
-        text-align: center;
-        border-bottom: 2px solid #fff;
-        font-size: 2vw;
-        padding: 2vw;
-        @include for_breakpoint('min') {
-          font-size: 32px;
-          padding: 32px;
-        }
-        @include for_breakpoint('max', 800px) {
-          font-size: 16px;
-          padding: 10px;
-        }
-      }
-      .p3-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        a {
-          width: 20vw;
-          height: 4vw;
-          line-height: 4vw;
-          text-align: center;
-          border-radius: 4vw;
-          margin-top: 2vw;
-          color: #fff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          @include for_breakpoint('min') {
-            width: 280px;
-            height: 48px;
-            line-height: 48px;
-            border-radius: 48px;
-            margin-top: 32px;
-          }
-          @include for_breakpoint('max', 800px) {
-            width: 150px;
-            height: 30px;
-            line-height: 30px;
-            border-radius: 30px;
-            margin-top: 10px;
-          }
-        }
-      }
-    }
+    background: url("@/assets/bg3.jpg") no-repeat;
+    background-size: cover;
   }
   &.pic-box4 {
-    background: #333;
-    .info {
-      box-sizing: border-box;
-      padding-top: 6.5vw;
-      padding-left: 2vw;
-      @include for_breakpoint('min') {
-        padding-top: 105px;
-        padding-left: 32px;
-      }
-      @include for_breakpoint('max', 800px) {
-        height: 350px;
-        padding: 0 15px;
-      }
-      p {
-        font-size: 3vw;
-        margin-bottom: 10vw;
-        @include for_breakpoint('min') {
-          font-size: 48px;
-          margin-bottom: 162px;
-        }
-        @include for_breakpoint('max', 800px) {
-          font-size: 48px;
-          margin-bottom: 50px;
-          margin-top: 20px;
-        }
-      }
+    background: url("@/assets/bg4.jpg") no-repeat;
+    background-size: cover;
+  }
+  &.pic-box5 {
+    background: linear-gradient(45deg, #383838, #5275eb);
+  }
+  .card {
+    background: rgba($color: #000000, $alpha: 0.5);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    line-height: 30px;
+    margin: 10px;
+    h3 {
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    ul {
+      list-style: inside;
+      color: #fff;
+      font-size: 14px;
+      text-align: left;
+    }
+    p {
+      color: #fff;
+      font-size: 14px;
+      text-align: left;
     }
   }
+}
+.container-box {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

@@ -52,6 +52,7 @@ const columns = ref<any>([
     title: "资产",
     key: "img_url",
     align: "center",
+    width: "100px",
     render(row: any) {
       return h(NImage, { src: row.img_url, width: 50 });
     },
@@ -60,26 +61,31 @@ const columns = ref<any>([
     title: "名称",
     key: "name",
     align: "center",
+    width: "100px",
   },
   {
     title: "数量",
     key: "num",
     align: "center",
+    width: "100px",
   },
   {
     title: "价格",
     key: "price",
     align: "center",
+    width: "100px",
   },
   {
     title: "类型",
     key: "type",
     align: "center",
+    width: "100px",
   },
   {
     title: "交易类型",
     key: "record_type",
     align: "center",
+    width: "100px",
     render: (row: any) => {
       return h(NTag, { size: "small" }, row.record_type === "sell" ? "卖出" : "买入");
     },
@@ -88,6 +94,7 @@ const columns = ref<any>([
     title: "买家/卖家",
     key: "buyer",
     align: "center",
+    width: "100px",
     render(row: any) {
       return h(NEllipsis, { style: { "max-width": "100px" } }, row.buyer);
     },
@@ -132,8 +139,8 @@ const queryMarketList = async () => {
   const query: QueryMarket = { type: market.value, use: listType.value === CardType.all ? undefined : listType.value };
 
   if (listType.value !== CardType.all) {
-    // query.wallet_addr = address.value;
-    query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
+    query.wallet_addr = address.value;
+    // query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
   }
 
   const { data } = await queryMarketItems(query);

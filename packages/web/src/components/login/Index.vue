@@ -14,20 +14,43 @@
           <button class="ui-button line">{{ $t('home.assets') }}</button>
         </template>
         <div class="balance-row">
+          <div class="name">可用余额</div>
           <template v-for="item in userBalance" :key="item.coinType">
             <div v-if="item.coinType.includes('sui')" class="line">
               <p>
                 <img src="@/assets/img-sui.png" alt="" />
                 {{ formatMoney(Number(item.totalBalance) / unit) }}
+                <i>SUI</i>
               </p>
-              <i>SUI</i>
+              <NButton size="tiny" round>转账</NButton>
             </div>
             <div v-else class="line">
               <p>
                 <img src="@/assets/nft2.png" alt="" />
                 {{ formatMoney(Number(item.totalBalance) / unit) }}
+                <i>SHUI</i>
               </p>
-              <i>SHUI</i>
+            </div>
+          </template>
+        </div>
+        <div class="balance-row">
+          <div class="name">小金库</div>
+          <template v-for="item in userBalance" :key="item.coinType">
+            <div v-if="item.coinType.includes('sui')" class="line">
+              <p>
+                <img src="@/assets/img-sui.png" alt="" />
+                {{ formatMoney(Number(item.totalBalance) / unit) }}
+                <i>SUI</i>
+              </p>
+              <NButton size="tiny" round color="#479ee3">提取</NButton>
+            </div>
+            <div v-else class="line">
+              <p>
+                <img src="@/assets/nft2.png" alt="" />
+                {{ formatMoney(Number(item.totalBalance) / unit) }}
+                <i>SHUI</i>
+              </p>
+              <NButton size="tiny" round color="#479ee3" >提取</NButton>
             </div>
           </template>
         </div>
@@ -45,7 +68,7 @@ import { useWallet, useOwnedCoinsWithBalances } from '@game-web/base';
 import { useBaseStore } from '@/store/index';
 import { useI18n } from 'vue-i18n';
 import { CONTRACT_PACKAGE } from '@/constants';
-import { NPopover } from 'naive-ui';
+import { NButton, NPopover } from 'naive-ui';
 import { formatMoney } from '@game-web/base';
 const { address } = useWallet();
 const baseStore = useBaseStore();
