@@ -11,65 +11,64 @@
     <template v-if="showMore">
       <NPopover>
         <template #trigger>
-          <button class="ui-button line">{{ $t('home.assets') }}</button>
+          <button class="ui-button line">{{ $t("home.assets") }}</button>
         </template>
         <div class="balance-row">
           <div class="name">可用余额</div>
           <template v-for="item in userBalance" :key="item.coinType">
             <div v-if="item.coinType.includes('sui')" class="line">
-              <p>
-                <img src="@/assets/img-sui.png" alt="" />
-                {{ formatMoney(Number(item.totalBalance) / unit) }}
-                <i>SUI</i>
-              </p>
               <NButton size="tiny" round>转账</NButton>
+              <p>
+                {{ formatMoney(Number(item.totalBalance) / unit) }}
+                <!-- <i>SUI</i> -->
+                <img src="@/assets/img-sui.png" alt="" />
+              </p>
             </div>
             <div v-else class="line">
               <p>
-                <img src="@/assets/nft2.png" alt="" />
                 {{ formatMoney(Number(item.totalBalance) / unit) }}
-                <i>SHUI</i>
+                <!-- <i>SHUI</i> -->
+                <img src="@/assets/nft2.png" alt="" />
               </p>
             </div>
           </template>
         </div>
         <div class="balance-row">
           <div class="name">小金库</div>
-          <template v-for="item in userBalance" :key="item.coinType">
-            <div v-if="item.coinType.includes('sui')" class="line">
-              <p>
-                <img src="@/assets/img-sui.png" alt="" />
-                {{ formatMoney(Number(item.totalBalance) / unit) }}
-                <i>SUI</i>
-              </p>
-              <NButton size="tiny" round color="#479ee3">提取</NButton>
-            </div>
-            <div v-else class="line">
-              <p>
-                <img src="@/assets/nft2.png" alt="" />
-                {{ formatMoney(Number(item.totalBalance) / unit) }}
-                <i>SHUI</i>
-              </p>
-              <NButton size="tiny" round color="#479ee3" >提取</NButton>
-            </div>
-          </template>
+          <div class="line" v-if="marketProfit.shui">
+            <NButton size="tiny" round color="#479ee3">提取</NButton>
+            <p>
+              {{ formatMoney(Number(marketProfit.shui) / unit) }}
+              <!-- <i>SUI</i> -->
+              <img src="@/assets/img-sui.png" alt="" />
+            </p>
+          </div>
+          <div class="line" v-if="marketProfit.sui">
+            <NButton size="tiny" round color="#479ee3">提取</NButton>
+            <p>
+              {{ formatMoney(Number(marketProfit.sui) / unit) }}
+              <!-- <i>SUI</i> -->
+              <img src="@/assets/img-sui.png" alt="" />
+            </p>
+          </div>
         </div>
       </NPopover>
       <button class="ui-button line" @click="logout">
-        {{ $t('home.change_account') }}
+        {{ $t("home.change_account") }}
       </button>
     </template>
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
-import SuiWallet from '../sui-wallet/Index.vue';
-import { useWallet, useOwnedCoinsWithBalances } from '@game-web/base';
-import { useBaseStore } from '@/store/index';
-import { useI18n } from 'vue-i18n';
-import { CONTRACT_PACKAGE } from '@/constants';
-import { NButton, NPopover } from 'naive-ui';
-import { formatMoney } from '@game-web/base';
+import { computed, watch, ref } from "vue";
+import SuiWallet from "../sui-wallet/Index.vue";
+import { useWallet, useOwnedCoinsWithBalances } from "@game-web/base";
+import { useBaseStore } from "@/store/index";
+import { useI18n } from "vue-i18n";
+import { CONTRACT_PACKAGE } from "@/constants";
+import { NButton, NPopover } from "naive-ui";
+import { queryMarketProfit } from "@/api";
+import { formatMoney } from "@game-web/base";
 const { address } = useWallet();
 const baseStore = useBaseStore();
 const { t } = useI18n();
@@ -77,31 +76,31 @@ const userBalance = ref<any>([]);
 const unit = 1e9;
 
 const showMore = ref(false);
+const marketProfit = ref({});
 const isLogin = computed(() => !!address.value && baseStore.getUserInfo);
 const info = computed(() => {
   if (isLogin.value) {
     return {
-      btnText: 'MID',
+      btnText: "MID",
       value: baseStore.getUserInfo!.metaId,
-      className: 'blue'
+      className: "blue",
     };
   }
   if (address.value) {
     return {
-      btnText: t('home.activate'),
+      btnText: t("home.activate"),
       value: address.value,
-      className: 'green'
+      className: "green",
     };
   }
   return {
-    btnText: t('home.link_waller'),
+    btnText: t("home.link_waller"),
     value: null,
-    className: 'red'
+    className: "red",
   };
 });
 
-const { balanceProvider, getOwnedCoinsAndBalances } =
-  useOwnedCoinsWithBalances();
+const { balanceProvider, getOwnedCoinsAndBalances } = useOwnedCoinsWithBalances();
 
 const changeMore = () => {
   if (isLogin.value) {
@@ -120,19 +119,20 @@ watch(
     if (address.value) {
       baseStore.fetchUserInfo(address.value);
       await getOwnedCoinsAndBalances();
-      const balanceList =
-        await balanceProvider.value?.query.provider.getAllBalances({
-          owner: address.value as string
-        });
-      userBalance.value = balanceList?.filter((item: { coinType: string }) =>
-        ['0x2::sui::SUI', `${CONTRACT_PACKAGE}::shui::SHUI`].includes(
-          item.coinType
-        )
-      );
+      const { data } = await queryMarketProfit({ wallet_addr: "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18" });
+
+      marketProfit.value = data;
+
+      console.log("marketProfit", marketProfit.value);
+
+      const balanceList = await balanceProvider.value?.query.provider.getAllBalances({
+        owner: address.value as string,
+      });
+      userBalance.value = balanceList?.filter((item: { coinType: string }) => ["0x2::sui::SUI", `${CONTRACT_PACKAGE}::shui::SHUI`].includes(item.coinType));
     }
   },
   {
-    immediate: true
+    immediate: true,
   }
 );
 </script>
@@ -147,11 +147,11 @@ watch(
   display: flex;
   align-items: center;
   font-size: 12px;
-  @include for_breakpoint('min') {
+  @include for_breakpoint("min") {
     right: 120px;
     font-size: 12px;
   }
-  @include for_breakpoint('max', 800px) {
+  @include for_breakpoint("max", 800px) {
     right: 80px;
     font-size: 12px;
   }
@@ -176,7 +176,7 @@ watch(
     padding: 0 10px;
     position: relative;
     white-space: nowrap;
-    @include for_breakpoint('min') {
+    @include for_breakpoint("min") {
       height: 30px;
       font-size: 12px;
     }
@@ -227,7 +227,7 @@ watch(
       flex: 0 0 auto;
       width: 18px;
       height: 18px;
-      margin-right: 10px;
+      margin-left: 10px;
     }
   }
 }

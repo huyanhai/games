@@ -1,5 +1,5 @@
-import type { Wallet, Wallets } from '@wallet-standard/core';
-import { getWallets } from '@wallet-standard/core';
+import type { Wallet, Wallets } from '@mysten/wallet-standard';
+import { getWallets } from '@mysten/wallet-standard';
 import type { IWalletAdapter } from './types';
 import { initializeWalletAdapter } from './useWalletAdapter';
 import {

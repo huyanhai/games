@@ -62,6 +62,15 @@ export function queryNftItems(params: { wallet_addr: string }) {
   });
 }
 
+// 小金库
+export function queryMarketProfit(params: { wallet_addr: string }) {
+  return request.get("query_my_market_profit", {
+    responseType: "json",
+    params,
+  });
+}
+
+
 // ip查询
 export function getIps(params: QueryPage) {
   const origin = import.meta.env.MODE === "development" ? "https://shui.one" : location.origin;
@@ -82,3 +91,5 @@ export function genIp() {
     responseType: "json",
   });
 }
+
+
