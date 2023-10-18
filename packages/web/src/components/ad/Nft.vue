@@ -6,15 +6,7 @@
           <img :src="item.cardImg" alt="" />
         </div>
         <div class="m-progress">
-          <NProgress
-            type="line"
-            :height="14"
-            :border-radius="0"
-            :fill-border-radius="0"
-            :percentage="item.progress"
-            :indicator-placement="'inside'"
-            :color="item.buttonBgColor"
-          />
+          <NProgress type="line" :height="14" :border-radius="0" :fill-border-radius="0" :percentage="item.progress" :indicator-placement="'inside'" :color="item.buttonBgColor" />
         </div>
         <div class="info">
           <div class="col">{{ item.cardTotal }}</div>
@@ -23,22 +15,22 @@
       </div>
       <button :style="{ backgroundColor: item.buttonBgColor }">
         <SuiWallet :loading="loading" @moveCall="moveCall">
-          {{ item.buttonText }}
+          <span class="buy"><img src="@/assets/wlogo.png" /> {{ item.buttonText }}</span>
         </SuiWallet>
       </button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { NProgress, useMessage } from 'naive-ui';
-import { SuiTxBlock, useWallet } from '@game-web/base';
-import { getAssetsFile } from '@/utils/files';
-import SuiWallet from '../sui-wallet/Index.vue';
+import { NProgress, useMessage } from "naive-ui";
+import { SuiTxBlock, useWallet } from "@game-web/base";
+import { getAssetsFile } from "@/utils/files";
+import SuiWallet from "../sui-wallet/Index.vue";
 
-import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
-import { useBaseStore } from '@/store';
-import { CONTRACT_PACKAGE, BOAT_GLOBAL_ADDRESS } from '@/constants';
+import { useI18n } from "vue-i18n";
+import { computed, ref } from "vue";
+import { useBaseStore } from "@/store";
+import { CONTRACT_PACKAGE, BOAT_GLOBAL_ADDRESS } from "@/constants";
 
 const { t } = useI18n();
 const baseStore = useBaseStore();
@@ -62,31 +54,28 @@ const moveCall = async () => {
     const { digest } = await signAndSendTxn(tx);
     loading.value = false;
     if (digest) {
-      message.success(t('home.success_tips'));
+      message.success(t("home.success_tips"));
     }
   } catch (error) {
     loading.value = false;
-    message.error(t('home.fail_tips'));
+    message.error(t("home.fail_tips"));
   }
 };
 
 const items = computed(() => [
   {
-    topLogo: getAssetsFile('nft3-1.png'),
-    theme: '',
-    title: t('home.buy', { name: 'OpenSea' }),
-    cardTitle: t('home.shui_token'),
-    cardTotal: t('home.total', { num: shui.value.total_num }),
-    cardBalance: t('home.balance', { num: shui.value.remain_num }),
-    cardImg:
-      'https://bafybeihfcwhw3tkqunx4xocesulhtmixjh4pc5kroangrdhrd3v4lxhfhq.ipfs.nftstorage.link/',
-    progress: parseInt(
-      `${(1 - shui.value.remain_num / shui.value.total_num) * 100}`
-    ),
-    buttonText: '购买',
-    buttonBgColor: '#00c3ff',
-    link: 'https://opensea.io/zh-CN/assets/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/30942048195930147045271123439947518623642095559354491168003220828348787730192'
-  }
+    topLogo: getAssetsFile("nft3-1.png"),
+    theme: "",
+    title: t("home.buy", { name: "OpenSea" }),
+    cardTitle: t("home.shui_token"),
+    cardTotal: t("home.total", { num: shui.value.total_num }),
+    cardBalance: t("home.balance", { num: shui.value.remain_num }),
+    cardImg: "https://bafybeiami7cghfutcuy52qpb5ifmv5d4cxzdfzcnbip7ptggf73zcsss7a.ipfs.nftstorage.link/ship_card.png/",
+    progress: parseInt(`${(1 - shui.value.remain_num / shui.value.total_num) * 100}`),
+    buttonText: "购买",
+    buttonBgColor: "#00c3ff",
+    link: "https://opensea.io/zh-CN/assets/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/30942048195930147045271123439947518623642095559354491168003220828348787730192",
+  },
   // {
   //   topLogo: getAssetsFile('nft3-1.png'),
   //   theme: '',
@@ -122,10 +111,10 @@ const items = computed(() => [
   .nft-item {
     width: 80%;
     max-width: 400px;
-    @include for_breakpoint('min') {
+    @include for_breakpoint("min") {
       // width: 356px;
     }
-    @include for_breakpoint('max', 800px) {
+    @include for_breakpoint("max", 800px) {
       width: 90%;
       margin: 0 auto;
     }
@@ -133,10 +122,10 @@ const items = computed(() => [
       .title {
         img {
           width: 6vw;
-          @include for_breakpoint('min') {
+          @include for_breakpoint("min") {
             width: 97px;
           }
-          @include for_breakpoint('max', 800px) {
+          @include for_breakpoint("max", 800px) {
             width: 20%;
           }
         }
@@ -148,31 +137,31 @@ const items = computed(() => [
       justify-content: center;
       margin: 1vw;
       height: 4vw;
-      @include for_breakpoint('min') {
+      @include for_breakpoint("min") {
         margin: 16px;
       }
-      @include for_breakpoint('max', 800px) {
+      @include for_breakpoint("max", 800px) {
         margin: 16px;
       }
       img {
         display: flex;
         width: 3vw;
         margin-right: 0.5vw;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           width: 48px;
           margin-right: 8px;
         }
-        @include for_breakpoint('max', 800px) {
+        @include for_breakpoint("max", 800px) {
           width: 30px;
           margin-right: 8px;
         }
       }
       p {
         font-size: 1.5vw;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           font-size: 24px;
         }
-        @include for_breakpoint('max', 800px) {
+        @include for_breakpoint("max", 800px) {
           font-size: 16px;
         }
       }
@@ -185,10 +174,10 @@ const items = computed(() => [
       align-items: center;
       background: rgba($color: #fff, $alpha: 0.2);
       overflow: hidden;
-      @include for_breakpoint('min') {
+      @include for_breakpoint("min") {
         border-radius: 16px;
       }
-      @include for_breakpoint('max', 800px) {
+      @include for_breakpoint("max", 800px) {
         border-radius: 16px;
         width: 100%;
         margin: 0 auto;
@@ -213,10 +202,10 @@ const items = computed(() => [
       p {
         font-size: 1.4vw;
         color: #222;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           font-size: 22px;
         }
-        @include for_breakpoint('max', 800px) {
+        @include for_breakpoint("max", 800px) {
           font-size: 16px;
         }
       }
@@ -233,11 +222,11 @@ const items = computed(() => [
           align-items: center;
           font-size: 1vw;
           color: #222;
-          @include for_breakpoint('min') {
+          @include for_breakpoint("min") {
             height: 48px;
             font-size: 16px;
           }
-          @include for_breakpoint('max', 800px) {
+          @include for_breakpoint("max", 800px) {
             height: 48px;
             font-size: 14px;
           }
@@ -260,13 +249,23 @@ const items = computed(() => [
       font-size: 1.4vw;
       color: #fff;
       margin: 20px auto 0 auto;
-      @include for_breakpoint('min') {
+      .buy {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 3px;
+        img {
+          width: 10px;
+          margin-right: 10px;
+        }
+      }
+      @include for_breakpoint("min") {
         width: 162px;
         height: 48px;
         border-radius: 12px;
         font-size: 22px;
       }
-      @include for_breakpoint('max', 800px) {
+      @include for_breakpoint("max", 800px) {
         width: 100px;
         height: 30px;
         border-radius: 4px;
