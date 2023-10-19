@@ -26,7 +26,7 @@ import { Storage } from '../../utils/storage';
 import { StorageKey } from '../../constants/storage';
 import { useAvailableWallets } from './useAvailableWallets';
 import { useAutoConnect } from './useAutoConnect';
-import type { IdentifierString } from '@wallet-standard/core';
+import type { IdentifierString } from '@mysten/wallet-standard';
 import type { SuiTxArg, SuiVecTxArg } from '../../sdk';
 import { SuiTxBlock } from '../../sdk';
 

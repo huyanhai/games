@@ -45,6 +45,8 @@ import { useWallet, getMessage, sendMessage, SuiTxBlock, type IframeData, messag
 import P1 from "@/assets/p1.jpg";
 import P2 from "@/assets/p2.jpg";
 
+import { useBaseStore } from "@/store/index";
+
 const { width, height } = useWindowSize();
 const { address, signAndSendTxn } = useWallet();
 
@@ -84,11 +86,13 @@ const gameList = [
     url: "https://shui.one/demo",
   },
 ];
-
+const baseStore = useBaseStore();
 const showItem = ref(1);
 const iframeUrl = computed(() => {
   return gameList.filter((item) => item.key === showItem.value)[0].url;
 });
+
+const userInfo = computed<any>(() => baseStore.getUserInfo);
 
 const change = (v: number) => {
   if (v > 2) {
@@ -103,7 +107,7 @@ const open = () => {
 
   const send = async (data: IframeData, type: messageType) => {
     if (type === messageType.SUI_ADDRESS) {
-      return sendMessage(iframe.value as HTMLIFrameElement, { data: { address: address.value } });
+      return sendMessage(iframe.value as HTMLIFrameElement, { data: { address: address.value, metaId: userInfo.value?.id?.id as any } }, messageType.SUI_ADDRESS_RESPONSE);
     }
     try {
       tx.moveCall(data.target, data.args);

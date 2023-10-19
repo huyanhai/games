@@ -76,7 +76,7 @@ const userBalance = ref<any>([]);
 const unit = 1e9;
 
 const showMore = ref(false);
-const marketProfit = ref({});
+const marketProfit = ref({ sui: undefined, shui: undefined });
 const isLogin = computed(() => !!address.value && baseStore.getUserInfo);
 const info = computed(() => {
   if (isLogin.value) {
