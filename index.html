@@ -104,22 +104,6 @@
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
-      console.log("-----------------------------start");
-      // 主动获取地址信息
-      window.parent.postMessage(
-        {
-          type: 'SUI_ADDRESS',
-          data: {}
-        },
-        '*'
-      );
-      window.addEventListener('message', (e) => {
-        const { type, data } = e.data;
-        if (type === 'SUI_ADDRESS_RESPONSE') {
-          console.log('获取到父页面的参数', data);
-        }
-      });
-      console.log("-----------------------------end");
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
@@ -127,6 +111,42 @@
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
         };
+        console.log("-----------------------------start");
+        // 获取地址信息
+        window.parent.postMessage(
+          {
+            type: 'SUI_ADDRESS',
+            data: {}
+          },
+          '*'
+        );
+
+        // 调用web方法
+        window.parent.postMessage(
+          {
+            type: 'SUI_MESSAGE',
+            // target - 合约地址
+            // args - 合约参数,数组形式
+            data: { target: "xxx:xxx:xx", args: [1, 2] },
+            // 自定义接收的type类型
+            unityType: 'SHOW_TEST'
+          },
+          '*'
+        );
+
+        window.addEventListener('message', (e) => {
+          const { type, data } = e.data;
+
+          if (type === 'SUI_ADDRESS_RESPONSE') {
+            console.log('获取到父页面的参数', data);
+          }
+
+          // 调用合约的返回值
+          if (type === 'SHOW_TEST') {
+            console.log("获取到合约的返回值", data)
+          }
+        });
+        console.log("-----------------------------end");
       }).catch((message) => {
         alert(message);
       });

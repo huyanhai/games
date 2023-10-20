@@ -20,7 +20,7 @@ onMounted(() => {
   });
 
   iframe.value?.addEventListener("load", () => {
-    sendMessage(iframe.value as HTMLIFrameElement, { data: "123" },);
+    sendMessage(iframe.value as HTMLIFrameElement, { data: "123" });
   });
 });
 
@@ -28,6 +28,7 @@ onMounted(() => {
 //   iframe.value?.contentWindow?.postMessage(
 //     {
 //       type: 'SUI_MESSAGE',
+//       unityType: 'xx',
 //       data: {}
 //     },
 //     '*'
@@ -38,6 +39,10 @@ onMounted(() => {
 //   const { type, data } = e.data;
 //   if (type === 'suiMessage') {
 //     console.log('获取子页面的数据', data);
+//   }
+//   自定义事件
+//   if (type === 'xxx') {
+//     console.log('到自定义事件', data);
 //   }
 // });
 </script>

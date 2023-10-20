@@ -105,23 +105,21 @@ const open = () => {
   showModal.value = true;
   const tx = new SuiTxBlock();
 
-  const send = async (data: IframeData, type: messageType) => {
+  const send = async (data: IframeData, type: messageType, unityType?: string) => {
     if (type === messageType.SUI_ADDRESS) {
       return sendMessage(iframe.value as HTMLIFrameElement, { data: { address: address.value, metaId: userInfo.value?.id?.id as any } }, messageType.SUI_ADDRESS_RESPONSE);
     }
     try {
       tx.moveCall(data.target, data.args);
       const { digest } = await signAndSendTxn(tx);
-      sendMessage(iframe.value as HTMLIFrameElement, { data: digest });
+      sendMessage(iframe.value as HTMLIFrameElement, { data: digest }, unityType as string as any);
     } catch (err: any) {
-      sendMessage(iframe.value as HTMLIFrameElement, err);
+      sendMessage(iframe.value as HTMLIFrameElement, err, unityType as string as any);
     }
   };
 
-  const getAddress = () => {};
-
-  getMessage((data: any, type: messageType) => {
-    send(data, type);
+  getMessage((data: any, type: messageType, unityType?: any) => {
+    send(data, type, unityType);
   });
 };
 </script>

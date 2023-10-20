@@ -18,14 +18,14 @@ export const sendMessage = (ifream: HTMLIFrameElement, data: IframeResData, type
   );
 };
 
-export const getMessage = (cb?: (args: IframeData, type: messageType) => void) => {
+export const getMessage = (cb?: (args: IframeData, type: messageType, unityType?: string) => void) => {
   window.addEventListener("message", (e) => {
-    const { type, data } = e.data;
+    const { type, data, unityType } = e.data;
     if (type === messageType.SUI_ADDRESS) {
-      cb && cb(data, type);
+      cb && cb(data, type, unityType);
     }
     if (type === messageType.SUI_MESSAGE) {
-      cb && cb(data, type);
+      cb && cb(data, type, unityType);
     }
   });
 };
