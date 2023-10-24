@@ -31,10 +31,10 @@ export const data = computed(() => [
   },
   {
     project_name: 'SHUI 基金',
-    assigned_quantity: '79,000,000 SHUI',
-    percentage: '3 %',
+    assigned_quantity: '50,000,000 SHUI',
+    percentage: '2 %',
     other: '风控运营',
-    value: 79000000
+    value: 50000000
   },
   {
     project_name: 'SHUI DAO',
@@ -42,6 +42,13 @@ export const data = computed(() => [
     percentage: '2 %',
     other: '社区治理',
     value: 50000000
+  },
+  {
+    project_name: '任务系统',
+    assigned_quantity: '29,000,000 SHUI',
+    percentage: '1 %',
+    other: '任务奖励',
+    value: 29000000
   },
   {
     project_name: '创始团队',
