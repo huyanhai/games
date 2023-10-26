@@ -55,8 +55,7 @@
           <thead>
             <tr>
               <th :colspan="columns.length" class="table-header">
-                Airdrop {{ (pageData?.total_claim_amount || 0) / unit }} SHUI
-                Daily Claim
+                390 Million Airdrop Free Claim
               </th>
             </tr>
           </thead>
@@ -74,11 +73,11 @@
               <td>{{ item.daily_quantity }}</td>
               <td>{{ item.daily_available_quantity }}</td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td :colspan="columns.length" style="text-align: center">
                 {{ $t('home.reserve') }}
               </td>
-            </tr>
+            </tr> -->
           </tbody>
         </NTable>
       </div>
@@ -176,30 +175,36 @@ const tableData = computed(() => {
   return [
     {
       phase: '1 ~ 30 DAY',
-      quantity: '30 SHUI',
+      quantity: '50 SHUI',
       daily_quantity: '1,000,000 SHUI',
       daily_available_quantity: quantity('1')
     },
     {
       phase: '31 ~ 60 DAY',
-      quantity: '25 SHUI',
+      quantity: '40 SHUI',
       daily_quantity: '2,000,000 SHUI',
       daily_available_quantity: quantity('2')
     },
     {
       phase: '61 ~ 90 DAY',
-      quantity: '20 SHUI',
+      quantity: '30 SHUI',
       daily_quantity: '3,000,000 SHUI',
       daily_available_quantity: quantity('3')
     },
     {
       phase: '91 ~ 120 DAY',
-      quantity: '15 SHUI',
+      quantity: '20 SHUI',
       daily_quantity: '4,000,000 SHUI',
       daily_available_quantity: quantity('4')
     },
     {
-      phase: '121 DAYS',
+      phase: '121 ~ 150 DAYS',
+      quantity: '10 SHUI',
+      daily_quantity: '5,000,000 SHUI',
+      daily_available_quantity: quantity('5')
+    },
+    {
+      phase: '151 Days Later',
       quantity: '10 SHUI',
       daily_quantity: '1,000,000 SHUI',
       daily_available_quantity: quantity('5')

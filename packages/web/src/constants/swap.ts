@@ -3,22 +3,36 @@ import { computed } from 'vue';
 export const data = computed(() => [
   {
     project_name: '元宇宙游戏',
-    assigned_quantity: '1,400,000,000 SHUI',
-    percentage: '66 %',
+    assigned_quantity: '1,000,000,000 SHUI',
+    percentage: '48 %',
     other: '游戏产出',
     value: 1400000000
   },
   {
     project_name: '免费空投',
-    assigned_quantity: '300,000,000 SHUI',
-    percentage: '14 %',
+    assigned_quantity: '390,000,000 SHUI',
+    percentage: '18 %',
     other: '免费领取',
     value: 300000000
   },
   {
     project_name: '白名单',
-    assigned_quantity: '150,000,000 SHUI',
-    percentage: '7 %',
+    assigned_quantity: '200,000,000 SHUI',
+    percentage: '10 %',
+    other: '早期参与',
+    value: 150000000
+  },
+  {
+    project_name: '交易所',
+    assigned_quantity: '200,000,000 SHUI',
+    percentage: '10 %',
+    other: '早期参与',
+    value: 150000000
+  },
+  {
+    project_name: '任务系统',
+    assigned_quantity: '139,000,000 SHUI',
+    percentage: '6 %',
     other: '早期参与',
     value: 150000000
   },
@@ -28,13 +42,6 @@ export const data = computed(() => [
     percentage: '5 %',
     other: '公开兑换',
     value: 100000000
-  },
-  {
-    project_name: 'SHUI 基金',
-    assigned_quantity: '79,000,000 SHUI',
-    percentage: '3 %',
-    other: '风控运营',
-    value: 79000000
   },
   {
     project_name: 'SHUI DAO',

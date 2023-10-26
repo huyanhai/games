@@ -22,15 +22,10 @@
     </div> -->
     <div class="eth-info">
       <div class="col col-l">
-        <NDivider class="user-divider" dashed>白名单</NDivider>
-        <div class="text">
-          白名单用户属于我们项目的早期支持者，可以通过 Opensea 购买 我们发行的限量 NFT“ SHUI Whitelist ”才能加入“白名单列表”。<br />
-          NFT 售价为：0.05 ETH 总量为：10,000 售完为止。
-        </div>
         <NDivider class="user-divider" dashed>白名单特权</NDivider>
         <div class="text">
           <ul>
-            <li>白名单用户可以获得1SUI=100SHUI比例进行兑换，每个白名单用户兑换上限为15,000SHUI</li>
+            <li>白名单用户可以获得1SUI=100SHUI比例进行兑换，每个白名单用户兑换上限为20,000SHUI</li>
             <li>我们还为“白名单”用户预留了10000~20000 的 Meta 身份 ID 编号</li>
           </ul>
         </div>
@@ -199,10 +194,10 @@ const columns = computed(() => [
 const data = ref([
   {
     exchange_list: "白名单",
-    count: "15,000 SHUI",
+    count: "20,000 SHUI",
     exchange_radio: "1 SUI = 100 SHUI",
     // share: '730',
-    all_amount: "150 million",
+    all_amount: "200 million",
     conditions: "NFT",
   },
 ]);
