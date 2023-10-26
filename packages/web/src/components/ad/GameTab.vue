@@ -127,10 +127,9 @@ const open = async () => {
       return sendMessage(iframe.value as HTMLIFrameElement, { data: { address: address.value, metaId: userInfo.value?.id?.id as any } }, messageType.SUI_ADDRESS_RESPONSE);
     }
 
-
     data.args = data.args.map((item) => {
       if (typeof item === "number") {
-        const coinId = getAbleCoins(ableCoins, 1.1, Number(item))
+        const coinId = getAbleCoins(ableCoins, 1.1, Number(item));
         const [coins] = tx.splitCoins(coinId as any, [Number(item)]);
         return tx.makeMoveVec([coins]);
       }
@@ -139,8 +138,10 @@ const open = async () => {
 
     try {
       tx.moveCall(data.target, data.args);
-      const { digest } = await signAndSendTxn(tx);
-      sendMessage(iframe.value as HTMLIFrameElement, { data: digest }, unityType as string as any);
+      // const { digest } = await signAndSendTxn(tx);
+      const result = await signAndSendTxn(tx);
+
+      sendMessage(iframe.value as HTMLIFrameElement, { data: result }, unityType as string as any);
     } catch (err: any) {
       sendMessage(iframe.value as HTMLIFrameElement, err, unityType as string as any);
     }

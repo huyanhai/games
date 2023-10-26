@@ -73,7 +73,7 @@ const items = computed(() => [
     cardImg: "https://bafybeiami7cghfutcuy52qpb5ifmv5d4cxzdfzcnbip7ptggf73zcsss7a.ipfs.nftstorage.link/ship_card.png/",
     progress: parseInt(`${(1 - shui.value.remain_num / shui.value.total_num) * 100}`),
     buttonText: "购买",
-    buttonBgColor: "#00c3ff",
+    buttonBgColor: "#ff1b72",
     link: "https://opensea.io/zh-CN/assets/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/30942048195930147045271123439947518623642095559354491168003220828348787730192",
   },
   // {
@@ -100,14 +100,6 @@ const items = computed(() => [
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
-  // box-shadow: #585858 5px 5px 30px 1px;
-  // padding: 2vw 10vw;
-  // @include for_breakpoint('min') {
-  //   padding: 32px 150px;
-  // }
-  // @include for_breakpoint('max', 800px) {
-  //   padding: 32px 64px;
-  // }
   .nft-item {
     width: 80%;
     max-width: 400px;
@@ -121,7 +113,7 @@ const items = computed(() => [
     &:nth-child(-1) {
       .title {
         img {
-          width: 6vw;
+          width: 8vw;
           @include for_breakpoint("min") {
             width: 97px;
           }
@@ -145,7 +137,7 @@ const items = computed(() => [
       }
       img {
         display: flex;
-        width: 3vw;
+        width: 8vw;
         margin-right: 0.5vw;
         @include for_breakpoint("min") {
           width: 48px;
@@ -240,13 +232,13 @@ const items = computed(() => [
       width: 100%;
     }
     button {
-      width: 10vw;
-      height: 3vw;
+      width: 14vw;
+      height: 5vw;
       border-radius: 0.8vw;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4vw;
+      font-size: 1.8vw;
       color: #fff;
       margin: 20px auto 0 auto;
       .buy {
@@ -255,21 +247,21 @@ const items = computed(() => [
         justify-content: center;
         margin-top: 3px;
         img {
-          width: 10px;
+          width: 20px;
           margin-right: 10px;
         }
       }
       @include for_breakpoint("min") {
-        width: 162px;
+        width: 200px;
         height: 48px;
         border-radius: 12px;
         font-size: 22px;
       }
       @include for_breakpoint("max", 800px) {
-        width: 100px;
-        height: 30px;
+        width: 150px;
+        height: 50px;
         border-radius: 4px;
-        font-size: 14px;
+        font-size: 18px;
         margin-top: 20px;
       }
     }

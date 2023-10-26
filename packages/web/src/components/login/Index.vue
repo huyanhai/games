@@ -25,6 +25,7 @@
               </p>
             </div>
             <div v-else class="line">
+              <NButton size="tiny" round>转账</NButton>
               <p>
                 {{ formatMoney(Number(item.totalBalance) / unit) }}
                 <!-- <i>SHUI</i> -->
@@ -204,8 +205,12 @@ watch(
   display: flex;
   flex-direction: column;
   text-align: left;
+  border-bottom: 1px solid #dedede;
+  padding:5px 0;
+  &:last-child {
+    border-bottom: none;
+  }
   .line {
-    border-bottom: 1px solid #dedede;
     height: 30px;
     line-height: 30px;
     display: flex;
@@ -225,8 +230,8 @@ watch(
     align-items: center;
     img {
       flex: 0 0 auto;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       margin-left: 10px;
     }
   }

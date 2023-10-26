@@ -208,7 +208,7 @@ const optionsInfo = ref<TOptionsInfo[]>([
     ratio: 100,
     id: 6,
     fnName: "white_list_swap",
-    max: 150,
+    max: 200,
   },
   {
     name: "黄金储备计划",
