@@ -40,7 +40,8 @@ import { computed, onMounted, ref } from "vue";
 import { NModal, NCard, NButton, NIcon, NTabs, NTabPane, NSpace, useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
 import { MdClose } from "@vicons/ionicons4";
-import { useWallet, getMessage, sendMessage, SuiTxBlock, type IframeData, messageType } from "@game-web/base";
+import { useWallet, getMessage, sendMessage, SuiTxBlock, type IframeData, messageType, useOwnedCoinsWithBalances } from "@game-web/base";
+import { CONTRACT_PACKAGE } from "@/constants";
 
 import P1 from "@/assets/p1.jpg";
 import P2 from "@/assets/p2.jpg";
@@ -93,6 +94,7 @@ const iframeUrl = computed(() => {
 });
 
 const userInfo = computed<any>(() => baseStore.getUserInfo);
+const { balanceProvider, getOwnedCoinsAndBalances } = useOwnedCoinsWithBalances();
 
 const change = (v: number) => {
   if (v > 2) {
@@ -101,14 +103,40 @@ const change = (v: number) => {
   showItem.value = v;
 };
 
-const open = () => {
+const getAbleCoins = (coins: any, number: number, unit: number) => {
+  let coinId = undefined;
+  coins?.data.forEach((coin: any) => {
+    if (parseInt(coin.balance) > number * unit) {
+      coinId = coin.coinObjectId;
+    }
+  });
+  return coinId;
+};
+
+const open = async () => {
   showModal.value = true;
-  const tx = new SuiTxBlock();
 
   const send = async (data: IframeData, type: messageType, unityType?: string) => {
+    const tx = new SuiTxBlock();
+    const ableCoins = await balanceProvider.value?.query.provider.getCoins({
+      owner: address.value as string,
+      coinType: `${CONTRACT_PACKAGE}::shui::SHUI`,
+    });
+
     if (type === messageType.SUI_ADDRESS) {
       return sendMessage(iframe.value as HTMLIFrameElement, { data: { address: address.value, metaId: userInfo.value?.id?.id as any } }, messageType.SUI_ADDRESS_RESPONSE);
     }
+
+
+    data.args = data.args.map((item) => {
+      if (typeof item === "number") {
+        const coinId = getAbleCoins(ableCoins, 1.1, Number(item))
+        const [coins] = tx.splitCoins(coinId as any, [Number(item)]);
+        return tx.makeMoveVec([coins]);
+      }
+      return item;
+    });
+
     try {
       tx.moveCall(data.target, data.args);
       const { digest } = await signAndSendTxn(tx);

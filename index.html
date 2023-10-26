@@ -100,21 +100,25 @@
     }
 
     loadingBar.style.display = "block";
-
+   
+      var unity;
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
+          unity = unityInstance;
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
-        };
-
-        console.log("unityInstance", unityInstance);
-        console.log("-----------------------------start");
+          };
+        //console.log("unityInstance", unityInstance);
+        //console.log("-----------------------------start");
         // 获取地址信息
+          //InitUnity(unityinitData);
+
+
         window.parent.postMessage(
           {
             type: 'SUI_ADDRESS',
@@ -123,34 +127,30 @@
           '*'
         );
 
-
-        function test () {
-          // 调用web方法
-          window.parent.postMessage(
-            {
-              type: 'SUI_MESSAGE',
-              // target - 合约地址
-              // args - 合约参数,数组形式
-              data: { target: "xxx:xxx:xx", args: [1, 2] },
-              // 自定义接收的type类型
-              unityType: 'JIAOSHUI'
-            },
-            '*'
-          );
-        }
-
+        // 调用web方法
+        window.parent.postMessage(
+          {
+            type: 'SUI_MESSAGE',
+            // target - 合约地址
+            // args - 合约参数,数组形式
+            data: { target: "xxx:xxx:xx", args: [1, 2] },
+            // 自定义接收的type类型
+                unityType: 'test_water_down'
+          },
+          '*'
+        );
 
         window.addEventListener('message', (e) => {
           const { type, data } = e.data;
 
           if (type === 'SUI_ADDRESS_RESPONSE') {
             // 传递到unity容器
-            unityInstance.SendMessage(data)
+              InitUnity(data);
             console.log('获取到父页面的参数', data);
           }
 
           // 调用合约的返回值
-          if (type === 'JIAOSHUI') {
+            if (type === 'test_water_down') {
             console.log("获取到合约的返回值", data)
           }
         });
@@ -159,7 +159,42 @@
         alert(message);
       });
     };
-    document.body.appendChild(script);
+      document.body.appendChild(script);
+
+
+      //<------------unity调用前端方法--------->
+      //浇水时调用的方法
+      function test_water_down(Waterdata) {
+
+          console.log("获取到unity传递的浇水合约数据" + Waterdata);
+
+          // 调用web方法
+          window.parent.postMessage(
+              {
+                  type: 'SUI_MESSAGE',
+                  // target - 合约地址
+                  // args - 合约参数,数组形式
+                  data: JSON.parse(Waterdata),
+                  // 自定义接收的type类型
+                  unityType: 'test_water_down'
+              },
+              '*'
+          );
+
+      }
+
+
+
+
+
+      //<------------前端调用unity方法--------->
+      function InitUnity(data) {  //模型地址'/KM/gril_modle.unity3d+Assets/Gril/Prefab/girl_face.prefab'
+          //初始化unity
+          unity.SendMessage('ReceiveWebMsg', 'InitUnity', JSON.stringify(data));
+      }
+
+
+
   </script>
 </body>
 
