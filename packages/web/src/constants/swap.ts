@@ -51,6 +51,13 @@ export const data = computed(() => [
     value: 50000000
   },
   {
+    project_name: '任务系统',
+    assigned_quantity: '29,000,000 SHUI',
+    percentage: '1 %',
+    other: '任务奖励',
+    value: 29000000
+  },
+  {
     project_name: '创始团队',
     assigned_quantity: '21,000,000 SHUI',
     percentage: '1 %',
