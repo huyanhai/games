@@ -72,7 +72,7 @@ const items = computed(() => [
     cardBalance: t("home.balance", { num: shui.value.remain_num }),
     cardImg: "https://bafybeiami7cghfutcuy52qpb5ifmv5d4cxzdfzcnbip7ptggf73zcsss7a.ipfs.nftstorage.link/ship_card.png/",
     progress: parseInt(`${(1 - shui.value.remain_num / shui.value.total_num) * 100}`),
-    buttonText: "购买",
+    buttonText: "200 SUI",
     buttonBgColor: "#ff1b72",
     link: "https://opensea.io/zh-CN/assets/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/30942048195930147045271123439947518623642095559354491168003220828348787730192",
   },
