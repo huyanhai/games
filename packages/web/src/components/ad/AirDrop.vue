@@ -3,19 +3,15 @@
     <div class="btc-total">
       <div class="info">
         <div class="item">
-          <div class="top">{{ $t('home.airdrop_t') }}</div>
-          <div class="bottom">
-            {{ Number(pageData?.total_claim_amount || 0) / unit }} SHUI
-          </div>
+          <div class="top">{{ $t("home.airdrop_t") }}</div>
+          <div class="bottom">{{ Number(pageData?.total_claim_amount || 0) / unit }} SHUI</div>
         </div>
         <div class="item">
-          <div class="top">{{ $t('home.claim_u') }}</div>
-          <div class="bottom">
-            {{ Number(pageData?.total_remain_amount || 0) / unit }} SHUI
-          </div>
+          <div class="top">{{ $t("home.claim_u") }}</div>
+          <div class="bottom">{{ Number(pageData?.total_remain_amount || 0) / unit }} SHUI</div>
         </div>
         <div class="item">
-          <div class="top">{{ $t('home.current') }}</div>
+          <div class="top">{{ $t("home.current") }}</div>
           <div class="bottom">{{ pageData?.participators_num || 0 }} USER</div>
         </div>
       </div>
@@ -25,10 +21,7 @@
       <div class="__l">
         <div class="card">
           <p v-html="$t('home.current_txt')"></p>
-          <div
-            class="button"
-            :class="!airdropCheckInfo.available ? 'disabled' : ''"
-          >
+          <div class="button" :class="!airdropCheckInfo.available ? 'disabled' : ''">
             <SuiWallet v-model:loading="loading" @moveCall="moveCall">
               <slot>
                 <button :disabled="!airdropCheckInfo.available">
@@ -37,9 +30,8 @@
                     :duration="airdropCheckInfo.time_diff"
                     :render="
                       ({ hours, minutes, seconds }) => {
-                        if (airdropCheckInfo.available)
-                          return $t('home.claim_btn');
-                        return `${hours}:${minutes}:${seconds}`;
+                        if (airdropCheckInfo.available) return $t('home.claim_btn');
+                        return `${formateTime(hours)}:${formateTime(minutes)}:${formateTime(seconds)}`;
                       }
                     "
                     @finish="onFinish"
@@ -54,9 +46,7 @@
         <NTable bordered>
           <thead>
             <tr>
-              <th :colspan="columns.length" class="table-header">
-                390 Million Airdrop Free Claim
-              </th>
+              <th :colspan="columns.length" class="table-header">390 Million Airdrop Free Claim</th>
             </tr>
           </thead>
           <thead>
@@ -83,22 +73,21 @@
       </div>
     </div>
     <NDivider class="user-divider" dashed>
-      {{ $t('home.airdrop_list') }}
+      {{ $t("home.airdrop_list") }}
     </NDivider>
   </div>
 </template>
 <script lang="ts" setup>
-import { NTable, NDivider, NCountdown } from 'naive-ui';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useMessage } from 'naive-ui';
-import { useBaseStore } from '@/store';
+import { NTable, NDivider, NCountdown } from "naive-ui";
+import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useMessage } from "naive-ui";
+import { useBaseStore } from "@/store";
 
-import SuiWallet from '@/components/sui-wallet/Index.vue';
+import SuiWallet from "@/components/sui-wallet/Index.vue";
 
-import { SuiTxBlock } from '@game-web/base';
-import { useWallet } from '@game-web/base';
-import { CONTRACT_PACKAGE, AIRDROP_GLOBAL_ADDRESS } from '@/constants';
+import { SuiTxBlock, useWallet, formateTime } from "@game-web/base";
+import { CONTRACT_PACKAGE, AIRDROP_GLOBAL_ADDRESS } from "@/constants";
 
 const { t } = useI18n();
 const { signAndSendTxn, address } = useWallet();
@@ -125,91 +114,97 @@ const moveCall = async () => {
 
   try {
     const tx = new SuiTxBlock();
-    const meta_addr = userInfo.value?.id?.id || '';
+    const meta_addr = userInfo.value?.id?.id || "";
 
     // 领取空投
-    tx.moveCall(target, [AIRDROP_GLOBAL_ADDRESS, meta_addr, '0x6']);
+    tx.moveCall(target, [AIRDROP_GLOBAL_ADDRESS, meta_addr, "0x6"]);
 
     // 发送签名
     const { digest } = await signAndSendTxn(tx);
     if (digest) {
-      message.success(t('home.claimed_success_tips'));
+      message.success(t("home.claimed_success_tips"));
       await baseStore.fetchAirdropCheck({
-        wallet_addr: address.value as string
+        wallet_addr: address.value as string,
       });
       loading.value = false;
     }
   } catch (error) {
     loading.value = false;
-    message.error(t('home.claimed_fail_tips'));
+    message.error(t("home.claimed_fail_tips"));
   }
 };
 
 const columns = computed(() => [
   {
-    title: t('home.phase'),
-    key: 'phase'
+    title: t("home.phase"),
+    key: "phase",
   },
   {
-    title: t('home.quantity'),
-    key: 'quantity'
+    title: t("home.quantity"),
+    key: "quantity",
   },
   {
-    title: t('home.daily_quantity'),
-    key: 'daily_quantity'
+    title: t("home.daily_quantity"),
+    key: "daily_quantity",
   },
   {
-    title: t('home.daily_available_quantity'),
-    key: 'daily_available_quantity'
-  }
+    title: t("home.daily_available_quantity"),
+    key: "daily_available_quantity",
+  },
 ]);
 
 const quantity = (count: string) => {
   if (count === pageData.value.phase) {
     return `${Number(pageData.value.daily_remain_amount || 0) / unit} SHUI`;
   }
-  return '-';
+  return "-";
 };
 
 const tableData = computed(() => {
   return [
     {
-      phase: '1 ~ 30 DAY',
-      quantity: '50 SHUI',
-      daily_quantity: '1,000,000 SHUI',
-      daily_available_quantity: quantity('1')
+      phase: "1 ~ 30 DAY",
+      quantity: "50 SHUI",
+      daily_quantity: "1,000,000 SHUI",
+      daily_available_quantity: quantity("1"),
     },
     {
-      phase: '31 ~ 60 DAY',
-      quantity: '40 SHUI',
-      daily_quantity: '2,000,000 SHUI',
-      daily_available_quantity: quantity('2')
+      phase: "31 ~ 60 DAY",
+      quantity: "40 SHUI",
+      daily_quantity: "2,000,000 SHUI",
+      daily_available_quantity: quantity("2"),
     },
     {
-      phase: '61 ~ 90 DAY',
-      quantity: '30 SHUI',
-      daily_quantity: '3,000,000 SHUI',
-      daily_available_quantity: quantity('3')
+      phase: "61 ~ 90 DAY",
+      quantity: "30 SHUI",
+      daily_quantity: "3,000,000 SHUI",
+      daily_available_quantity: quantity("3"),
     },
     {
-      phase: '91 ~ 120 DAY',
-      quantity: '20 SHUI',
-      daily_quantity: '4,000,000 SHUI',
-      daily_available_quantity: quantity('4')
+      phase: "91 ~ 120 DAY",
+      quantity: "20 SHUI",
+      daily_quantity: "4,000,000 SHUI",
+      daily_available_quantity: quantity("4"),
     },
     {
-      phase: '121 ~ 150 DAYS',
-      quantity: '10 SHUI',
-      daily_quantity: '5,000,000 SHUI',
-      daily_available_quantity: quantity('5')
+      phase: "121 ~ 150 DAYS",
+      quantity: "10 SHUI",
+      daily_quantity: "5,000,000 SHUI",
+      daily_available_quantity: quantity("5"),
     },
     {
-      phase: '151 Days Later',
-      quantity: '10 SHUI',
-      daily_quantity: '1,000,000 SHUI',
-      daily_available_quantity: quantity('5')
-    }
+      phase: "151 Days Later",
+      quantity: "10 SHUI",
+      daily_quantity: "1,000,000 SHUI",
+      daily_available_quantity: quantity("5"),
+    },
   ];
+});
+
+onMounted(() => {
+  if (address.value) {
+    onFinish();
+  }
 });
 </script>
 
@@ -231,14 +226,14 @@ const tableData = computed(() => {
   position: relative;
   box-sizing: border-box;
   padding-top: 6vw;
-  @include for_breakpoint('min') {
+  @include for_breakpoint("min") {
     padding-top: 97px;
   }
   img {
     height: 13vw;
     width: auto;
     object-fit: contain;
-    @include for_breakpoint('min') {
+    @include for_breakpoint("min") {
       height: 210px;
     }
   }
@@ -249,7 +244,7 @@ const tableData = computed(() => {
     box-sizing: border-box;
     padding-left: 11vw;
     bottom: 0;
-    @include for_breakpoint('min') {
+    @include for_breakpoint("min") {
       padding-left: 178px;
     }
 
@@ -260,7 +255,7 @@ const tableData = computed(() => {
       width: calc(100% / 3);
       font-size: 2vw;
       box-sizing: border-box;
-      @include for_breakpoint('min') {
+      @include for_breakpoint("min") {
         font-size: 32px;
       }
       .top {
@@ -268,13 +263,13 @@ const tableData = computed(() => {
         display: flex;
         align-items: center;
         justify-content: center;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           height: vwTopx(6vw);
         }
       }
       &:nth-child(2) {
         padding-left: 5vw;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           padding-left: 81px;
         }
       }
@@ -288,7 +283,7 @@ const tableData = computed(() => {
         line-height: 12.5vw;
         // margin-top: 2vw;
         color: #fff;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           height: 202px;
           line-height: 202px;
           // margin-top: 32px;
@@ -303,20 +298,20 @@ const tableData = computed(() => {
   margin-top: 4vw;
   width: 100%;
   flex-wrap: wrap;
-  @include for_breakpoint('min') {
+  @include for_breakpoint("min") {
     margin-top: vwTopx(4vw);
   }
-  @include for_breakpoint('max', 800px) {
+  @include for_breakpoint("max", 800px) {
     margin-top: 20px;
   }
   .__l {
     width: 40%;
     box-sizing: border-box;
     padding-right: 5vw;
-    @include for_breakpoint('min') {
+    @include for_breakpoint("min") {
       padding-right: vwTopx(5vw);
     }
-    @include for_breakpoint('max', 800px) {
+    @include for_breakpoint("max", 800px) {
       width: 100%;
       padding: 0;
     }
@@ -326,10 +321,10 @@ const tableData = computed(() => {
       background: #fff;
       padding: 2vw;
       box-sizing: border-box;
-      @include for_breakpoint('min') {
+      @include for_breakpoint("min") {
         padding: vwTopx(2vw);
       }
-      @include for_breakpoint('max', 800px) {
+      @include for_breakpoint("max", 800px) {
         padding: 10px;
       }
       p {
@@ -338,12 +333,12 @@ const tableData = computed(() => {
         color: #585858;
         text-align: left;
         margin-bottom: 2vw;
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           line-height: vwTopx(2vw);
           font-size: vwTopx(1.4vw);
           margin-bottom: vwTopx(2vw);
         }
-        @include for_breakpoint('max', 800px) {
+        @include for_breakpoint("max", 800px) {
           line-height: 20px;
           font-size: 14px;
           margin-bottom: 5px;
@@ -370,14 +365,14 @@ const tableData = computed(() => {
           width: 100%;
           height: 100%;
         }
-        @include for_breakpoint('min') {
+        @include for_breakpoint("min") {
           width: vwTopx(20vw);
           height: vwTopx(5vw);
           border-radius: vwTopx(0.8vw);
           font-size: vwTopx(1.8vw);
           margin-top: vwTopx(2vw);
         }
-        @include for_breakpoint('max', 800px) {
+        @include for_breakpoint("max", 800px) {
           width: 100px;
           height: 30px;
           border-radius: 4px;
@@ -389,7 +384,7 @@ const tableData = computed(() => {
   }
   .__r {
     width: 60%;
-    @include for_breakpoint('max', 800px) {
+    @include for_breakpoint("max", 800px) {
       width: 100%;
       margin-top: 20px;
       overflow-y: scroll;

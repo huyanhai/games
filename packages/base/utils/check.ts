@@ -15,7 +15,11 @@ export const checkMoneyDot = (value: string) => {
 };
 export const checkNum = (value: string) => {
   const reg = /^[1-9]*$/;
-  console.log(reg.test(value),value);
-  
+  console.log(reg.test(value), value);
+
   return reg.test(value);
+};
+
+export const formateTime = (time: number) => {
+  return time >= 10 ? time : `0${time}`;
 };

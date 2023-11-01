@@ -18,8 +18,8 @@
     <div
       class="iframe-container"
       :style="{
-        '--iframe-width': `${width * 0.8}px`,
-        '--iframe-height': `${height * 0.8}px`,
+        '--iframe-width': `${width * 1}px`,
+        '--iframe-height': `${height * 1}px`,
       }"
     >
       <NButton class="close" circle color="#00c3ff" @click="showModal = false">
@@ -161,7 +161,7 @@ const open = async () => {
   }
   width: var(--iframe-width);
   height: var(--iframe-height);
-  border-radius: 10px;
+  border-radius: 0px;
   overflow: hidden;
   position: relative;
   .iframe-card {

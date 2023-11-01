@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { NTabs, NTab } from "naive-ui";
 import { useI18n } from "vue-i18n";
-import { ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 
 import { queryOpenseaNft } from "@/api";
 import { useBaseStore } from "@/store";
@@ -21,11 +21,10 @@ import Home from "./Home.vue";
 import GameTab from "./GameTab.vue";
 import Swap from "./Swap.vue";
 import AirDrop from "./AirDrop.vue";
-import { computed, onBeforeMount } from "vue";
+import { computed, nextTick } from "vue";
 // import Github from './Github.vue';
 
 import Market from "@/views/Market.vue";
-import { info } from "console";
 
 const baseStore = useBaseStore();
 const { address } = useWallet();
@@ -75,21 +74,18 @@ const lists = computed(() => {
   };
 });
 
-onBeforeMount(async () => {
-  const { data } = await queryOpenseaNft();
+onMounted(() => {
+  queryOpenseaNft().then((data: any) => {
+    if (data.shui_token) {
+      baseStore.setNftInfo({ shui: data.shui_token });
+    }
 
-  if (data.shui_token) {
-    baseStore.setNftInfo({ shui: data.shui_token });
-  }
+    if (data.meta_game) {
+      baseStore.setNftInfo({ meta: data.meta_game });
+    }
+  });
 
-  if (data.meta_game) {
-    baseStore.setNftInfo({ meta: data.meta_game });
-  }
   baseStore.fetchAirdropInfo();
-
-  if (address.value) {
-    baseStore.fetchAirdropCheck({ wallet_addr: address.value });
-  }
 });
 </script>
 
