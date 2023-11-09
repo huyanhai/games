@@ -1,9 +1,9 @@
-import { ref } from 'vue';
-import { Provider } from '../../sdk/common/index';
-import { useWallet } from './useWallet';
-import type { TransactionBlock } from '@mysten/sui.js';
+import { ref } from "vue";
+import { Provider } from "../../sdk/common/index";
+import { useWallet } from "./useWallet";
+import type { JsonRpcProvider, TransactionBlock } from "@mysten/sui.js";
 
-const provider = ref();
+const provider = ref<JsonRpcProvider>();
 const userAddress = ref();
 
 export const useProvider = () => {
@@ -17,15 +17,14 @@ export const useProvider = () => {
   };
   const devInspectTransactionBlock = async (tx: TransactionBlock) => {
     checkProvider();
-
-    return provider.value.devInspectTransactionBlock({
+    return provider.value?.devInspectTransactionBlock({
       transactionBlock: tx,
-      sender: tx.blockData.sender || userAddress.value
+      sender: tx.blockData.sender || userAddress.value,
     });
   };
 
   return {
     provider,
-    devInspectTransactionBlock
+    devInspectTransactionBlock,
   };
 };

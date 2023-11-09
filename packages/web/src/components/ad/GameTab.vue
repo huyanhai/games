@@ -115,7 +115,6 @@ const getAbleCoins = (coins: any, number: number, unit: number) => {
 
 const open = async () => {
   showModal.value = true;
-
   const send = async (data: IframeData, type: messageType, unityType?: string) => {
     const tx = new SuiTxBlock();
     const ableCoins = await balanceProvider.value?.query.provider.getCoins({

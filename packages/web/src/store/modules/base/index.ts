@@ -1,8 +1,11 @@
-import { defineStore } from 'pinia';
-import { metaStatus, queryAirdrop, checkAirDrop } from '@/api';
+import { defineStore } from "pinia";
+import { queryAirdrop, checkAirDrop, metaStatus } from "@/api";
+import { SuiTxBlock, bytesArrayToHex, useProvider } from "@game-web/base";
+import { CONTRACT_PACKAGE, META_INFO_GLOBAL_ADDRESS } from "@/constants";
+import { culmulateRemainAmount, dailyRemainAmount, queryAirdropPhase, queryMetaByAddress, queryParticipatorNum, swapedShui, swapedSui, totalClaimAmount } from "./query";
 
 export type TBaseStare = {
-  lang: 'zh' | 'en' | 'ja';
+  lang: "zh" | "en" | "ja";
   loading: boolean;
   userInfo: Record<string, any> | undefined;
   nftInfo: Record<string, any>;
@@ -10,17 +13,17 @@ export type TBaseStare = {
   airdropCheck: Record<string, any>;
 };
 
-export const useBaseStore = defineStore('base', {
+export const useBaseStore = defineStore("base", {
   state: (): TBaseStare => ({
-    lang: 'en',
+    lang: "en",
     loading: false,
     userInfo: undefined,
     nftInfo: {
       meta: {},
-      shui: {}
+      shui: {},
     },
     airdropInfo: {},
-    airdropCheck: {}
+    airdropCheck: {},
   }),
   getters: {
     getLang(state) {
@@ -40,44 +43,55 @@ export const useBaseStore = defineStore('base', {
     },
     getAirdropCheck(state) {
       return state.airdropCheck;
-    }
+    },
   },
   actions: {
-    setLang(lang: TBaseStare['lang']) {
+    setLang(lang: TBaseStare["lang"]) {
       this.lang = lang;
     },
-    setUserInfo(info: TBaseStare['userInfo']) {
+    setUserInfo(info: TBaseStare["userInfo"]) {
       this.userInfo = info;
     },
-    setLoading(flag: TBaseStare['loading']) {
+    setLoading(flag: TBaseStare["loading"]) {
       this.loading = flag;
     },
     setNftInfo(info: Record<string, any>) {
       this.nftInfo = Object.assign(this.nftInfo, info);
     },
     async fetchUserInfo(address: string) {
-      const { data } = await metaStatus({
-        wallet_addr: address
-      });
-
-      if (data?.metaId) {
-        this.setUserInfo(data);
+      try {
+        const result = await queryMetaByAddress(address);
+        this.setUserInfo(result);
+      } catch (error) {
+        console.error("获取信息失败", error);
+        return Promise.resolve({});
       }
-
-      return Promise.resolve(data);
     },
     async fetchAirdropInfo() {
-      const { data } = await queryAirdrop();
-
-      this.airdropInfo = data as any;
+      const phase = await queryAirdropPhase();
+      const participators_num = await queryParticipatorNum();
+      const total_claim_amount = await totalClaimAmount();
+      const total_remain_amount = await culmulateRemainAmount();
+      const daily_remain_amount = await dailyRemainAmount();
+      const swaped_sui = await swapedSui();
+      const swaped_shui = await swapedShui();
+      this.airdropInfo = {
+        phase,
+        participators_num,
+        total_claim_amount,
+        total_remain_amount,
+        daily_remain_amount,
+        swaped_sui,
+        swaped_shui,
+      } as any;
     },
     async fetchAirdropCheck(params: { wallet_addr: string }) {
       const { data } = await checkAirDrop(params);
       this.airdropCheck = data as any;
       return Promise.resolve(true);
-    }
+    },
   },
   persist: {
-    session: true
-  }
+    session: true,
+  },
 });

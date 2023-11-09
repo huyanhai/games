@@ -1,5 +1,5 @@
 import type { TransactionArgument } from "@mysten/sui.js";
-import { TransactionBlock, SUI_SYSTEM_STATE_OBJECT_ID, normalizeSuiObjectId } from "@mysten/sui.js";
+import { TransactionBlock, SUI_SYSTEM_STATE_OBJECT_ID, normalizeSuiObjectId, SignedTransaction, Ed25519Keypair, JsonRpcProvider, RawSigner, testnetConnection } from "@mysten/sui.js";
 import type { SuiInputTypes } from "./util";
 import { getDefaultSuiInputType } from "./util";
 
@@ -109,9 +109,6 @@ export class SuiTxBlock {
     const match = target.match(regex);
     if (match === null) throw new Error("Invalid target format. Expected `${string}::${string}::${string}`");
     const convertedArgs = this.#convertArgs(args);
-
-    console.log("convertedArgs", convertedArgs);
-
     const tx = this.txBlock;
     return tx.moveCall({
       target: target as `${string}::${string}::${string}`,

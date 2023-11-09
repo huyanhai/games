@@ -85,7 +85,9 @@ onMounted(() => {
     }
   });
 
-  baseStore.fetchAirdropInfo();
+  setTimeout(() => {
+    baseStore.fetchAirdropInfo();
+  }, 1000);
 });
 </script>
 

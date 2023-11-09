@@ -25,7 +25,7 @@
         <NDivider class="user-divider" dashed>白名单特权</NDivider>
         <div class="text">
           <ul>
-            <li>白名单用户可以获得1SUI=100SHUI比例进行兑换，每个白名单用户兑换上限为20,000SHUI</li>
+            <li>白名单用户可以获得1SUI=100SHUI比例进行兑换，每个白名单用户兑换上限为30,000SHUI</li>
             <li>我们还为“白名单”用户预留了10000~20000 的 Meta 身份 ID 编号</li>
           </ul>
         </div>
@@ -194,10 +194,10 @@ const columns = computed(() => [
 const data = ref([
   {
     exchange_list: "白名单",
-    count: "20,000 SHUI",
+    count: "30,000 SHUI",
     exchange_radio: "1 SUI = 100 SHUI",
     // share: '730',
-    all_amount: "200 million",
+    all_amount: "300 million",
     conditions: "NFT",
   },
 ]);
@@ -208,7 +208,7 @@ const optionsInfo = ref<TOptionsInfo[]>([
     ratio: 100,
     id: 6,
     fnName: "white_list_swap",
-    max: 200,
+    max: 300,
   },
   {
     name: "黄金储备计划",

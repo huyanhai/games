@@ -1,12 +1,9 @@
-import type { Wallet, Wallets } from '@mysten/wallet-standard';
-import { getWallets } from '@mysten/wallet-standard';
-import type { IWalletAdapter } from './types';
-import { initializeWalletAdapter } from './useWalletAdapter';
-import {
-  isNonEmptyArray,
-  isStandardWalletAdapterCompatibleWallet
-} from '../../utils/check';
-import { onMounted, ref, onBeforeUnmount } from 'vue';
+import type { Wallet, Wallets } from "@mysten/wallet-standard";
+import { getWallets } from "@mysten/wallet-standard";
+import type { IWalletAdapter } from "./types";
+import { initializeWalletAdapter } from "./useWalletAdapter";
+import { isNonEmptyArray, isStandardWalletAdapterCompatibleWallet } from "../../utils/check";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 /**
  * detect wallet adapters that support wallet-standard from window and register event
  * normalize them to WalletAdapter
@@ -30,7 +27,6 @@ export function useWalletAdapterDetection() {
     // 获取钱包对象
     standardWalletManager.value = getWallets();
     const initWalletAdapters = getInitStandardWalletAdapters();
-
     if (isNonEmptyArray(initWalletAdapters)) {
       // setAvailableWalletAdapters(
       // 	initWalletAdapters.map((newAdapter) => new WalletAdapter(newAdapter))
@@ -41,30 +37,20 @@ export function useWalletAdapterDetection() {
       });
     }
 
-    clearListeners.value = standardWalletManager.value.on(
-      'register',
-      (...newAdapters: Wallet[]) => {
-        if (!standardWalletManager.value) return;
-        const initWalletAdapters = getInitStandardWalletAdapters();
-        const allAdapters = [...initWalletAdapters];
-        // filter out duplicate & not standard sui adapters & merged into existed list
-        newAdapters
-          .filter(isStandardWalletAdapterCompatibleWallet)
-          .filter(
-            (newAdapter) =>
-              !allAdapters.find(
-                (existAdapter) => existAdapter.name === newAdapter.name
-              )
-          )
-          .forEach((newAdapter) => {
-            allAdapters.push(newAdapter);
-          });
-        // normalize adapters
-        availableWalletAdapters.value = allAdapters.map((wallet) =>
-          initializeWalletAdapter(wallet)
-        );
-      }
-    );
+    clearListeners.value = standardWalletManager.value.on("register", (...newAdapters: Wallet[]) => {
+      if (!standardWalletManager.value) return;
+      const initWalletAdapters = getInitStandardWalletAdapters();
+      const allAdapters = [...initWalletAdapters];
+      // filter out duplicate & not standard sui adapters & merged into existed list
+      newAdapters
+        .filter(isStandardWalletAdapterCompatibleWallet)
+        .filter((newAdapter) => !allAdapters.find((existAdapter) => existAdapter.name === newAdapter.name))
+        .forEach((newAdapter) => {
+          allAdapters.push(newAdapter);
+        });
+      // normalize adapters
+      availableWalletAdapters.value = allAdapters.map((wallet) => initializeWalletAdapter(wallet));
+    });
   });
 
   onBeforeUnmount(() => {
@@ -72,6 +58,6 @@ export function useWalletAdapterDetection() {
   });
 
   return {
-    availableWalletAdapters
+    availableWalletAdapters,
   };
 }

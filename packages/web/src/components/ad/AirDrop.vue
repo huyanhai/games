@@ -87,7 +87,7 @@ import { useBaseStore } from "@/store";
 import SuiWallet from "@/components/sui-wallet/Index.vue";
 
 import { SuiTxBlock, useWallet, formateTime } from "@game-web/base";
-import { CONTRACT_PACKAGE, AIRDROP_GLOBAL_ADDRESS } from "@/constants";
+import { CONTRACT_PACKAGE, AIRDROP_GLOBAL_ADDRESS, MISSION_GLOBAL_ADDRESS } from "@/constants";
 
 const { t } = useI18n();
 const { signAndSendTxn, address } = useWallet();
@@ -117,7 +117,7 @@ const moveCall = async () => {
     const meta_addr = userInfo.value?.id?.id || "";
 
     // 领取空投
-    tx.moveCall(target, [AIRDROP_GLOBAL_ADDRESS, meta_addr, "0x6"]);
+    tx.moveCall(target, [MISSION_GLOBAL_ADDRESS, AIRDROP_GLOBAL_ADDRESS, meta_addr, "0x6"]);
 
     // 发送签名
     const { digest } = await signAndSendTxn(tx);

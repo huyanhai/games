@@ -1,34 +1,23 @@
-import { ConnectionStatus } from './types';
-import type {
-  WalletEvent,
-  WalletEventListeners,
-  IDefaultWallet,
-  IWalletAdapter,
-  Chain
-} from './types';
-import { KitError } from '../../errors';
-import type {
-  StandardConnectInput,
-  SuiSignAndExecuteTransactionBlockInput,
-  WalletAccount,
-  SuiSignTransactionBlockInput
-} from '@mysten/wallet-standard';
+import { ConnectionStatus } from "./types";
+import type { WalletEvent, WalletEventListeners, IDefaultWallet, IWalletAdapter, Chain } from "./types";
+import { KitError } from "../../errors";
+import type { StandardConnectInput, SuiSignAndExecuteTransactionBlockInput, WalletAccount, SuiSignTransactionBlockInput } from "@mysten/wallet-standard";
 
-import type { TransactionBlock } from '@mysten/sui.js';
+import type { TransactionBlock } from "@mysten/sui.js";
 
-import { FeatureName } from '../../constants/wallet';
+import { FeatureName } from "../../constants/wallet";
 
-import { computed, ref } from 'vue';
-import { DefaultChains, UnknownChain } from '../../constants/chain';
-import { AllDefaultWallets } from '../../constants/wallet';
-import { isNonEmptyArray } from '../../utils/check';
-import { Storage } from '../../utils/storage';
-import { StorageKey } from '../../constants/storage';
-import { useAvailableWallets } from './useAvailableWallets';
-import { useAutoConnect } from './useAutoConnect';
-import type { IdentifierString } from '@mysten/wallet-standard';
-import type { SuiTxArg, SuiVecTxArg } from '../../sdk';
-import { SuiTxBlock } from '../../sdk';
+import { computed, ref } from "vue";
+import { DefaultChains, UnknownChain } from "../../constants/chain";
+import { AllDefaultWallets } from "../../constants/wallet";
+import { isNonEmptyArray } from "../../utils/check";
+import { Storage } from "../../utils/storage";
+import { StorageKey } from "../../constants/storage";
+import { useAvailableWallets } from "./useAvailableWallets";
+import { useAutoConnect } from "./useAutoConnect";
+import type { IdentifierString } from "@mysten/wallet-standard";
+import type { SuiTxArg, SuiVecTxArg } from "../../sdk";
+import { SuiTxBlock } from "../../sdk";
 
 const walletAdapter = ref<IWalletAdapter>();
 const status = ref<ConnectionStatus>(ConnectionStatus.DISCONNECTED);
@@ -38,17 +27,11 @@ const shouldAutoConnect = ref<boolean | undefined>();
 const chainsList = ref<Chain[]>([]);
 const chain = ref<Chain>(UnknownChain);
 
-export const useWallet = (params?: {
-  defaultWallets?: IDefaultWallet[];
-  chains?: Chain[];
-  autoConnect?: boolean;
-}) => {
+export const useWallet = (params?: { defaultWallets?: IDefaultWallet[]; chains?: Chain[]; autoConnect?: boolean }) => {
   const {
-    defaultWallets = walletSupports.value.length
-      ? walletSupports.value
-      : AllDefaultWallets,
+    defaultWallets = walletSupports.value.length ? walletSupports.value : AllDefaultWallets,
     chains = chainsList.value.length ? chainsList.value : DefaultChains,
-    autoConnect = shouldAutoConnect.value !== undefined ?? true
+    autoConnect = shouldAutoConnect.value !== undefined ?? true,
   } = params || {};
 
   shouldAutoConnect.value = autoConnect;
@@ -59,31 +42,21 @@ export const useWallet = (params?: {
     walletSupports.value = [...defaultWallets];
   }
 
-  const { allAvailableWallets, configuredWallets, detectedWallets } =
-    useAvailableWallets(defaultWallets);
-  const isCallable = (
-    walletAdapter: IWalletAdapter | undefined,
-    status: ConnectionStatus
-  ) => {
+  const { allAvailableWallets, configuredWallets, detectedWallets } = useAvailableWallets(defaultWallets);
+  const isCallable = (walletAdapter: IWalletAdapter | undefined, status: ConnectionStatus) => {
     return walletAdapter && status === ConnectionStatus.CONNECTED;
   };
   const account = computed<WalletAccount | undefined>(() => {
     if (!isCallable(walletAdapter.value, status.value)) return;
     return walletAdapter.value?.accounts[0];
   });
-  const ensureCallable = (
-    adapter: IWalletAdapter | undefined,
-    status: ConnectionStatus
-  ) => {
+  const ensureCallable = (adapter: IWalletAdapter | undefined, status: ConnectionStatus) => {
     if (!isCallable(adapter, status)) {
-      throw new KitError('Failed to call function, wallet not connected');
+      throw new KitError("Failed to call function, wallet not connected");
     }
   };
-  const connect = async (
-    adapter: IWalletAdapter,
-    options?: StandardConnectInput
-  ) => {
-    if (!adapter) throw new KitError('param adapter is missing');
+  const connect = async (adapter: IWalletAdapter, options?: StandardConnectInput) => {
+    if (!adapter) throw new KitError("param adapter is missing");
     status.value = ConnectionStatus.CONNECTING;
     try {
       const res = await adapter.connect(options);
@@ -100,7 +73,7 @@ export const useWallet = (params?: {
 
       walletAdapter.value = {
         ...adapter,
-        accounts: res.accounts
+        accounts: res.accounts,
       };
       status.value = ConnectionStatus.CONNECTED;
 
@@ -122,10 +95,7 @@ export const useWallet = (params?: {
         try {
           off();
         } catch (e) {
-          console.error(
-            'error when clearing wallet listener',
-            (e as any).message
-          );
+          console.error("error when clearing wallet listener", (e as any).message);
         }
       });
       walletOffListeners.value = []; // empty array
@@ -140,7 +110,7 @@ export const useWallet = (params?: {
       status.value = ConnectionStatus.DISCONNECTED;
       chain.value = chains?.[0] ?? UnknownChain;
       const storage = new Storage();
-      storage.setItem(StorageKey.LAST_CONNECT_WALLET_NAME, '');
+      storage.setItem(StorageKey.LAST_CONNECT_WALLET_NAME, "");
     }
   };
   const selectWallet = async (walletName: string) => {
@@ -153,52 +123,37 @@ export const useWallet = (params?: {
       await disconnect();
     }
 
-    const wallet = allAvailableWallets.value.find(
-      (wallet) => wallet.name === walletName
-    );
+    const wallet = allAvailableWallets.value.find((wallet) => wallet.name === walletName);
     if (!wallet) {
-      const availableWalletNames = allAvailableWallets.value.map(
-        (wallet) => wallet.name
-      );
-      throw new KitError(
-        `select failed: wallet ${walletName} is not available, all wallets are listed here: [${availableWalletNames.join(
-          ', '
-        )}]`
-      );
+      const availableWalletNames = allAvailableWallets.value.map((wallet) => wallet.name);
+      throw new KitError(`select failed: wallet ${walletName} is not available, all wallets are listed here: [${availableWalletNames.join(", ")}]`);
     }
 
     await connect(wallet.adapter as IWalletAdapter);
   };
-  const on = (
-    event: WalletEvent,
-    listener: WalletEventListeners[WalletEvent]
-  ) => {
+  const on = (event: WalletEvent, listener: WalletEventListeners[WalletEvent]) => {
     ensureCallable(walletAdapter.value, status.value);
     const _wallet = walletAdapter.value as IWalletAdapter;
 
     // filter event and params to decide when to emit
-    const off = _wallet.on('change', (params) => {
-      if (event === 'change') {
-        const _listener = listener as WalletEventListeners['change'];
+    const off = _wallet.on("change", (params) => {
+      if (event === "change") {
+        const _listener = listener as WalletEventListeners["change"];
         _listener(params);
         return;
       }
-      if (
-        params.accounts &&
-        params.accounts[0].chains &&
-        event === 'chainChange'
-      ) {
-        const _listener = listener as WalletEventListeners['chainChange'];
+      if (params.accounts && params.accounts[0].chains && event === "chainChange") {
+        const _listener = listener as WalletEventListeners["chainChange"];
         _listener({ chain: (params.accounts[0].chains as any)?.[0] });
         return;
       }
-      if (params.accounts && event === 'accountChange') {
-        const _listener = listener as WalletEventListeners['accountChange'];
+      if (params.accounts && event === "accountChange") {
+        const _listener = listener as WalletEventListeners["accountChange"];
         _listener({ account: (params.accounts as any)?.[0] });
         return;
       }
-      if (params.features && event === 'featureChange') {
-        const _listener = listener as WalletEventListeners['featureChange'];
+      if (params.features && event === "featureChange") {
+        const _listener = listener as WalletEventListeners["featureChange"];
         _listener({ features: params.features });
         return;
       }
@@ -211,58 +166,56 @@ export const useWallet = (params?: {
     const _wallet = walletAdapter.value as IWalletAdapter;
     return _wallet.accounts;
   };
-  const signAndExecuteTransactionBlock = async (
-    input: Omit<SuiSignAndExecuteTransactionBlockInput, 'account' | 'chain'>
-  ) => {
+  const signAndExecuteTransactionBlock = async (input: Omit<SuiSignAndExecuteTransactionBlockInput, "account" | "chain">) => {
     ensureCallable(walletAdapter.value, status.value);
     if (!account.value) {
-      throw new KitError('no active account');
+      throw new KitError("no active account");
     }
     const _wallet = walletAdapter.value as IWalletAdapter;
 
     return await _wallet.signAndExecuteTransactionBlock({
       account: account.value,
       chain: chain.value.id as IdentifierString,
-      ...input
+      ...input,
     });
   };
-  const signTransactionBlock = async (
-    input: Omit<SuiSignTransactionBlockInput, 'account' | 'chain'>
-  ) => {
+  const signTransactionBlock = async (input: Omit<SuiSignTransactionBlockInput, "account" | "chain">) => {
     ensureCallable(walletAdapter.value, status.value);
     if (!account.value) {
-      throw new KitError('no active account');
+      throw new KitError("no active account");
     }
     const _wallet = walletAdapter.value as IWalletAdapter;
     return await _wallet.signTransactionBlock({
       account: account.value,
       chain: chain.value.id as IdentifierString,
-      ...input
+      ...input,
     });
   };
 
+  // 显示message
   const signMessage = async (input: { message: Uint8Array }) => {
     ensureCallable(walletAdapter.value, status.value);
     if (!account.value) {
-      throw new KitError('no active account');
+      throw new KitError("no active account");
     }
     const adapter = walletAdapter.value as IWalletAdapter;
     return await adapter.signMessage({
       account: account.value,
-      message: input.message
+      message: input.message,
     });
   };
   const signAndSendTxn = (tx: TransactionBlock | SuiTxBlock) => {
     tx = tx instanceof SuiTxBlock ? tx.txBlock : tx;
+
     return signAndExecuteTransactionBlock({
-      transactionBlock: tx as any
+      transactionBlock: tx as any,
+      options: {
+        showEvents: true,
+        showInput: true,
+      },
     });
   };
-  const moveCall = async (callParams: {
-    target: string;
-    arguments?: (SuiTxArg | SuiVecTxArg)[];
-    typeArguments?: string[];
-  }) => {
+  const moveCall = async (callParams: { target: string; arguments?: (SuiTxArg | SuiVecTxArg)[]; typeArguments?: string[] }) => {
     const { target, arguments: args = [], typeArguments = [] } = callParams;
     const tx = new SuiTxBlock();
     tx.moveCall(target, args, typeArguments);
@@ -310,6 +263,6 @@ export const useWallet = (params?: {
     signAndExecuteTransactionBlock,
     signTransactionBlock,
     moveCall,
-    makAutoConnect
+    makAutoConnect,
   };
 };
