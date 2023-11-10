@@ -126,7 +126,7 @@ watch(address, async (val) => {
 const moveCall = async () => {
   if (!userInfo.value) {
     const data = await baseStore.fetchUserInfo(address.value!);
-    if (!data?.phone) {
+    if (!(data as any)?.phone) {
       return registerStore.setRegister(true);
     }
   }

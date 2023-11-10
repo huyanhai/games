@@ -59,6 +59,12 @@ export const useBaseStore = defineStore("base", {
       this.nftInfo = Object.assign(this.nftInfo, info);
     },
     async fetchUserInfo(address: string) {
+      const { data } = await metaStatus({ wallet_addr: address });
+      if (data) {
+        this.setUserInfo(data);
+        return;
+      }
+
       try {
         const result = await queryMetaByAddress(address);
         this.setUserInfo(result);
