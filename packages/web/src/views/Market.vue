@@ -35,7 +35,7 @@ import { queryMarketItems } from "@/api";
 import { useWallet } from "@game-web/base";
 import { useBaseStore } from "@/store/index";
 
-import { getMarkets } from "@/components/market/userFunc";
+import { getMarkets, getMySell } from "@/components/market/userFunc";
 
 type PageType = "Model" | "Page";
 
@@ -137,8 +137,9 @@ const loading = ref(false);
 
 const queryMarketList = async () => {
   const data: any = await getMarkets();
-  console.log(data);
-  
+  const data1 = await getMySell('0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18' || address.value!);
+  console.log(data1);
+
   list.value = data.filter((item: any) => item.type === market.value) as any;
   // loading.value = true;
   // list.value = [];

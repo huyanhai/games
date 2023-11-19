@@ -38,6 +38,42 @@ export const getMarkets = async () => {
   });
 };
 
+// 获取我的出售
+export const getMySell = async (address: string) => {
+  const tx = new SuiTxBlock();
+  return new Promise(async (resolve) => {
+    try {
+      console.log("address", address);
+
+      tx.moveCall(`${CONTRACT_PACKAGE}::market::query_my_onsale`, [MARKET_GLOBAL_ADDRESS, address]);
+      const { results }: any = await devInspectTransactionBlock(tx.txBlock);
+      if (Array.isArray(results) && results[0]) {
+        const data = bytesArrayToString(results[0].returnValues[0][0]);
+        if (data) {
+          const arr = data
+            .split(";")
+            .filter(Boolean)
+            .map((item) => {
+              const [id, name, num, price, type, owner] = item.split(",");
+              return {
+                id,
+                name,
+                num,
+                price,
+                type,
+                owner,
+              };
+            });
+          return resolve(arr);
+        }
+      }
+      return resolve([]);
+    } catch (error) {
+      return resolve([]);
+    }
+  });
+};
+
 // 购买游戏道具
 export const buyGame = async (metaId: string, row: CardItem) => {
   const tx = new SuiTxBlock();
@@ -46,9 +82,30 @@ export const buyGame = async (metaId: string, row: CardItem) => {
     try {
       const [coins] = tx.splitSUIFromGas([Number(row.price)]);
       tx.moveCall(
-        `${CONTRACT_PACKAGE}::market::list_game_item`,
-        [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, tx.makeMoveVec([coins]), "0x06"],
+        `${CONTRACT_PACKAGE}::market::purchase_game_item`,
+        [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, tx.makeMoveVec([coins]), "0x06"],
         ["0x2::sui::SUI" || `${CONTRACT_PACKAGE}::shui::SHUI`]
+      );
+      const { digest } = await signAndSendTxn(tx);
+      console.log(digest);
+      return resolve([]);
+    } catch (error) {
+      return resolve([]);
+    }
+  });
+};
+
+// 购买NFT
+export const buyNft = async (metaId: string, row: CardItem) => {
+  const tx = new SuiTxBlock();
+  const { signAndSendTxn } = useWallet();
+  return new Promise(async (resolve) => {
+    try {
+      const [coins] = tx.splitSUIFromGas([Number(row.price)]);
+      tx.moveCall(
+        `${CONTRACT_PACKAGE}::market::purchase_nft_item`,
+        [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, tx.makeMoveVec([coins]), "0x06"],
+        ["0x2::sui::SUI" || `${CONTRACT_PACKAGE}::shui::SHUI`, `${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]
       );
       const { digest } = await signAndSendTxn(tx);
       console.log(digest);

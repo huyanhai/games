@@ -53,7 +53,7 @@ import { NModal, NCard, NForm, NFormItem, NInput, NSelect, NButton, NSpace, useM
 import { type CardItem, CardType } from "./types";
 import { checkMoneyDot, checkNum, SuiTxBlock, useWallet } from "@game-web/base";
 import { CONTRACT_PACKAGE, GAME_TRANSFER_POLICY, BOAT_TRANSFER_POLICY, BOAT_TICKET_ID_ADDRESS } from "@/constants";
-import { buyGame } from "./userFunc";
+import { buyGame, buyNft } from "./userFunc";
 
 const props = defineProps<{
   item: CardItem;
@@ -144,6 +144,7 @@ const bugHandler = async () => {
   if (props.dataType === "gamefi") {
     buyGame(META_ID_ADDRESS.value, props.item);
   } else {
+    buyNft(META_ID_ADDRESS.value, props.item);
   }
 };
 
