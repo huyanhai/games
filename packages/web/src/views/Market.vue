@@ -136,12 +136,20 @@ const options = computed<{ label: string; value: CardType }[]>(() => {
 const loading = ref(false);
 
 const queryMarketList = async () => {
-  const data: any = await getMarkets();
-  const data1 = await getMySell('0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18' || address.value!);
-  console.log(data1);
+  let data: any = [];
+  loading.value = true;
+  if (listType.value === CardType.all) {
+    data = await getMarkets();
+  }
+  if (listType.value === CardType.sell) {
+    data = await getMySell("0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18" || address.value!);
+    console.log("data", data);
+  }
+  loading.value = false;
 
   list.value = data.filter((item: any) => item.type === market.value) as any;
-  // loading.value = true;
+
+  //
   // list.value = [];
   // const query: QueryMarket = { type: market.value, use: listType.value === CardType.all ? undefined : listType.value };
 

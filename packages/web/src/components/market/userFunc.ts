@@ -12,18 +12,21 @@ export const getMarkets = async () => {
       tx.moveCall(`${CONTRACT_PACKAGE}::market::get_game_sales`, [MARKET_GLOBAL_ADDRESS, "0x06"]);
       const { results }: any = await devInspectTransactionBlock(tx.txBlock);
       if (Array.isArray(results) && results[0]) {
-        const data = bytesArrayToString(results[0].returnValues[0][0]);
+        const data = bytesArrayToString(results[0].returnValues[0][0].slice(1));
         if (data) {
           const arr = data
             .split(";")
             .filter(Boolean)
             .map((item) => {
-              const [id, name, num, price, type, owner] = item.split(",");
+              console.log(item);
+
+              const [id, name, num, price, coinType, type, owner] = item.split(",");
               return {
                 id,
                 name,
                 num,
                 price,
+                coinType,
                 type,
                 owner,
               };
@@ -43,23 +46,23 @@ export const getMySell = async (address: string) => {
   const tx = new SuiTxBlock();
   return new Promise(async (resolve) => {
     try {
-      console.log("address", address);
-
       tx.moveCall(`${CONTRACT_PACKAGE}::market::query_my_onsale`, [MARKET_GLOBAL_ADDRESS, address]);
       const { results }: any = await devInspectTransactionBlock(tx.txBlock);
+
       if (Array.isArray(results) && results[0]) {
-        const data = bytesArrayToString(results[0].returnValues[0][0]);
+        const data = bytesArrayToString(results[0].returnValues[0][0].slice(1));
         if (data) {
           const arr = data
             .split(";")
             .filter(Boolean)
             .map((item) => {
-              const [id, name, num, price, type, owner] = item.split(",");
+              const [id, name, num, price, coinType, type, owner] = item.split(",");
               return {
                 id,
                 name,
                 num,
                 price,
+                coinType,
                 type,
                 owner,
               };
@@ -69,6 +72,7 @@ export const getMySell = async (address: string) => {
       }
       return resolve([]);
     } catch (error) {
+      console.log(error);
       return resolve([]);
     }
   });
