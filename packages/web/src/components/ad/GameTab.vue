@@ -22,7 +22,17 @@
         '--iframe-height': `${height * 1}px`,
       }"
     >
-      <NButton class="close" circle color="#00c3ff" @click="showModal = false">
+      <NButton
+        class="close"
+        circle
+        color="#00c3ff"
+        @click="
+          () => {
+            removeMessage();
+            showModal = false;
+          }
+        "
+      >
         <template #icon>
           <NIcon>
             <MdClose class="icon" />
@@ -40,7 +50,7 @@ import { computed, onMounted, ref } from "vue";
 import { NModal, NCard, NButton, NIcon, NTabs, NTabPane, NSpace, useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
 import { MdClose } from "@vicons/ionicons4";
-import { useWallet, getMessage, sendMessage, SuiTxBlock, type IframeData, messageType, useOwnedCoinsWithBalances } from "@game-web/base";
+import { useWallet, getMessage, sendMessage, removeMessage, SuiTxBlock, type IframeData, messageType, useOwnedCoinsWithBalances } from "@game-web/base";
 import { CONTRACT_PACKAGE } from "@/constants";
 
 import P1 from "@/assets/p1.jpg";
@@ -136,7 +146,7 @@ const open = async () => {
     });
 
     try {
-      tx.moveCall(data.target, data.args);
+      tx.moveCall(data.target, data.args, data.typeArguments || []);
       // const { digest } = await signAndSendTxn(tx);
       const result = await signAndSendTxn(tx);
 

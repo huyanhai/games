@@ -12,3 +12,9 @@ export const bytesArrayToU64Str = (input: Uint8Array): any => {
   // 11n => 11
   return new BigUint64Array(new Uint8Array(input).buffer)[0].toString();
 };
+
+export function bytesArrayToString(input: Uint8Array): String {
+  const bytes: Uint8Array = new Uint8Array(input); // 示例字节数组
+  const decoder: TextDecoder = new TextDecoder("utf-8");
+  return decoder.decode(bytes);
+}

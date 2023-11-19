@@ -13,7 +13,7 @@
         <!-- <img src="@/assets/xy.svg" alt="" srcset="" /> -->
       </span>
       <p class="price" v-if="type === CardType.asset">{{ item.description }}</p>
-      <p class="price" v-else>{{ Number(item.price) / 1e9 }}SUI</p>
+      <p class="price" v-else>{{ (Number(item.price) * fixed).toFixed(9) }}SUI</p>
     </div>
     <div class="count" v-if="item.num">{{ item.num }}</div>
     <div class="mask">
@@ -53,6 +53,7 @@ import { NModal, NCard, NForm, NFormItem, NInput, NSelect, NButton, NSpace, useM
 import { type CardItem, CardType } from "./types";
 import { checkMoneyDot, checkNum, SuiTxBlock, useWallet } from "@game-web/base";
 import { CONTRACT_PACKAGE, GAME_TRANSFER_POLICY, BOAT_TRANSFER_POLICY, BOAT_TICKET_ID_ADDRESS } from "@/constants";
+import { buyGame } from "./userFunc";
 
 const props = defineProps<{
   item: CardItem;
@@ -66,6 +67,8 @@ const form = reactive({
   price: "",
   num: "",
 });
+
+const fixed = ref(0.000000001);
 const loading = ref(false);
 const message = useMessage();
 const formRef = ref();
@@ -138,35 +141,9 @@ const sellHandler = async () => {
 
 // 购买操作
 const bugHandler = async () => {
-  const tx = new SuiTxBlock();
-  const module = "market";
-  let funName = undefined;
-
   if (props.dataType === "gamefi") {
-    funName = "buy_gamefis";
+    buyGame(META_ID_ADDRESS.value, props.item);
   } else {
-    funName = "buy_boat_ticket";
-  }
-
-  const target = `${CONTRACT_PACKAGE}::${module}::${funName}`;
-  try {
-    const [coins] = tx.splitSUIFromGas([Number(props.item.price)]);
-    let args: any[] = [];
-    if (props.dataType === "gamefi") {
-      args = [META_ID_ADDRESS.value, GAME_TRANSFER_POLICY, props.item.kioskId, tx.pure(props.item.item_id), tx.makeMoveVec([coins])].filter(Boolean);
-    } else {
-      args = [BOAT_TRANSFER_POLICY, props.item.kioskId, tx.pure(props.item.item_id), tx.makeMoveVec([coins])].filter(Boolean);
-    }
-    console.log("购买参数", target, args);
-    tx.moveCall(target, args);
-    const { digest } = await signAndSendTxn(tx);
-    if (digest) {
-      message.success("购买成功");
-    }
-  } catch (error) {
-    console.log("error", error);
-
-    message.error("购买失败");
   }
 };
 

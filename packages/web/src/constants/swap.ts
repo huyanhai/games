@@ -10,10 +10,10 @@ export const data = computed(() => [
   },
   {
     project_name: '免费空投',
-    assigned_quantity: '390,000,000 SHUI',
-    percentage: '19 %',
+    assigned_quantity: '450,000,000 SHUI',
+    percentage: '21 %',
     other: '免费发放',
-    value: 390000000
+    value: 450000000
   },
   {
     project_name: '白名单',
@@ -24,10 +24,10 @@ export const data = computed(() => [
   },
   {
     project_name: '任务系统',
-    assigned_quantity: '239,000,000 SHUI',
-    percentage: '11 %',
+    assigned_quantity: '179,000,000 SHUI',
+    percentage: '9 %',
     other: '任务奖励',
-    value: 239000000
+    value: 179000000
   },
   {
     project_name: '黄金储备',

@@ -60,7 +60,7 @@ export const useBaseStore = defineStore("base", {
     },
     async fetchUserInfo(address: string) {
       const { data } = await metaStatus({ wallet_addr: address });
-      if (data) {
+      if (Object.keys(data).length) {
         this.setUserInfo(data);
         return;
       }

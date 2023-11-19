@@ -140,5 +140,6 @@ export default {
   enter_phone: '请输入手机号',
   enter_phone_tips: '请输入正确的手机号',
   email_error: '邮箱格式错误',
-  send_error: '发送失败'
+  send_error: '发送失败',
+  country: "国家",
 };

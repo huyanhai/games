@@ -16,4 +16,5 @@ export const META_ID_ADDRESS = window.config.META_ID_ADDRESS;
 export const BOAT_TICKET_ID_ADDRESS = window.config.BOAT_TICKET_ID_ADDRESS;
 
 export const MISSION_GLOBAL_ADDRESS = window.config.MISSION_GLOBAL_ADDRESS;
-export const  META_INFO_GLOBAL_ADDRESS =  window.config.META_INFO_GLOBAL_ADDRESS;
+export const META_INFO_GLOBAL_ADDRESS = window.config.META_INFO_GLOBAL_ADDRESS;
+export const MARKET_GLOBAL_ADDRESS = window.config.MARKET_GLOBAL_ADDRESS;

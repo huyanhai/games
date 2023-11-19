@@ -120,15 +120,15 @@ watch(
     if (address.value) {
       baseStore.fetchUserInfo(address.value);
       await getOwnedCoinsAndBalances();
-      const { data } = await queryMarketProfit({ wallet_addr: "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18" });
+      const { data } = await queryMarketProfit({ wallet_addr: address.value });
 
       marketProfit.value = data;
 
-      console.log("marketProfit", marketProfit.value);
 
       const balanceList = await balanceProvider.value?.query.provider.getAllBalances({
         owner: address.value as string,
       });
+
       userBalance.value = balanceList?.filter((item: { coinType: string }) => ["0x2::sui::SUI", `${CONTRACT_PACKAGE}::shui::SHUI`].includes(item.coinType));
     }
   },

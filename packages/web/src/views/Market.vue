@@ -35,6 +35,8 @@ import { queryMarketItems } from "@/api";
 import { useWallet } from "@game-web/base";
 import { useBaseStore } from "@/store/index";
 
+import { getMarkets } from "@/components/market/userFunc";
+
 type PageType = "Model" | "Page";
 
 withDefaults(defineProps<{ type?: PageType }>(), { type: "Page" });
@@ -134,22 +136,26 @@ const options = computed<{ label: string; value: CardType }[]>(() => {
 const loading = ref(false);
 
 const queryMarketList = async () => {
-  loading.value = true;
-  list.value = [];
-  const query: QueryMarket = { type: market.value, use: listType.value === CardType.all ? undefined : listType.value };
+  const data: any = await getMarkets();
+  console.log(data);
+  
+  list.value = data.filter((item: any) => item.type === market.value) as any;
+  // loading.value = true;
+  // list.value = [];
+  // const query: QueryMarket = { type: market.value, use: listType.value === CardType.all ? undefined : listType.value };
 
-  if (listType.value !== CardType.all) {
-    query.wallet_addr = address.value;
-    // query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
-  }
+  // if (listType.value !== CardType.all) {
+  //   query.wallet_addr = address.value;
+  //   // query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
+  // }
 
-  const { data } = await queryMarketItems(query);
-  loading.value = false;
-  if (listType.value === CardType.record) {
-    recordList.value = data;
-  } else {
-    list.value = data;
-  }
+  // const { data } = await queryMarketItems(query);
+  // loading.value = false;
+  // if (listType.value === CardType.record) {
+  //   recordList.value = data;
+  // } else {
+  //   list.value = data;
+  // }
 };
 
 watch(
