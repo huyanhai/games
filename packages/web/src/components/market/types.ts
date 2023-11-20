@@ -10,6 +10,7 @@ export type CardItem = {
   description?: string;
   kioskcap?: string;
   type: "nft" | "gamefi";
+  coinType: "SUI" | "SHUI";
 };
 
 export enum CardType {

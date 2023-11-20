@@ -2,7 +2,7 @@
   <div class="page-market">
     <div class="operation">
       <NTabs class="market-tabs" type="segment" :value="market" @update-value="(v) => (market = v)">
-        <NTab name="gamefi">游戏交易</NTab>
+        <NTab name="gamefi">gameFi</NTab>
         <NTab name="nft">NFT市场</NTab>
       </NTabs>
       <NSelect v-model:value="listType" :options="options" class="market-select" />
@@ -15,7 +15,7 @@
       </NGrid>
       <NSpace style="margin: 10px 0" align="center" justify="center">
         <NSpin size="small" v-if="loading" />
-        <NButton text v-else-if="!loading && type === 'Model'" @click="$router.push('/market')">查看更多</NButton>
+        <!-- <NButton text v-else-if="!loading && type === 'Model'" @click="$router.push('/market')">查看更多</NButton> -->
       </NSpace>
     </template>
     <template v-else>
@@ -35,7 +35,7 @@ import { queryMarketItems } from "@/api";
 import { useWallet } from "@game-web/base";
 import { useBaseStore } from "@/store/index";
 
-import { getMarkets, getMySell } from "@/components/market/userFunc";
+import { getMarkets, getMySell, getMyTrade, getTransactionRecord } from "@/components/market/userFunc";
 
 type PageType = "Model" | "Page";
 
@@ -141,30 +141,19 @@ const queryMarketList = async () => {
   if (listType.value === CardType.all) {
     data = await getMarkets();
   }
+  if (listType.value === CardType.record) {
+    recordList.value = (await getTransactionRecord()) as any;
+    console.log("recordList.value", recordList.value);
+  }
+  if (listType.value === CardType.asset) {
+    data = (await getMyTrade(address.value!, META_ID_ADDRESS.value)) as any;
+  }
   if (listType.value === CardType.sell) {
-    data = await getMySell("0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18" || address.value!);
-    console.log("data", data);
+    data = await getMySell(address.value!);
   }
   loading.value = false;
 
   list.value = data.filter((item: any) => item.type === market.value) as any;
-
-  //
-  // list.value = [];
-  // const query: QueryMarket = { type: market.value, use: listType.value === CardType.all ? undefined : listType.value };
-
-  // if (listType.value !== CardType.all) {
-  //   query.wallet_addr = address.value;
-  //   // query.wallet_addr = "0xbe379359ac6e9d0fc0b867f147f248f1c2d9fc019a9a708adfcbe15fc3130c18";
-  // }
-
-  // const { data } = await queryMarketItems(query);
-  // loading.value = false;
-  // if (listType.value === CardType.record) {
-  //   recordList.value = data;
-  // } else {
-  //   list.value = data;
-  // }
 };
 
 watch(

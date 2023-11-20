@@ -2,7 +2,7 @@
   <div class="market-card">
     <div class="card-hd">
       <img class="empty" src="@/assets/empty-img.svg" />
-      <img :src="item.img_url" class="post" />
+      <img :src="IMG_URLS[item.name]" class="post" />
     </div>
     <div class="card-bd"></div>
     <div class="card-ft">
@@ -29,9 +29,9 @@
           <NFormItem path="price">
             <NInput v-model:value="form.price" placeholder="请输入价格" />
           </NFormItem>
-          <!-- <NFormItem path="type">
+          <NFormItem path="type">
             <NSelect style="text-align: left" v-model:value="form.type" placeholder="请选择类型" :options="options" />
-          </NFormItem> -->
+          </NFormItem>
           <NFormItem path="num" v-if="dataType === 'gamefi'">
             <NInput v-model:value="form.num" placeholder="请输入数量" />
           </NFormItem>
@@ -51,9 +51,9 @@ import { computed, reactive, ref } from "vue";
 import { useBaseStore } from "@/store/index";
 import { NModal, NCard, NForm, NFormItem, NInput, NSelect, NButton, NSpace, useMessage } from "naive-ui";
 import { type CardItem, CardType } from "./types";
-import { checkMoneyDot, checkNum, SuiTxBlock, useWallet } from "@game-web/base";
-import { CONTRACT_PACKAGE, GAME_TRANSFER_POLICY, BOAT_TRANSFER_POLICY, BOAT_TICKET_ID_ADDRESS } from "@/constants";
-import { buyGame, buyNft } from "./userFunc";
+import { checkMoneyDot, checkNum } from "@game-web/base";
+import { buyGame, buyNft, downGameItem, downNftItem, upGameItem, upNftItem } from "./userFunc";
+import { IMG_URLS } from "@/constants/img";
 
 const props = defineProps<{
   item: CardItem;
@@ -102,8 +102,11 @@ const rules = {
   },
 };
 
-const options = [{ label: "SUI", value: "SUI" }];
-const { signAndSendTxn } = useWallet();
+const options = [
+  { label: "SUI", value: "SUI" },
+  { label: "SHUI", value: "SHUI" },
+];
+
 const baseStore = useBaseStore();
 
 // 获取用户信息
@@ -111,79 +114,38 @@ const META_ID_ADDRESS = computed(() => baseStore.getUserInfo?.id?.id);
 
 // 下架操作
 const sellHandler = async () => {
-  const tx = new SuiTxBlock();
-  const module = "market";
-  let funName = undefined;
-  let args: any[] = [];
-
+  let result = false;
   if (props.dataType === "gamefi") {
-    funName = "take_and_transfer_gamefis";
-    args = [props.item.kioskId, props.item.kioskcap, META_ID_ADDRESS.value, props.item.item_id].filter(Boolean);
+    result = (await downGameItem(META_ID_ADDRESS.value, props.item)) as any;
   } else {
-    funName = "take_and_transfer_boat_ticket";
-    args = [props.item.kioskId, props.item.kioskcap, props.item.item_id].filter(Boolean);
+    result = (await downNftItem(META_ID_ADDRESS.value, props.item)) as any;
   }
 
-  const target = `${CONTRACT_PACKAGE}::${module}::${funName}`;
-  console.log("下架参数", target, args);
-
-  try {
-    tx.moveCall(target, args);
-    const { digest } = await signAndSendTxn(tx);
-    if (digest) {
-      message.success("下架成功");
-    }
-  } catch (error) {
-    console.log("error", error);
-    message.error("下架失败");
-  }
+  result ? message.success("下架成功") : message.error("下架失败");
 };
 
 // 购买操作
 const bugHandler = async () => {
+  let result = false;
   if (props.dataType === "gamefi") {
-    buyGame(META_ID_ADDRESS.value, props.item);
+    result = buyGame(META_ID_ADDRESS.value, props.item) as any;
   } else {
-    buyNft(META_ID_ADDRESS.value, props.item);
+    result = buyNft(META_ID_ADDRESS.value, props.item) as any;
   }
+  result ? message.success("购买成功") : message.error("购买失败");
 };
 
 // 上架操作
 const assetHandler = async () => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      const tx = new SuiTxBlock();
-      const module = "market";
-      let funName = undefined;
-
-      let args: any = [];
-
+      let result = false;
       if (props.dataType === "gamefi") {
-        funName = "place_and_list_game_items";
-        args = [META_ID_ADDRESS.value, Number(form.price) * 1_000_000_000, props.item.name, Number(form.num)].filter(Boolean);
+        result = upGameItem(META_ID_ADDRESS.value, props.item, form) as any;
       } else {
-        funName = "place_and_list_boat_ticket";
-        args = [props.item.objectId, Number(form.price) * 1_000_000_000].filter(Boolean);
+        result = upNftItem(META_ID_ADDRESS.value, props.item, form) as any;
       }
-
-      const target = `${CONTRACT_PACKAGE}::${module}::${funName}`;
-
-      loading.value = true;
-
-      console.log("上架参数", target, args);
-
-      try {
-        tx.moveCall(target, args);
-        const { digest } = await signAndSendTxn(tx);
-        if (digest) {
-          message.success("上架成功");
-        }
-        close();
-      } catch (error) {
-        console.log("error", error);
-        message.error("上架失败");
-        loading.value = false;
-      }
+      result ? message.success("上架成功") : message.error("上架失败");
     }
   });
 };

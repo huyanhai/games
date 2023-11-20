@@ -13,8 +13,23 @@ export const bytesArrayToU64Str = (input: Uint8Array): any => {
   return new BigUint64Array(new Uint8Array(input).buffer)[0].toString();
 };
 
-export function bytesArrayToString(input: Uint8Array): String {
+export const bytesArrayToString = (input: Uint8Array): String => {
   const bytes: Uint8Array = new Uint8Array(input); // 示例字节数组
   const decoder: TextDecoder = new TextDecoder("utf-8");
   return decoder.decode(bytes);
-}
+};
+
+export const combineJsonArray = (arr1: string, arr2: string): string => {
+  if (arr1 == "") {
+    return arr2;
+  }
+  if (arr2 == "") {
+    return arr1;
+  }
+  let json1 = JSON.parse(arr1);
+  let json2 = JSON.parse(arr2);
+  json2.forEach((item: any) => {
+    json1.push(item);
+  });
+  return json1;
+};

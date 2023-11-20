@@ -15,8 +15,6 @@ export const checkMoneyDot = (value: string) => {
 };
 export const checkNum = (value: string) => {
   const reg = /^[1-9]*$/;
-  console.log(reg.test(value), value);
-
   return reg.test(value);
 };
 

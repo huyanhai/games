@@ -45,10 +45,11 @@ const moveCall = async () => {
   try {
     loading.value = true;
     // 兑换的方法
-    const target = `${CONTRACT_PACKAGE}::boat_ticket::claim_ticket`;
+    const target = `${CONTRACT_PACKAGE}::boat_ticket::buy_ticket`;
     const tx = new SuiTxBlock();
+    const [coins] = tx.splitSUIFromGas([Number(100)]);
     // 兑换shui
-    tx.moveCall(target, [BOAT_GLOBAL_ADDRESS]);
+    tx.moveCall(target, [BOAT_GLOBAL_ADDRESS, tx.makeMoveVec([coins])]);
 
     // 发送签名
     const { digest } = await signAndSendTxn(tx);
@@ -57,6 +58,7 @@ const moveCall = async () => {
       message.success(t("home.success_tips"));
     }
   } catch (error) {
+    console.log(error);
     loading.value = false;
     message.error(t("home.fail_tips"));
   }
