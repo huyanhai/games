@@ -5,3 +5,4 @@ export * from "./rules";
 export * from "./storage";
 export * from "./util";
 export * from "./bufferArray";
+export * from "./wallet"

@@ -50,7 +50,7 @@ import { computed, onMounted, ref } from "vue";
 import { NModal, NCard, NButton, NIcon, NTabs, NTabPane, NSpace, useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
 import { MdClose } from "@vicons/ionicons4";
-import { useWallet, getMessage, sendMessage, removeMessage, SuiTxBlock, type IframeData, messageType, useOwnedCoinsWithBalances } from "@game-web/base";
+import { useWallet, getAbleCoins, getMessage, sendMessage, removeMessage, SuiTxBlock, type IframeData, messageType, useOwnedCoinsWithBalances } from "@game-web/base";
 import { CONTRACT_PACKAGE } from "@/constants";
 
 import P1 from "@/assets/p1.jpg";
@@ -111,16 +111,6 @@ const change = (v: number) => {
     return message.error("暂未开放");
   }
   showItem.value = v;
-};
-
-const getAbleCoins = (coins: any, number: number, unit: number) => {
-  let coinId = undefined;
-  coins?.data.forEach((coin: any) => {
-    if (parseInt(coin.balance) > number * unit) {
-      coinId = coin.coinObjectId;
-    }
-  });
-  return coinId;
 };
 
 const open = async () => {

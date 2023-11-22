@@ -1,5 +1,5 @@
 import { CONTRACT_PACKAGE, MARKET_GLOBAL_ADDRESS, ITEMS_GLOBAL_ADDRESS } from "@/constants";
-import { combineJsonArray, bytesArrayToString, useProvider, SuiTxBlock, useWallet } from "@game-web/base";
+import { combineJsonArray, bytesArrayToString, useProvider, SuiTxBlock, useWallet, getAbleCoinsForSell } from "@game-web/base";
 import type { CardItem } from "./types";
 
 const { devInspectTransactionBlock, provider } = useProvider();
@@ -18,7 +18,7 @@ export const getMarkets = async () => {
             .split(";")
             .filter(Boolean)
             .map((item) => {
-              const [id, name, num, price, coinType, type, owner] = item.split(",");
+              const [id, name, num, price, coinType, type, owner, metaId] = item.split(",");
               return {
                 id,
                 name,
@@ -27,6 +27,7 @@ export const getMarkets = async () => {
                 coinType,
                 type,
                 owner,
+                metaId,
               };
             });
           return resolve(arr);
@@ -185,16 +186,21 @@ export const getTransactionRecord = async () => {
 };
 
 // 购买游戏道具
-export const buyGame = async (metaId: string, row: CardItem) => {
+export const buyGame = async (address: string, metaId: string, row: CardItem) => {
   const tx = new SuiTxBlock();
   const { signAndSendTxn } = useWallet();
   return new Promise(async (resolve) => {
     try {
-      const [coins] = tx.splitSUIFromGas([Number(row.price)]);
-      console.log("购买游戏参数", row);
+      const coins = await getAbleCoinsForSell(row.price, row.coinType, CONTRACT_PACKAGE, address, tx);
+
+      console.log(
+        "购买游戏参数",
+        [MARKET_GLOBAL_ADDRESS, metaId, Number(row.metaId), row.name, row.num, coins, "0x06"],
+        [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`]
+      );
       tx.moveCall(
         `${CONTRACT_PACKAGE}::market::purchase_game_item`,
-        [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, tx.makeMoveVec([coins]), "0x06"],
+        [MARKET_GLOBAL_ADDRESS, metaId, Number(row.metaId), row.name, row.num, coins, "0x06"],
         [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`]
       );
       const digest = await signAndSendTxn(tx);
@@ -208,21 +214,22 @@ export const buyGame = async (metaId: string, row: CardItem) => {
 };
 
 // 购买NFT
-export const buyNft = async (metaId: string, row: CardItem) => {
+export const buyNft = async (address: string, metaId: string, row: CardItem) => {
   const tx = new SuiTxBlock();
   const { signAndSendTxn } = useWallet();
   return new Promise(async (resolve) => {
     try {
-      const [coins] = tx.splitSUIFromGas([Number(row.price)]);
+      // const [coins] = tx.splitSUIFromGas([Number(row.price)]);
+      const coins = await getAbleCoinsForSell(row.price, row.coinType, CONTRACT_PACKAGE, address, tx);
       console.log(
         "购买NFT参数",
-        [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, tx.makeMoveVec([coins]), "0x06"],
+        [MARKET_GLOBAL_ADDRESS, metaId, Number(row.metaId), row.name, row.num, coins, "0x06"],
         [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`, `${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]
       );
 
       tx.moveCall(
         `${CONTRACT_PACKAGE}::market::purchase_nft_item`,
-        [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, tx.makeMoveVec([coins]), "0x06"],
+        [MARKET_GLOBAL_ADDRESS, metaId, Number(row.metaId), row.name, row.num, coins, "0x06"],
         [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`, `${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]
       );
       const { digest } = await signAndSendTxn(tx);

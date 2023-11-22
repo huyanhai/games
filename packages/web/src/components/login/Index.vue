@@ -124,7 +124,6 @@ watch(
 
       marketProfit.value = data;
 
-
       const balanceList = await balanceProvider.value?.query.provider.getAllBalances({
         owner: address.value as string,
       });
@@ -206,7 +205,7 @@ watch(
   flex-direction: column;
   text-align: left;
   border-bottom: 1px solid #dedede;
-  padding:5px 0;
+  padding: 5px 0;
   &:last-child {
     border-bottom: none;
   }

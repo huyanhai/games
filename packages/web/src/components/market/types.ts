@@ -11,6 +11,7 @@ export type CardItem = {
   kioskcap?: string;
   type: "nft" | "gamefi";
   coinType: "SUI" | "SHUI";
+  metaId: string;
 };
 
 export enum CardType {

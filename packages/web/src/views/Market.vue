@@ -10,7 +10,7 @@
     <template v-if="listType !== CardType.record">
       <NGrid :x-gap="20" :y-gap="20" cols="2 1000:5 800:5 400:2">
         <NGridItem v-for="item in list" :key="item.owner">
-          <MarketCard :item="item" :type="listType" :data-type="item.type" />
+          <MarketCard @updateList="queryMarketList" :item="item" :type="listType" :data-type="item.type" />
         </NGridItem>
       </NGrid>
       <NSpace style="margin: 10px 0" align="center" justify="center">
@@ -31,7 +31,8 @@ import { QueryMarket } from "@/api/index.d";
 import MarketCard from "@/components/market/Card.vue";
 import { type CardItem, CardType } from "@/components/market/types";
 
-import { queryMarketItems } from "@/api";
+import { IMG_URLS } from "@/constants/img";
+
 import { useWallet } from "@game-web/base";
 import { useBaseStore } from "@/store/index";
 
@@ -56,7 +57,7 @@ const columns = ref<any>([
     align: "center",
     width: "100px",
     render(row: any) {
-      return h(NImage, { src: row.img_url, width: 50 });
+      return h(NImage, { src: IMG_URLS[row.name], width: 50 });
     },
   },
   {
@@ -142,8 +143,8 @@ const queryMarketList = async () => {
     data = await getMarkets();
   }
   if (listType.value === CardType.record) {
-    recordList.value = (await getTransactionRecord()) as any;
-    console.log("recordList.value", recordList.value);
+    const list = (await getTransactionRecord()) as any;
+    recordList.value = list.filter((item: any) => item.type === market.value);
   }
   if (listType.value === CardType.asset) {
     data = (await getMyTrade(address.value!, META_ID_ADDRESS.value)) as any;

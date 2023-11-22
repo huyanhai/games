@@ -15,4 +15,5 @@ export const IMG_URLS: any = {
   shui_500: "https://bafybeicis764zsykvopcqtcqytsfz74ai3mwna33xi7qqh74z2f2osyyba.ipfs.nftstorage.link/st500.png",
   shui_1000: "https://bafybeicis764zsykvopcqtcqytsfz74ai3mwna33xi7qqh74z2f2osyyba.ipfs.nftstorage.link/st1000.png",
   shui_meta_ticket: "https://bafybeihtdfqbum5wt4lynnkqlgz265knjq273zwuyxbtqb4atqib7jw3ni.ipfs.nftstorage.link/shipone.png",
+  "Shui Meta Ticket": "https://bafybeihtdfqbum5wt4lynnkqlgz265knjq273zwuyxbtqb4atqib7jw3ni.ipfs.nftstorage.link/shipone.png",
 };

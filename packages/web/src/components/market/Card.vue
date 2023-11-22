@@ -13,7 +13,7 @@
         <!-- <img src="@/assets/xy.svg" alt="" srcset="" /> -->
       </span>
       <p class="price" v-if="type === CardType.asset">{{ item.description }}</p>
-      <p class="price" v-else>{{ (Number(item.price) * fixed).toFixed(9) }}SUI</p>
+      <p class="price" v-else>{{ (Number(item.price) * fixed).toFixed(9) }}{{ item.coinType }}</p>
     </div>
     <div class="count" v-if="item.num">{{ item.num }}</div>
     <div class="mask">
@@ -51,7 +51,7 @@ import { computed, reactive, ref } from "vue";
 import { useBaseStore } from "@/store/index";
 import { NModal, NCard, NForm, NFormItem, NInput, NSelect, NButton, NSpace, useMessage } from "naive-ui";
 import { type CardItem, CardType } from "./types";
-import { checkMoneyDot, checkNum } from "@game-web/base";
+import { checkMoneyDot, checkNum, useWallet } from "@game-web/base";
 import { buyGame, buyNft, downGameItem, downNftItem, upGameItem, upNftItem } from "./userFunc";
 import { IMG_URLS } from "@/constants/img";
 
@@ -60,6 +60,8 @@ const props = defineProps<{
   type: CardType;
   dataType: "gamefi" | "nft";
 }>();
+
+const emits = defineEmits(["updateList"]);
 
 const showModal = ref(false);
 const form = reactive({
@@ -108,9 +110,19 @@ const options = [
 ];
 
 const baseStore = useBaseStore();
+const { address } = useWallet();
 
 // 获取用户信息
 const META_ID_ADDRESS = computed(() => baseStore.getUserInfo?.id?.id);
+
+// 操作
+const operationHandler = (result: boolean, successMsg: string, errMsg: string) => {
+  if (result) {
+    emits("updateList");
+    return message.success(successMsg);
+  }
+  return message.error(errMsg);
+};
 
 // 下架操作
 const sellHandler = async () => {
@@ -121,18 +133,18 @@ const sellHandler = async () => {
     result = (await downNftItem(META_ID_ADDRESS.value, props.item)) as any;
   }
 
-  result ? message.success("下架成功") : message.error("下架失败");
+  operationHandler(result, "下架成功", "下架失败");
 };
 
 // 购买操作
 const bugHandler = async () => {
   let result = false;
   if (props.dataType === "gamefi") {
-    result = buyGame(META_ID_ADDRESS.value, props.item) as any;
+    result = (await buyGame(address.value!, META_ID_ADDRESS.value, props.item)) as any;
   } else {
-    result = buyNft(META_ID_ADDRESS.value, props.item) as any;
+    result = (await buyNft(address.value!, META_ID_ADDRESS.value, props.item)) as any;
   }
-  result ? message.success("购买成功") : message.error("购买失败");
+  operationHandler(result, "购买成功", "购买失败");
 };
 
 // 上架操作
@@ -141,11 +153,11 @@ const assetHandler = async () => {
     if (!errors) {
       let result = false;
       if (props.dataType === "gamefi") {
-        result = upGameItem(META_ID_ADDRESS.value, props.item, form) as any;
+        result = (await upGameItem(META_ID_ADDRESS.value, props.item, form)) as any;
       } else {
-        result = upNftItem(META_ID_ADDRESS.value, props.item, form) as any;
+        result = (await upNftItem(META_ID_ADDRESS.value, props.item, form)) as any;
       }
-      result ? message.success("上架成功") : message.error("上架失败");
+      operationHandler(result, "上架成功", "上架失败");
     }
   });
 };
