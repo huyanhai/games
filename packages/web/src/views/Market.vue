@@ -106,6 +106,7 @@ const columns = ref<any>([
 
 // 获取用户信息
 const META_ID_ADDRESS = computed(() => baseStore.getUserInfo?.id?.id);
+const metaId = computed(() => baseStore.getUserInfo?.metaId);
 
 const options = computed<{ label: string; value: CardType }[]>(() => {
   let list = [
@@ -150,7 +151,7 @@ const queryMarketList = async () => {
     data = (await getMyTrade(address.value!, META_ID_ADDRESS.value)) as any;
   }
   if (listType.value === CardType.sell) {
-    data = await getMySell(address.value!);
+    data = await getMySell(metaId.value!);
   }
   loading.value = false;
 

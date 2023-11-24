@@ -248,8 +248,8 @@ export const downGameItem = async (metaId: string, row: CardItem) => {
   const { signAndSendTxn } = useWallet();
   return new Promise(async (resolve) => {
     try {
-      console.log("下架游戏参数", [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, Number(row.price), "0x06"]);
-      tx.moveCall(`${CONTRACT_PACKAGE}::market::unlist_game_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, Number(row.price), "0x06"]);
+      console.log("下架游戏参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"]);
+      tx.moveCall(`${CONTRACT_PACKAGE}::market::unlist_game_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"]);
       const result = await signAndSendTxn(tx);
       console.log(result);
       return resolve(true);
@@ -265,13 +265,9 @@ export const downNftItem = async (metaId: string, row: CardItem) => {
   const { signAndSendTxn } = useWallet();
   return new Promise(async (resolve) => {
     try {
-      console.log("下架Nft参数", [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, Number(row.price), "0x06"], [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]);
+      console.log("下架Nft参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"], [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]);
 
-      tx.moveCall(
-        `${CONTRACT_PACKAGE}::market::unlist_nft_item`,
-        [MARKET_GLOBAL_ADDRESS, metaId, row.owner, row.name, row.num, Number(row.price), "0x06"],
-        [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]
-      );
+      tx.moveCall(`${CONTRACT_PACKAGE}::market::unlist_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"], [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]);
       const result = await signAndSendTxn(tx);
       console.log(result);
       return resolve(true);

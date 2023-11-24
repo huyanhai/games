@@ -13,7 +13,7 @@
         <!-- <img src="@/assets/xy.svg" alt="" srcset="" /> -->
       </span>
       <p class="price" v-if="type === CardType.asset">{{ item.description }}</p>
-      <p class="price" v-else>{{ (Number(item.price) * fixed).toFixed(9) }}{{ item.coinType }}</p>
+      <p class="price" v-else>{{ price }}{{ item.coinType }}</p>
     </div>
     <div class="count" v-if="item.num">{{ item.num }}</div>
     <div class="mask">
@@ -33,7 +33,7 @@
             <NSelect style="text-align: left" v-model:value="form.type" placeholder="请选择类型" :options="options" />
           </NFormItem>
           <NFormItem path="num" v-if="dataType === 'gamefi'">
-            <NInput v-model:value="form.num" placeholder="请输入数量" />
+            <NInputNumber v-model:value="form.num" placeholder="请输入数量" :min="0" :max="item.num" />
           </NFormItem>
           <NFormItem>
             <NSpace>
@@ -49,7 +49,7 @@
 <script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
 import { useBaseStore } from "@/store/index";
-import { NModal, NCard, NForm, NFormItem, NInput, NSelect, NButton, NSpace, useMessage } from "naive-ui";
+import { NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NSelect, NButton, NSpace, useMessage } from "naive-ui";
 import { type CardItem, CardType } from "./types";
 import { checkMoneyDot, checkNum, useWallet } from "@game-web/base";
 import { buyGame, buyNft, downGameItem, downNftItem, upGameItem, upNftItem } from "./userFunc";
@@ -67,7 +67,7 @@ const showModal = ref(false);
 const form = reactive({
   type: undefined,
   price: "",
-  num: "",
+  num: 1,
 });
 
 const fixed = ref(0.000000001);
@@ -103,6 +103,15 @@ const rules = {
     },
   },
 };
+
+const price = computed(() => {
+  const p = Number(props.item.price) * fixed.value;
+  if (props.item.coinType === "SUI") {
+    return Number.isInteger(Number(p.toFixed(2))) ? p.toFixed(0) : p.toFixed(2);
+  } else {
+    return Number.isInteger(Number(p.toFixed(3))) ? p.toFixed(0) : p.toFixed(3);
+  }
+});
 
 const options = [
   { label: "SUI", value: "SUI" },
@@ -181,7 +190,7 @@ const sell = () => {
 };
 
 const close = () => {
-  form.num = "";
+  form.num = 1;
   form.price = "";
   loading.value = false;
   showModal.value = false;
