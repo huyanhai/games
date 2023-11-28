@@ -46,7 +46,7 @@
   </NModal>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { NModal, NCard, NButton, NIcon, NTabs, NTabPane, NSpace, useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
 import { MdClose } from "@vicons/ionicons4";
@@ -113,12 +113,11 @@ const change = (v: number) => {
   showItem.value = v;
 };
 
-const ableCoins = await balanceProvider.value?.query.provider.getCoins({
-  owner: address.value as string,
-  coinType: `${CONTRACT_PACKAGE}::shui::SHUI`,
-});
-
 const open = async () => {
+  const ableCoins = await balanceProvider.value?.query.provider.getCoins({
+    owner: address.value as string,
+    coinType: `${CONTRACT_PACKAGE}::shui::SHUI`,
+  });
   showModal.value = true;
   const send = async (data: IframeData, type: messageType, unityType?: string) => {
     const tx = new SuiTxBlock();
