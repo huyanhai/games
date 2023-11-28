@@ -113,6 +113,11 @@ const change = (v: number) => {
   showItem.value = v;
 };
 
+const ableCoins = await balanceProvider.value?.query.provider.getCoins({
+  owner: address.value as string,
+  coinType: `${CONTRACT_PACKAGE}::shui::SHUI`,
+});
+
 const open = async () => {
   showModal.value = true;
   const send = async (data: IframeData, type: messageType, unityType?: string) => {
@@ -123,15 +128,18 @@ const open = async () => {
 
     data.args = data.args.map((item) => {
       const isMoney = typeof item === "string" && (item.startsWith("SUI::") || item.startsWith("SHUI"));
-      if (typeof item === "number" || isMoney) {
+      if (isMoney) {
         let unit = "SHUI";
         let money = 1.1;
-        if (isMoney) {
-          const result = item.split("::");
-          unit = result[0];
-          money = Number(result[1]);
-        }
+        const result = item.split("::");
+        unit = result[0];
+        money = Number(result[1]);
         return getAbleCoinsForSell(money, unit as any, CONTRACT_PACKAGE, address.value!, tx);
+      }
+      if (typeof item === "number" || isMoney) {
+        const coinId = getAbleCoins(ableCoins, 1.1, Number(item));
+        const [coins] = tx.splitCoins(coinId as any, [Number(item)]);
+        return tx.makeMoveVec([coins]);
       }
       return item;
     });
