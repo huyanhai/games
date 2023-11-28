@@ -2,8 +2,8 @@
   <div class="page-market">
     <div class="operation">
       <NTabs class="market-tabs" type="segment" :value="market" @update-value="(v) => (market = v)">
-        <NTab name="gamefi">gameFi</NTab>
-        <NTab name="nft">NFT市场</NTab>
+        <NTab name="gamefi">GameFi</NTab>
+        <NTab name="nft">NFT</NTab>
       </NTabs>
       <NSelect v-model:value="listType" :options="options" class="market-select" />
     </div>
@@ -15,7 +15,7 @@
       </NGrid>
       <NSpace style="margin: 10px 0" align="center" justify="center">
         <NSpin size="small" v-if="loading" />
-        <!-- <NButton text v-else-if="!loading && type === 'Model'" @click="$router.push('/market')">查看更多</NButton> -->
+        <NButton text v-else-if="!loading && type === 'Model' && list.length === 0" @click="queryMarketList">重新加载</NButton>
       </NSpace>
     </template>
     <template v-else>
@@ -111,7 +111,7 @@ const metaId = computed(() => baseStore.getUserInfo?.metaId);
 const options = computed<{ label: string; value: CardType }[]>(() => {
   let list = [
     {
-      label: "全部",
+      label: "交易市场",
       value: CardType.all,
     },
   ];

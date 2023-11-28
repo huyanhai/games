@@ -33,7 +33,7 @@
             <NSelect style="text-align: left" v-model:value="form.type" placeholder="请选择类型" :options="options" />
           </NFormItem>
           <NFormItem path="num" v-if="dataType === 'gamefi'">
-            <NInputNumber v-model:value="form.num" placeholder="请输入数量" :min="0" :max="item.num" />
+            <NInputNumber v-model:value="form.num" placeholder="请输入数量" :min="0" :max="item.num" style="width: 100%" />
           </NFormItem>
           <NFormItem>
             <NSpace>

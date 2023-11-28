@@ -3,6 +3,8 @@ export enum messageType {
   SUI_MESSAGE_RESPONSE = "SUI_MESSAGE_RESPONSE",
   SUI_ADDRESS = "SUI_ADDRESS",
   SUI_ADDRESS_RESPONSE = "SUI_ADDRESS_RESPONSE",
+  SUI_ADDRESS_DEV = "SUI_ADDRESS_DEV",
+  SUI_ADDRESS_RESPONSE_DEV = "SUI_ADDRESS_RESPONSE_DEV",
 }
 
 export type IframeData = { target: string; args: any[]; typeArguments?: any[] };
@@ -14,6 +16,9 @@ const messageHandler = (e: any, cb?: (args: IframeData, type: messageType, unity
     cb && cb(data, type, unityType);
   }
   if (type === messageType.SUI_MESSAGE) {
+    cb && cb(data, type, unityType);
+  }
+  if (type === messageType.SUI_ADDRESS_DEV) {
     cb && cb(data, type, unityType);
   }
 };

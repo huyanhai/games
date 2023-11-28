@@ -50,7 +50,7 @@ import { computed, onMounted, ref } from "vue";
 import { NModal, NCard, NButton, NIcon, NTabs, NTabPane, NSpace, useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
 import { MdClose } from "@vicons/ionicons4";
-import { useWallet, getAbleCoins, getMessage, sendMessage, removeMessage, SuiTxBlock, type IframeData, messageType, useOwnedCoinsWithBalances } from "@game-web/base";
+import { useWallet, getAbleCoins, getMessage, sendMessage, removeMessage, SuiTxBlock, type IframeData, messageType, useOwnedCoinsWithBalances, getAbleCoinsForSell, useProvider } from "@game-web/base";
 import { CONTRACT_PACKAGE } from "@/constants";
 
 import P1 from "@/assets/p1.jpg";
@@ -117,28 +117,34 @@ const open = async () => {
   showModal.value = true;
   const send = async (data: IframeData, type: messageType, unityType?: string) => {
     const tx = new SuiTxBlock();
-    const ableCoins = await balanceProvider.value?.query.provider.getCoins({
-      owner: address.value as string,
-      coinType: `${CONTRACT_PACKAGE}::shui::SHUI`,
-    });
-
     if (type === messageType.SUI_ADDRESS) {
       return sendMessage(iframe.value as HTMLIFrameElement, { data: { address: address.value, metaId: userInfo.value?.id?.id as any } }, messageType.SUI_ADDRESS_RESPONSE);
     }
 
     data.args = data.args.map((item) => {
-      if (typeof item === "number") {
-        const coinId = getAbleCoins(ableCoins, 1.1, Number(item));
-        const [coins] = tx.splitCoins(coinId as any, [Number(item)]);
-        return tx.makeMoveVec([coins]);
+      const isMoney = typeof item === "string" && (item.startsWith("SUI::") || item.startsWith("SHUI"));
+      if (typeof item === "number" || isMoney) {
+        let unit = "SHUI";
+        let money = 1.1;
+        if (isMoney) {
+          const result = item.split("::");
+          unit = result[0];
+          money = Number(result[1]);
+        }
+        return getAbleCoinsForSell(money, unit as any, CONTRACT_PACKAGE, address.value!, tx);
       }
       return item;
     });
 
     try {
+      let result: any = null;
       tx.moveCall(data.target, data.args, data.typeArguments || []);
-      // const { digest } = await signAndSendTxn(tx);
-      const result = await signAndSendTxn(tx);
+      if (type === messageType.SUI_ADDRESS_DEV) {
+        const { devInspectTransactionBlock, provider } = useProvider();
+        result = await devInspectTransactionBlock(tx.txBlock);
+      } else {
+        result = await signAndSendTxn(tx);
+      }
 
       sendMessage(iframe.value as HTMLIFrameElement, { data: result }, unityType as string as any);
     } catch (err: any) {

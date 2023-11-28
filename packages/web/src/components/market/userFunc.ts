@@ -283,8 +283,8 @@ export const upGameItem = async (metaId: string, row: CardItem, form: any) => {
   const { signAndSendTxn } = useWallet();
   return new Promise(async (resolve) => {
     try {
-      console.log("上架游戏参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, row.num, form.type, "0x06"]);
-      tx.moveCall(`${CONTRACT_PACKAGE}::market::list_game_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, row.num, form.type, "0x06"]);
+      console.log("上架游戏参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.num, form.type, "0x06"]);
+      tx.moveCall(`${CONTRACT_PACKAGE}::market::list_game_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.num, form.type, "0x06"]);
       const result = await signAndSendTxn(tx);
       console.log(result);
       return resolve(true);
