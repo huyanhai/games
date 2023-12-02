@@ -25,7 +25,7 @@
 </template>
 <script lang="ts" setup>
 import { NTab, NTabs, NSelect, NGrid, NGridItem, NSpace, NSpin, NButton, NDataTable, NImage, NEllipsis, NTag } from "naive-ui";
-import { computed, h, ref, watch } from "vue";
+import { computed, h, onMounted, ref, watch } from "vue";
 import { QueryMarket } from "@/api/index.d";
 
 import MarketCard from "@/components/market/Card.vue";

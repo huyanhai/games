@@ -1,7 +1,7 @@
-import type { SuiMoveObject } from '@mysten/sui.js';
-import { Coin as CoinAPI } from '@mysten/sui.js';
+import type { SuiMoveObject } from "@mysten/sui.js";
+import { Coin as CoinAPI } from "@mysten/sui.js";
 
-const COIN_TYPE = '0x2::coin::Coin';
+const COIN_TYPE = "0x2::coin::Coin";
 const COIN_TYPE_ARG_REGEX = /^0x2::coin::Coin<(.+)>$/;
 
 export type CoinObjectDto = {
@@ -49,7 +49,7 @@ export class CoinObject {
       objectId: this._objectId,
       balance: this._balance,
       typeArg: this._typeArg,
-      symbol: this._symbol
+      symbol: this._symbol,
     };
   }
 
@@ -65,18 +65,14 @@ export class Coin {
 
   public static isSUI(obj: SuiMoveObject) {
     const arg = Coin.getCoinTypeArg(obj);
-    return arg ? Coin.getCoinSymbol(arg) === 'SUI' : false;
+    return arg ? Coin.getCoinSymbol(arg) === "SUI" : false;
   }
 
   public static getCoinObject(obj: SuiMoveObject): CoinObject {
     const typeArg = CoinAPI.getCoinTypeArg(obj);
-    if (!typeArg) throw new Error('coin typeArg cannot be null');
+    if (!typeArg) throw new Error("coin typeArg cannot be null");
 
-    return new CoinObject(
-      obj.fields.id.id,
-      typeArg,
-      BigInt(obj.fields.balance)
-    );
+    return new CoinObject(obj.fields.id.id, typeArg, BigInt(obj.fields.balance));
   }
 
   public static getBalance(obj: SuiMoveObject) {
@@ -88,7 +84,7 @@ export class Coin {
   }
 
   static getCoinSymbol(coinTypeArg: string) {
-    return coinTypeArg.substring(coinTypeArg.lastIndexOf(':') + 1);
+    return coinTypeArg.substring(coinTypeArg.lastIndexOf(":") + 1);
   }
 
   static getCoinTypeFromArg(coinTypeArg: string) {
@@ -107,23 +103,20 @@ export type NftObject = {
 
 export class Nft {
   public static isNft(obj: SuiMoveObject) {
-    if (obj.fields.name && obj.fields.description && obj.fields.url) {
+    if (obj.fields.name && obj.fields.description && (obj.fields.url || obj.fields.image_url)) {
       return true;
     }
     return false;
   }
 
-  public static getNftObject(
-    obj: SuiMoveObject,
-    previousTransaction?: string
-  ): NftObject {
+  public static getNftObject(obj: SuiMoveObject, previousTransaction?: string): NftObject {
     return {
       objectId: obj.fields.id.id,
       name: obj.fields.name,
       description: obj.fields.description,
       url: obj.fields.url,
       previousTransaction,
-      objectType: obj.type
+      objectType: obj.type,
     };
   }
 }

@@ -1,20 +1,9 @@
-import type {
-  SuiMoveObject,
-  SuiObjectResponse,
-  SuiObjectData
-} from '@mysten/sui.js';
-import {
-  getMoveObject,
-  JsonRpcProvider,
-  Coin as CoinAPI,
-  Connection,
-  getSuiObjectData
-} from '@mysten/sui.js';
-import type { NftObject, CoinObjectDto } from './objects';
-import { Coin, CoinObject, Nft } from './objects';
+import type { SuiMoveObject, SuiObjectResponse, SuiObjectData } from "@mysten/sui.js";
+import { getMoveObject, JsonRpcProvider, Coin as CoinAPI, Connection, getSuiObjectData } from "@mysten/sui.js";
+import type { NftObject, CoinObjectDto } from "./objects";
+import { Coin, CoinObject, Nft } from "./objects";
 
-export const SUI_SYSTEM_STATE_OBJECT_ID =
-  '0x0000000000000000000000000000000000000005';
+export const SUI_SYSTEM_STATE_OBJECT_ID = "0x0000000000000000000000000000000000000005";
 
 export class Provider {
   query: QueryProvider;
@@ -43,8 +32,8 @@ class QueryProvider {
           showType: true,
           showDisplay: true,
           showContent: true,
-          showOwner: true
-        }
+          showOwner: true,
+        },
       });
       const sui_object_responses = resp.data as SuiObjectResponse[];
 
@@ -60,16 +49,12 @@ class QueryProvider {
     return objects;
   }
 
-  public async getOwnedCoins(
-    address: string
-  ): Promise<
-    { coinAsSuiMoveObject?: SuiMoveObject; coinObjectDto: CoinObjectDto }[]
-  > {
+  public async getOwnedCoins(address: string): Promise<{ coinAsSuiMoveObject?: SuiMoveObject; coinObjectDto: CoinObjectDto }[]> {
     const objects = await this.getOwnedObjects(address);
     const res = objects
       .map((item) => ({
         id: item.objectId,
-        object: { ...getMoveObject(item), type: item.type } as SuiMoveObject
+        object: { ...getMoveObject(item), type: item.type } as SuiMoveObject,
       }))
       .filter((item) => {
         return item.object && CoinAPI.isCoin(item.object);
@@ -77,9 +62,7 @@ class QueryProvider {
       .map((item) => {
         return {
           coinAsSuiMoveObject: item.object,
-          coinObjectDto: Coin.getCoinObject(
-            item.object as SuiMoveObject
-          ).toDto()
+          coinObjectDto: Coin.getCoinObject(item.object as SuiMoveObject).toDto(),
         };
       });
     return res;
@@ -87,12 +70,26 @@ class QueryProvider {
 
   public async getOwnedNfts(address: string): Promise<NftObject[]> {
     const objects = await this.getOwnedObjects(address);
+
     const res = objects
-      .map((item) => ({
-        id: item.objectId,
-        object: { ...getMoveObject(item), type: item.type } as SuiMoveObject,
-        previousTransaction: item.previousTransaction
-      }))
+      .map((item: any) => {
+        let object = getMoveObject(item);
+        if (item.display.data?.image_url) {
+          object!.fields = {
+            ...object?.fields,
+            ...{
+              url: item.display.data.image_url,
+              description: item.display.data.description,
+              name: item.display.data.name,
+            },
+          };
+        }
+        return {
+          id: item.objectId,
+          object: { ...object, type: item.type } as SuiMoveObject,
+          previousTransaction: item.previousTransaction,
+        };
+      })
       .filter((item) => item.object && Nft.isNft(item.object))
       .map((item) => {
         const obj = item.object as SuiMoveObject;

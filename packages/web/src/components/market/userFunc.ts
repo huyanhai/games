@@ -1,5 +1,5 @@
 import { CONTRACT_PACKAGE, MARKET_GLOBAL_ADDRESS, ITEMS_GLOBAL_ADDRESS } from "@/constants";
-import { combineJsonArray, bytesArrayToString, useProvider, SuiTxBlock, useWallet, getAbleCoinsForSell } from "@game-web/base";
+import { combineJsonArray, bytesArrayToString, useProvider, SuiTxBlock, useWallet, getAbleCoinsForSell, useNftsOwnedByAddressInSpecificChain } from "@game-web/base";
 import type { CardItem } from "./types";
 
 const { devInspectTransactionBlock, provider } = useProvider();
@@ -82,54 +82,19 @@ export const getMyTrade = async (address: string, metaId: string) => {
   return new Promise(async (resolve) => {
     try {
       // 查询nft
-      let nft_array = [];
-      let gamefi_array = [];
-      let next_cursor = null;
-      let init = true;
-      while (init || next_cursor !== null) {
-        init = false;
-        const query: any = {
-          owner: address,
-          filter: {
-            MoveModule: {
-              package: CONTRACT_PACKAGE,
-              module: "boat_ticket",
-            },
-          },
-          options: {
-            showContent: true,
-            showDisplay: true,
-            showType: true,
-          },
-        };
-        if (next_cursor) {
-          query.cursor = next_cursor;
-        }
-        let result: any = await provider.value?.getOwnedObjects(query);
-        if (result.nextCursor !== null && result.nextCursor !== next_cursor) {
-          next_cursor = result.nextCursor;
-        } else {
-          next_cursor = null;
-        }
-        for (let i = 0; i < result.data.length; i++) {
-          let json = result.data[i];
-          let display = json.data.display.data;
-          console.log("json", json);
 
-          if (display !== null) {
-            let ticket = {
-              objectId: json.data.objectId,
-              objType: json.data.type,
-              type: "nft",
-              name: display["name"],
-              imgUrl: display["imageUrl"],
-              description: display["description"],
-              projectUrl: display["projectUrl"],
-            };
-            nft_array.push(ticket);
-          }
-        }
-      }
+      let gamefi_array = [];
+
+      const { getOwnedNfts, nftsMapByAddressAndChain, addressNftKey } = useNftsOwnedByAddressInSpecificChain();
+      await getOwnedNfts();
+
+      const nfts = nftsMapByAddressAndChain.get(addressNftKey.value)?.map((item) => {
+        return {
+          ...item,
+          type: "nft",
+          imgUrl: item.url,
+        };
+      });
 
       // 查询游戏道具
       if (metaId) {
@@ -161,7 +126,7 @@ export const getMyTrade = async (address: string, metaId: string) => {
         }
       }
 
-      const result = combineJsonArray(JSON.stringify(gamefi_array), JSON.stringify(nft_array));
+      const result = combineJsonArray(JSON.stringify(gamefi_array), JSON.stringify(nfts));
       resolve(result);
     } catch (error) {
       console.log(error);

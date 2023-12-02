@@ -13,6 +13,9 @@ export const useNftsOwnedByAddressInSpecificChain = (params?: { address: Ref<str
   const { address: walletAddress, chain } = useWallet();
   const targetAddress = computed(() => (address && address.value ? address.value : walletAddress.value));
   const targetChain = computed(() => (chainData && chainData.value ? chainData.value : chain.value));
+  const addressNftKey = computed(() => {
+    return `${targetAddress.value}_${targetChain.value}`;
+  });
   const getOwnedNfts = async () => {
     if (targetAddress.value && targetChain.value.rpcUrl) {
       const provider = new Provider(targetChain.value?.rpcUrl || "");
@@ -23,5 +26,6 @@ export const useNftsOwnedByAddressInSpecificChain = (params?: { address: Ref<str
   return {
     getOwnedNfts,
     nftsMapByAddressAndChain,
+    addressNftKey
   };
 };
