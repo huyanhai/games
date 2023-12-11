@@ -12,17 +12,16 @@ export const getAbleCoins = (coins: any, number: number, unit: number) => {
   return coinId;
 };
 
-export const getAbleCoinsForSell = async (price: number | string, coinType: "SUI" | "SHUI", CONTRACT_PACKAGE: string, address: string, tx: SuiTxBlock) => {
+export const getAbleCoinsForSell = async <T extends "SUI" | "SHUI">(price: number | string, coinType: T, tx: SuiTxBlock, CONTRACT_PACKAGE?: string, address?: string) => {
   const { balanceProvider } = useOwnedCoinsWithBalances();
 
   if (coinType === "SHUI") {
     const ableCoins = await balanceProvider.value?.query.provider.getCoins({
-      owner: address,
+      owner: address!,
       coinType: `${CONTRACT_PACKAGE}::shui::SHUI`,
     });
 
     const coinId = getAbleCoins(ableCoins, Number(price), 1);
-    console.log("可用的coin", coinId);
     const [coins] = tx.splitCoins(coinId as any, [Number(price)]);
     return tx.makeMoveVec([coins]);
   } else {

@@ -18,10 +18,16 @@ export const getMarkets = async () => {
             .split(";")
             .filter(Boolean)
             .map((item) => {
-              const [id, name, num, price, coinType, type, owner, metaId] = item.split(",");
+              let [id, name, objectType, num, price, coinType, type, owner, metaId] = item.split(",");
+
+              if (objectType && !objectType.startsWith("0x")) {
+                objectType = `0x${objectType}`;
+              }
+
               return {
                 id,
                 name,
+                objectType,
                 num,
                 price,
                 coinType,
@@ -156,7 +162,7 @@ export const buyGame = async (address: string, metaId: string, row: CardItem) =>
   const { signAndSendTxn } = useWallet();
   return new Promise(async (resolve) => {
     try {
-      const coins = await getAbleCoinsForSell(row.price, row.coinType, CONTRACT_PACKAGE, address, tx);
+      const coins = await getAbleCoinsForSell(row.price, row.coinType, tx, CONTRACT_PACKAGE, address);
 
       console.log(
         "购买游戏参数",
@@ -184,18 +190,18 @@ export const buyNft = async (address: string, metaId: string, row: CardItem) => 
   const { signAndSendTxn } = useWallet();
   return new Promise(async (resolve) => {
     try {
-      // const [coins] = tx.splitSUIFromGas([Number(row.price)]);
-      const coins = await getAbleCoinsForSell(row.price, row.coinType, CONTRACT_PACKAGE, address, tx);
+      const coins = await getAbleCoinsForSell(row.price, row.coinType, tx, CONTRACT_PACKAGE, address);
+
       console.log(
         "购买NFT参数",
         [MARKET_GLOBAL_ADDRESS, metaId, Number(row.metaId), row.name, row.num, coins, "0x06"],
-        [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`, `${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]
+        [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`, row.objectType!]
       );
 
       tx.moveCall(
         `${CONTRACT_PACKAGE}::market::purchase_nft_item`,
         [MARKET_GLOBAL_ADDRESS, metaId, Number(row.metaId), row.name, row.num, coins, "0x06"],
-        [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`, `${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]
+        [row.coinType === "SUI" ? "0x2::sui::SUI" : `${CONTRACT_PACKAGE}::shui::SHUI`, row.objectType!]
       );
       const { digest } = await signAndSendTxn(tx);
       console.log(digest);
@@ -263,14 +269,12 @@ export const upGameItem = async (metaId: string, row: CardItem, form: any) => {
 export const upNftItem = async (metaId: string, row: CardItem, form: any) => {
   const tx = new SuiTxBlock();
   const { signAndSendTxn } = useWallet();
-  console.log("上架NFT参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]);
+  console.log("row", row);
+
+  console.log("上架NFT参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
   return new Promise(async (resolve) => {
     try {
-      tx.moveCall(
-        `${CONTRACT_PACKAGE}::market::list_nft_item`,
-        [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId],
-        [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]
-      );
+      tx.moveCall(`${CONTRACT_PACKAGE}::market::list_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
       const result = await signAndSendTxn(tx);
       console.log(result);
       return resolve(true);

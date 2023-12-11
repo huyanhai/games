@@ -33,3 +33,8 @@ export const combineJsonArray = (arr1: string, arr2: string): string => {
   });
   return json1;
 };
+
+export const convert = (arr: Uint8Array): number => {
+  const dateView = new DataView(arr.buffer);
+  return dateView.getUint32(0, true);
+};

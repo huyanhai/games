@@ -130,6 +130,7 @@ const moveCall = async () => {
     }
   } catch (error) {
     loading.value = false;
+    console.log(error);
     message.error(t("home.claimed_fail_tips"));
   }
 };

@@ -12,6 +12,7 @@ export type CardItem = {
   type: "nft" | "gamefi";
   coinType: "SUI" | "SHUI";
   metaId: string;
+  objectType?: string;
 };
 
 export enum CardType {

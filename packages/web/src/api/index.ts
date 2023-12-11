@@ -16,6 +16,14 @@ export function registerMeta(params: { phone: string; email: string; wallet_addr
   });
 }
 
+// 邀请注册
+export function inviteRegisterMeta(params: { phone: string; email: string; wallet_addr: string; code: string; name?: string; invite_register_meta: string }) {
+  return request.get("invite_register_meta", {
+    params,
+    responseType: "json",
+  });
+}
+
 // 获取信息
 export function metaStatus(params: { wallet_addr: string; phone?: string }) {
   return request.get("query_meta_status", {
@@ -70,7 +78,6 @@ export function queryMarketProfit(params: { wallet_addr: string }) {
   });
 }
 
-
 // ip查询
 export function getIps(params: QueryPage) {
   const origin = import.meta.env.MODE === "development" ? "https://shui.one" : location.origin;
@@ -91,5 +98,3 @@ export function genIp() {
     responseType: "json",
   });
 }
-
-

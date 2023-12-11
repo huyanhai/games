@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { NTabs, NTab } from "naive-ui";
 import { useI18n } from "vue-i18n";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 
 import { queryOpenseaNft } from "@/api";
 import { useBaseStore } from "@/store";
@@ -21,8 +21,7 @@ import Home from "./Home.vue";
 import GameTab from "./GameTab.vue";
 import Swap from "./Swap.vue";
 import AirDrop from "./AirDrop.vue";
-import { computed, nextTick } from "vue";
-// import Github from './Github.vue';
+import Task from './Task.vue';
 
 import Market from "@/views/Market.vue";
 
@@ -43,17 +42,17 @@ const lists = computed(() => {
       name: t("home.home"),
       com: Home,
     },
-    meta: {
-      name: t("home.meta"),
-      com: "meta",
+    market: {
+      name: t("home.market"),
+      com: Market,
     },
     game: {
       name: t("home.game"),
       com: GameTab,
     },
-    market: {
-      name: t("home.market"),
-      com: Market,
+    task: {
+      name: t("home.task"),
+      com: Task,
     },
     airdrop: {
       name: t("home.airdrop"),
@@ -63,9 +62,9 @@ const lists = computed(() => {
       name: t("home.swap"),
       com: Swap,
     },
-    dao: {
-      name: "DAO",
-      com: "DAO",
+    meta: {
+      name: t("home.meta"),
+      com: "meta",
     },
     // github: {
     //   name: t("home.github"),

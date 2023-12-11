@@ -148,7 +148,10 @@ export default {
   register_fail: "Failed to register",
   enter_phone: "Please enter your cell phone number",
   enter_phone_tips: "Please enter the correct cell phone number",
+  enter_country: "Please enter country code",
   email_error: "Mailbox format error",
   send_error: "Send Failure",
   country: "Country",
+  custom: "Customizable",
+  task: "Task",
 };

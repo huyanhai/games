@@ -6,6 +6,12 @@
           <NFormItem :label="$t('home.country')" path="country">
             <NSelect v-model:value="formData.country" :options="country" />
           </NFormItem>
+          <NFormItem :label="$t('home.country')" path="country1" v-if="!formData.country">
+            <NInputGroup>
+              <NInputGroupLabel style="width: 50px">+</NInputGroupLabel>
+              <NInput v-model:value="formData.country1" :placeholder="$t('home.enter_country')" />
+            </NInputGroup>
+          </NFormItem>
           <NFormItem :label="$t('home.phone_no')" path="phone">
             <NInputGroup>
               <NInput v-model:value="formData.phone" :placeholder="$t('home.phone_no')" />
@@ -44,19 +50,21 @@
 </template>
 <script lang="ts" setup>
 import { useRegisterStore, useBaseStore } from "@/store/index";
-import { sendVerifyCode, registerMeta } from "@/api";
+import { sendVerifyCode, registerMeta, inviteRegisterMeta } from "@/api";
 import { reactive } from "vue";
-import { NSelect, NModal, NCard, NForm, NFormItem, NInput, NInputGroup, NSpace, NButton, NCountdown, useMessage, NSpin, type FormInst, type CountdownInst } from "naive-ui";
+import { NSelect, NModal, NCard, NForm, NInputGroupLabel, NFormItem, NInput, NInputGroup, NSpace, NButton, NCountdown, useMessage, NSpin, type FormInst, type CountdownInst } from "naive-ui";
 import { computed, ref } from "vue";
 import { checkPhone, checkEmail } from "@game-web/base";
 import { useWallet } from "@game-web/base";
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 const { address } = useWallet();
 const { t } = useI18n();
 
 const registerStore = useRegisterStore();
 const baseStore = useBaseStore();
 const message = useMessage();
+const route = useRoute();
 const loading = ref(false);
 
 const countDownRef = ref<CountdownInst>();
@@ -66,6 +74,7 @@ const showModal = computed(() => registerStore.getRegister);
 
 const country = computed(() => {
   return [
+    { label: `${t("home.custom")}`, value: "" },
     { label: `+1 ${t("country.US")}`, value: "+1" },
     { label: `+7 ${t("country.RU")}`, value: "+7" },
     { label: `+20 ${t("country.EG")}`, value: "+20" },
@@ -228,6 +237,7 @@ const country = computed(() => {
 
 const formData = reactive({
   country: "+86",
+  country1: "",
   phone: "",
   email: "",
   code: "",
@@ -237,6 +247,17 @@ const formData = reactive({
 const countActive = ref(false);
 
 const rules = {
+  country1: [
+    {
+      required: true,
+      trigger: ["input"],
+      validator: (rule: any, value: any) => {
+        if (!value) {
+          return new Error(t("home.enter_country"));
+        }
+      },
+    },
+  ],
   phone: [
     {
       required: true,
@@ -245,9 +266,9 @@ const rules = {
         if (!value) {
           return new Error(t("home.enter_phone"));
         }
-        if (!checkPhone(value)) {
-          return new Error(t("home.enter_phone_tips"));
-        }
+        // if (!checkPhone(value)) {
+        //   return new Error(t("home.enter_phone_tips"));
+        // }
       },
     },
   ],
@@ -298,12 +319,20 @@ const getCode = async () => {
 
 const register = () => {
   loading.value = true;
-  registerMeta({
+  const { metaId } = route.query;
+  let handler: any = registerMeta;
+  const data: any = {
     ...formData,
-    phone: `${formData.country}${formData.phone}`,
+    phone: `${formData.country || `+${formData.country1}`}${formData.phone}`,
     wallet_addr: address.value as string,
     name: "xxx",
-  })
+  };
+
+  if (metaId) {
+    handler = inviteRegisterMeta;
+    data.invite_register_meta = metaId;
+  }
+  handler(data)
     .then((res: any) => {
       if (res?.success) {
         getUserInfo();

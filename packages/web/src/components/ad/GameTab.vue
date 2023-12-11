@@ -133,7 +133,7 @@ const open = async () => {
         const result = item.split("::");
         unit = result[0];
         money = Number(result[1]);
-        return getAbleCoinsForSell(money, unit as any, CONTRACT_PACKAGE, address.value!, tx);
+        return getAbleCoinsForSell(money, unit as any, tx, CONTRACT_PACKAGE, address.value!);
       }
       if (typeof item === "number" || isMoney) {
         const coinId = getAbleCoins(ableCoins, 1.1, Number(item));
