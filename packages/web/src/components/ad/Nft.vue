@@ -47,7 +47,7 @@ const moveCall = async () => {
     // 兑换的方法
     const target = `${CONTRACT_PACKAGE}::boat_ticket::buy_ticket`;
     const tx = new SuiTxBlock();
-    const [coins] = tx.splitSUIFromGas([Number(100)]);
+    const [coins] = tx.splitSUIFromGas([Number(5)]);
     // 兑换shui
     tx.moveCall(target, [BOAT_GLOBAL_ADDRESS, tx.makeMoveVec([coins])]);
 
@@ -74,7 +74,7 @@ const items = computed(() => [
     cardBalance: t("home.balance", { num: shui.value.remain_num }),
     cardImg: "https://bafybeiami7cghfutcuy52qpb5ifmv5d4cxzdfzcnbip7ptggf73zcsss7a.ipfs.nftstorage.link/ship_card.png/",
     progress: parseInt(`${(1 - shui.value.remain_num / shui.value.total_num) * 100}`),
-    buttonText: "100 SUI",
+    buttonText: "5 SUI",
     buttonBgColor: "#ff1b72",
     link: "https://opensea.io/zh-CN/assets/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/30942048195930147045271123439947518623642095559354491168003220828348787730192",
   },
