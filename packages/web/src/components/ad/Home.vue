@@ -9,7 +9,7 @@
                 <div class="more-info">
                   <div class="info-l">
                     <div class="info-title">Airship - NFT</div>
-                    <div class="info-tips">飞船NFT 总量:10,00</div>
+                    <div class="info-tips">飞船NFT 总量:10,000</div>
                   </div>
                   <div class="info-r">
                     <div class="r-tips">预售:2000</div>
@@ -18,10 +18,11 @@
                 </div>
                 <div class="card">
                   <ul>
-                    <li>“火星飞船”GameFi总量为 10,000 售完为止。</li>
-                    <li>持有“火星飞船”GameFi的用户才能加入“白名单”并获得一“探索者一号”飞船。</li>
-                    <li>只有“白名单”用户才能按照 1 SUI= 100 SHUI比例兑换资格</li>
-                    <li>我们还为“白名单”用户预留了 10000~20000 的 Meta 身份ID 编号。</li>
+                    <li>购买“飞船NFT”前 2000 名用户，每个用户可以领取 10,000 SHUI</li>
+                    <li>持有“飞船NFT”即可成为“白名单”用户</li>
+                    <li>可以在游戏内兑换一艏“探索者1号”飞船</li>
+                    <li>白名单用户享有优先兑换 SHUI 的资格</li>
+                    <li>拥有飞船的用户具有通往“浮空城”的载客经营权</li>
                   </ul>
                 </div>
               </div>
@@ -146,7 +147,7 @@ import Garid from "./Garid.vue";
 import { ref, computed, onMounted } from "vue";
 import { getAssetsFile } from "@/utils/files";
 import { useBaseStore } from "@/store";
-import { SuiTxBlock, useProvider, useNftsOwnedByAddressInSpecificChain } from "@game-web/base";
+import { SuiTxBlock, useProvider, useNftsOwnedByAddressInSpecificChain, useWallet } from "@game-web/base";
 import { CONTRACT_PACKAGE, META_INFO_GLOBAL_ADDRESS, AIRDROP_GLOBAL_ADDRESS } from "@/constants";
 
 import Nft from "./Nft.vue";
@@ -244,10 +245,12 @@ const checkInfo = async (item: any) => {
   console.log("results", results);
   if (results) {
     try {
+      const { signAndSendTxn } = useWallet();
       const tx1 = new SuiTxBlock();
-      console.log(`${CONTRACT_PACKAGE}::airdrop::claim_boat_whitelist_airdrop`, [AIRDROP_GLOBAL_ADDRESS, item.objectId, META_ID_ADDRESS]);
-      await tx1.moveCall(`${CONTRACT_PACKAGE}::airdrop::claim_boat_whitelist_airdrop`, [AIRDROP_GLOBAL_ADDRESS, item.objectId, META_ID_ADDRESS]);
-      message.error("领取成功");
+      console.log(`${CONTRACT_PACKAGE}::airdrop::claim_boat_whitelist_airdrop`, [AIRDROP_GLOBAL_ADDRESS, item.objectId, META_ID_ADDRESS.value]);
+      tx1.moveCall(`${CONTRACT_PACKAGE}::airdrop::claim_boat_whitelist_airdrop`, [AIRDROP_GLOBAL_ADDRESS, item.objectId, META_ID_ADDRESS.value]);
+      await signAndSendTxn(tx1);
+      message.success("领取成功");
       showModal.value = false;
     } catch (error) {
       console.log("error", error);
