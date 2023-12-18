@@ -1,6 +1,25 @@
 <template>
   <div class="my-task" v-if="sortMetaId">
-    <NDivider class="ui-divider">推广活动</NDivider>
+    <div class="tab-hd">
+      <span class="col-l">推广活动</span>
+      <span class="col-r">
+        已邀请
+        <p>{{ invitedNum }}</p>
+        人
+      </span>
+    </div>
+    <div class="tips">
+      <div>
+        1.首先向<NText type="success">被邀请用户</NText>转账1SUI
+       
+      </div>
+      <div>
+        2. <NText type="success">被邀请用户</NText>在注册MetaID时必须输入<NText type="error">邀请人</NText>的MetaID才能生效
+      </div>
+    </div>
+    <NInput round size="large" placeholder="输入被邀请的用户SU钱包地址" v-model:value="invitedAddress" />
+    <NxButton class="ui-button" size="large" type="error" round @click="invite">邀请</NxButton>
+
     <NTable>
       <thead>
         <tr>
@@ -14,26 +33,13 @@
           <td>{{ item.user }}</td>
           <td>{{ item.money }}</td>
           <td>
-            <NButton v-if="invitedArray[index] === '0'" round type="error" disabled>未达标</NButton>
+            <NButton v-if="invitedArray[index] === '0'" round type="error" text disabled>未达标</NButton>
             <NButton v-if="invitedArray[index] === '1'" round disabled>已领取</NButton>
             <NButton @click="getCoins(item.user)" v-if="invitedArray[index] === '2'" round type="success">领取</NButton>
           </td>
         </tr>
       </tbody>
     </NTable>
-    <NDivider class="ui-divider">任务要求</NDivider>
-    <div class="tips">
-      <NText type="success">邀请人</NText>
-      向被<NText type="error">邀请人</NText>转账1SUI
-    </div>
-    <NInput round size="large" placeholder="输入被邀请的用户SU钱包地址" v-model:value="invitedAddress" />
-    <NxButton class="ui-button" size="large" type="error" round @click="invite">邀请</NxButton>
-    <!-- <div v-if="invited">
-      地址：<a :href="invitedUrl">{{ invitedUrl }}</a>
-    </div> -->
-    <NDivider class="ui-divider"></NDivider>
-    <div class="tips">被邀请用户需要成功注册MetalD</div>
-    <NTag type="success" class="ui-tag">已邀请人数 {{ invitedNum }}</NTag>
   </div>
 </template>
 <script lang="ts" setup>
@@ -130,7 +136,7 @@ const invite = async () => {
     message.success("邀请成功");
   } catch (error) {
     console.log(error);
-    
+
     message.error("邀请失败");
   }
 };
@@ -167,8 +173,9 @@ onMounted(() => {
     font-size: 28px;
   }
   .tips {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 20px;
+    margin: 20px 0;
+    text-align: left;
   }
   .ui-button {
     margin: 20px;
@@ -180,6 +187,27 @@ onMounted(() => {
     text-align: center;
     font-size: 24px;
     padding: 0 20px;
+  }
+  .tab-hd {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #e8e8e8;
+    align-content: center;
+    margin-top: 20px;
+    .col-l {
+      padding: 0 10px;
+      height: 40px;
+      background: #00c3ff;
+      line-height: 40px;
+      color: #fff;
+      font-size: 16px;
+    }
+    .col-r {
+      display: flex;
+      p {
+        color: red;
+      }
+    }
   }
 }
 </style>

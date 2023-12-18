@@ -6,8 +6,17 @@
           <Garid>
             <template #left>
               <div class="info">
+                <div class="more-info">
+                  <div class="info-l">
+                    <div class="info-title">Airship - NFT</div>
+                    <div class="info-tips">飞船NFT 总量:10,00</div>
+                  </div>
+                  <div class="info-r">
+                    <div class="r-tips">预售:2000</div>
+                    <button class="r-btn" @click="getMyNfts">10,000<br />免费领取SHUI</button>
+                  </div>
+                </div>
                 <div class="card">
-                  <h3>NFT- PASS (白名单)</h3>
                   <ul>
                     <li>“火星飞船”GameFi总量为 10,000 售完为止。</li>
                     <li>持有“火星飞船”GameFi的用户才能加入“白名单”并获得一“探索者一号”飞船。</li>
@@ -121,18 +130,34 @@
       </div>
     </NCarousel>
   </div>
+  <NModal v-model:show="showModal">
+    <NCard style="max-width: 800px; width: 90%" title="选择NFT" closable>
+      <NGrid x-gap="12" :cols="2">
+        <NGi v-for="item in nfts" :key="item.name">
+          <NImage class="my-nft-item" :preview-disabled="true" :src="item.imgUrl" @click="checkInfo(item)" />
+        </NGi>
+      </NGrid>
+    </NCard>
+  </NModal>
 </template>
 <script lang="ts" setup>
-import { NCarousel } from "naive-ui";
+import { NCarousel, NModal, NImage, NCard, NGi, NGrid, useMessage } from "naive-ui";
 import Garid from "./Garid.vue";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { getAssetsFile } from "@/utils/files";
+import { useBaseStore } from "@/store";
+import { SuiTxBlock, useProvider, useNftsOwnedByAddressInSpecificChain } from "@game-web/base";
+import { CONTRACT_PACKAGE, META_INFO_GLOBAL_ADDRESS, AIRDROP_GLOBAL_ADDRESS } from "@/constants";
 
 import Nft from "./Nft.vue";
 
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
+
+const showModal = ref(false);
+const nfts = ref<any>([]);
+const message = useMessage();
 
 const p2Item = computed(() => [
   {
@@ -184,6 +209,52 @@ const p3Item = ref([
     color: "#48a0e4",
   },
 ]);
+const registerStore = useBaseStore();
+const { devInspectTransactionBlock } = useProvider();
+const userInfo = computed(() => registerStore.getUserInfo);
+const META_ID_ADDRESS = computed(() => userInfo.value?.id?.id);
+
+const getMyNfts = async () => {
+  const { getOwnedNfts, nftsMapByAddressAndChain, addressNftKey } = useNftsOwnedByAddressInSpecificChain();
+  await getOwnedNfts();
+
+  nfts.value = nftsMapByAddressAndChain
+    .get(addressNftKey.value)
+    ?.map((item) => {
+      return {
+        ...item,
+        type: "nft",
+        imgUrl: item.url,
+      };
+    })
+    .filter((item) => {
+      const pkgName = item.objectType.split("::")[0];
+      return pkgName === CONTRACT_PACKAGE;
+    });
+  if (nfts.value.length) {
+    return (showModal.value = true);
+  }
+  message.error("不符合条件");
+};
+
+const checkInfo = async (item: any) => {
+  const tx = new SuiTxBlock();
+  tx.moveCall(`${CONTRACT_PACKAGE}::boat_ticket::is_claimed`, [item.objectId]);
+  const { results }: any = await devInspectTransactionBlock(tx.txBlock);
+  console.log("results", results);
+  if (results) {
+    try {
+      const tx1 = new SuiTxBlock();
+      console.log(`${CONTRACT_PACKAGE}::airdrop::claim_boat_whitelist_airdrop`, [AIRDROP_GLOBAL_ADDRESS, item.objectId, META_ID_ADDRESS]);
+      await tx1.moveCall(`${CONTRACT_PACKAGE}::airdrop::claim_boat_whitelist_airdrop`, [AIRDROP_GLOBAL_ADDRESS, item.objectId, META_ID_ADDRESS]);
+      message.error("领取成功");
+      showModal.value = false;
+    } catch (error) {
+      console.log("error", error);
+      message.error("领取失败");
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -195,6 +266,7 @@ const p3Item = ref([
   height: 100%;
   display: flex;
   align-items: center;
+
   .container {
     width: 100%;
   }
@@ -227,6 +299,43 @@ const p3Item = ref([
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+      }
+      .more-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 80%;
+        text-align: center;
+        .info-l {
+          flex: 1 0 auto;
+          width: 50%;
+          color: #00c3ff;
+          .info-title {
+            font-size: 18px;
+          }
+          .info-tips {
+            font-size: 14px;
+            border: 1px solid #00c3ff;
+            width: 70%;
+            margin: 0 auto;
+          }
+        }
+        .info-r {
+          text-align: center;
+          .r-tips {
+            font-size: 14px;
+          }
+          .r-btn {
+            background: #00c3ff;
+            padding: 0 10px;
+            border-radius: 4px;
+            line-height: 20px;
+            font-size: 12px;
+            position: relative;
+            z-index: 10;
+          }
+        }
       }
     }
   }
@@ -279,5 +388,8 @@ const p3Item = ref([
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.my-nft-item {
+  width: 100%;
 }
 </style>
