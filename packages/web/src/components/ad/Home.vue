@@ -337,6 +337,8 @@ const checkInfo = async (item: any) => {
             font-size: 12px;
             position: relative;
             z-index: 10;
+            border: none;
+            outline: none;
           }
         }
       }
