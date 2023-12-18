@@ -47,7 +47,7 @@ const moveCall = async () => {
     // 兑换的方法
     const target = `${CONTRACT_PACKAGE}::boat_ticket::buy_ticket`;
     const tx = new SuiTxBlock();
-    const [coins] = tx.splitSUIFromGas([Number(5)]);
+    const [coins] = tx.splitSUIFromGas([Number(5 * 10_9)]);
     // 兑换shui
     tx.moveCall(target, [BOAT_GLOBAL_ADDRESS, tx.makeMoveVec([coins])]);
 
