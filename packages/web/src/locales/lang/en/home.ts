@@ -154,4 +154,6 @@ export default {
   country: "Country",
   custom: "Customizable",
   task: "Task",
+  invite_id: "Inviter Id",
+  enter_invite_id: "Please enter the Invitee Id",
 };

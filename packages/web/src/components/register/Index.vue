@@ -34,8 +34,11 @@
           <NFormItem :label="$t('home.msg_code')" path="code">
             <NInput v-model:value="formData.code" maxlength="6" :placeholder="$t('home.enter_code')" />
           </NFormItem>
-          <NFormItem :label="$t('home.email')" path="email">
+          <NFormItem :label="$t('home.email')">
             <NInput v-model:value="formData.email" :placeholder="$t('home.enter_email')" />
+          </NFormItem>
+          <NFormItem :label="$t('home.invite_id')">
+            <NInput v-model:value="formData.inviteId" :placeholder="$t('home.enter_invite_id')" />
           </NFormItem>
           <NFormItem label=" ">
             <NSpace>
@@ -241,6 +244,7 @@ const formData = reactive({
   phone: "",
   email: "",
   code: "",
+  inviteId: "",
 });
 
 // 倒计时
@@ -319,7 +323,7 @@ const getCode = async () => {
 
 const register = () => {
   loading.value = true;
-  const { metaId } = route.query;
+  // const { metaId } = route.query;
   let handler: any = registerMeta;
   const data: any = {
     ...formData,
@@ -328,9 +332,11 @@ const register = () => {
     name: "xxx",
   };
 
-  if (metaId) {
+  if (data.inviteId) {
     handler = inviteRegisterMeta;
-    data.invite_register_meta = metaId;
+    data.invite_register_meta = data.inviteId;
+  } else {
+    delete data.inviteId;
   }
   handler(data)
     .then((res: any) => {

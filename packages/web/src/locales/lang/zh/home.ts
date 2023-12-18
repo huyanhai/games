@@ -2,7 +2,7 @@ export default {
   top_left: "元宇宙游戏",
   top_right: "基于 SUI 公链开发",
   home: "首页",
-  meta: "元宇宙游戏",
+  meta: "元宇宙",
   market: "市场",
   game: "游戏",
   nft: "NFT",
@@ -143,4 +143,6 @@ export default {
   country: "国家",
   custom: "自定义",
   task: "任务",
+  invite_id: "邀请人Id",
+  enter_invite_id: "请输入邀请人Id",
 };
