@@ -162,10 +162,13 @@
     </NCarousel>
   </div>
   <NModal v-model:show="showModal">
-    <NCard style="max-width: 800px; width: 90%" title="选择NFT" closable>
+    <NCard style="max-width: 800px; width: 90%" title="选择NFT" closable @close="showModal = false">
       <NGrid x-gap="12" :cols="2">
         <NGi v-for="item in nfts" :key="item.name">
-          <NImage class="my-nft-item" :preview-disabled="true" :src="item.imgUrl" @click="checkInfo(item)" />
+          <NSpin :show="loading">
+            <NImage class="my-nft-item" :preview-disabled="true" :src="item.imgUrl" @click="checkInfo(item)" />
+            <p class="my-nft-name">{{ item.objectId }}</p>
+          </NSpin>
         </NGi>
       </NGrid>
     </NCard>
@@ -186,6 +189,7 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
+const loading = ref(false);
 const showModal = ref(false);
 const nfts = ref<any>([]);
 const message = useMessage();
@@ -249,19 +253,17 @@ const getMyNfts = async () => {
   const { getOwnedNfts, nftsMapByAddressAndChain, addressNftKey } = useNftsOwnedByAddressInSpecificChain();
   await getOwnedNfts();
 
-  nfts.value = nftsMapByAddressAndChain
-    .get(addressNftKey.value)
-    ?.map((item) => {
-      return {
-        ...item,
-        type: "nft",
-        imgUrl: item.url,
-      };
-    })
-    .filter((item) => {
-      const pkgName = item.objectType.split("::")[0];
-      return pkgName === CONTRACT_PACKAGE;
-    });
+  nfts.value = nftsMapByAddressAndChain.get(addressNftKey.value)?.map((item) => {
+    return {
+      ...item,
+      type: "nft",
+      imgUrl: item.url,
+    };
+  });
+  // .filter((item) => {
+  //   const pkgName = item.objectType.split("::")[0];
+  //   return pkgName === CONTRACT_PACKAGE;
+  // });
   if (nfts.value.length) {
     return (showModal.value = true);
   }
@@ -269,11 +271,17 @@ const getMyNfts = async () => {
 };
 
 const checkInfo = async (item: any) => {
+  loading.value = true;
   const tx = new SuiTxBlock();
   tx.moveCall(`${CONTRACT_PACKAGE}::boat_ticket::is_claimed`, [item.objectId]);
   const { results }: any = await devInspectTransactionBlock(tx.txBlock);
   console.log("results", results);
   if (results) {
+    const num = results[0].returnValues[0][0];
+    if (num === 1) {
+      loading.value = false;
+      return message.error("已领取");
+    }
     try {
       const { signAndSendTxn } = useWallet();
       const tx1 = new SuiTxBlock();
@@ -282,10 +290,15 @@ const checkInfo = async (item: any) => {
       await signAndSendTxn(tx1);
       message.success("领取成功");
       showModal.value = false;
+      loading.value = false;
     } catch (error) {
       console.log("error", error);
       message.error("领取失败");
+      loading.value = false;
     }
+  } else {
+    loading.value = false;
+    message.error("不符合条件");
   }
 };
 </script>
@@ -490,5 +503,11 @@ const checkInfo = async (item: any) => {
 }
 .my-nft-item {
   width: 100%;
+  cursor: pointer;
+}
+.my-nft-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
