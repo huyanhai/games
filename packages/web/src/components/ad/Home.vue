@@ -46,9 +46,39 @@
             </template>
           </Garid>
           <div class="container-box">
-            <div class="card">
-              <h3>黄金储备”计划</h3>
-              <p>为了建立良好的信用体系，我们计划将所有兑换所得 SUI 全部置换成 BTC 进行锁仓，<br />作为项目风险控制资产由 SHUI 基金会和 SHUI DAO 组织共同监管，公开透明,</p>
+            <div class="box2-container">
+              <div class="col-l">
+                <div class="img-box">
+                  <img src="@/assets/egg1.jpg" alt="" />
+                </div>
+                <div class="text-box">DragonEgg(lce)</div>
+                <button>20,000 SHUI</button>
+              </div>
+              <div class="col-m">
+                <div class="text">999</div>
+                <div class="sm-text">Dragon Egg</div>
+                <div class="jindu">
+                  <div class="jindu-ts">
+                    <span>Ice</span>
+                    <p>Balance :785</p>
+                  </div>
+                  <NProgress type="line" :indicator-placement="'inside'" :percentage="20" />
+                </div>
+                <div class="jindu">
+                  <div class="jindu-ts">
+                    <span>Fire</span>
+                    <p>Balance :785</p>
+                  </div>
+                  <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="20" />
+                </div>
+              </div>
+              <div class="col-r">
+                <div class="img-box">
+                  <img src="@/assets/egg2.jpg" alt="" />
+                </div>
+                <div class="text-box">DragonEgg( Fire)</div>
+                <button class="red">20,000 SHUI</button>
+              </div>
             </div>
           </div>
         </div>
@@ -142,7 +172,7 @@
   </NModal>
 </template>
 <script lang="ts" setup>
-import { NCarousel, NModal, NImage, NCard, NGi, NGrid, useMessage } from "naive-ui";
+import { NCarousel, NModal, NImage, NCard, NGi, NGrid, useMessage, NProgress } from "naive-ui";
 import Garid from "./Garid.vue";
 import { ref, computed, onMounted } from "vue";
 import { getAssetsFile } from "@/utils/files";
@@ -347,6 +377,70 @@ const checkInfo = async (item: any) => {
   &.pic-box2 {
     background: url("@/assets/bg2.jpg") no-repeat;
     background-size: cover;
+    .box2-container {
+      display: flex;
+      @include for_breakpoint("max", 800px) {
+        flex-direction: column;
+        align-items: center;
+      }
+      .col-m {
+        width: 20vw;
+        margin: 0 2vw;
+        background: rgba($color: #000000, $alpha: 0.5);
+        box-sizing: border-box;
+        padding: 20px;
+        @include for_breakpoint("max", 800px) {
+          width: 40%;
+          margin: 0;
+          padding: 10px;
+          margin: 5px 0;
+        }
+        .text {
+          font-size: 50px;
+          color: #fff;
+        }
+        .sm-text {
+          font-size: 20px;
+          color: #fff;
+        }
+        .jindu-ts {
+          display: flex;
+          justify-content: space-between;
+          color: #fff;
+          margin-top: 20px;
+        }
+      }
+      .col-l,
+      .col-r {
+        width: 20vw;
+        @include for_breakpoint("max", 800px) {
+          width: 40%;
+          button {
+            height: 30px !important;
+          }
+        }
+        .text-box {
+          background: white;
+          font-size: 14px;
+          padding: 10px 0;
+        }
+        button {
+          padding: 0 20px;
+          background: #00c3ff;
+          height: 40px;
+          border-radius: 4px;
+          color: #fff;
+          font-size: 18px;
+          margin-top: 10px;
+          &.red {
+            background: rgba(233, 64, 95, 1);
+          }
+        }
+        img {
+          width: 100%;
+        }
+      }
+    }
   }
   &.pic-box3 {
     background: url("@/assets/bg3.jpg") no-repeat;
