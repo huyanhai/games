@@ -167,6 +167,7 @@ const assetHandler = async () => {
         result = (await upNftItem(META_ID_ADDRESS.value, props.item, form)) as any;
       }
       operationHandler(result, "上架成功", "上架失败");
+      showModal.value = false;
     }
   });
 };
