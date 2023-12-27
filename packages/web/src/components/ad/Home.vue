@@ -52,24 +52,26 @@
                   <img src="@/assets/egg1.jpg" alt="" />
                 </div>
                 <div class="text-box">DragonEgg(Ice)</div>
-                <button @click="buy('ice')">20,000 SHUI</button>
+                <NSpin :show="loading">
+                  <button @click="buy('ice')">10,000 SHUI</button>
+                </NSpin>
               </div>
               <div class="col-m">
-                <div class="text">999</div>
+                <div class="text">{{ total }}</div>
                 <div class="sm-text">Dragon Egg</div>
                 <div class="jindu">
                   <div class="jindu-ts">
                     <span>Ice</span>
-                    <p>Balance :785</p>
+                    <p>Balance:{{ eggData[0] }}</p>
                   </div>
-                  <NProgress type="line" :indicator-placement="'inside'" :percentage="20" />
+                  <NProgress type="line" :indicator-placement="'inside'" :percentage="eggData[0] / total" />
                 </div>
                 <div class="jindu">
                   <div class="jindu-ts">
                     <span>Fire</span>
-                    <p>Balance :785</p>
+                    <p>Balance:{{ eggData[1] }}</p>
                   </div>
-                  <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="20" />
+                  <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="eggData[1] / total" />
                 </div>
               </div>
               <div class="col-r">
@@ -77,7 +79,9 @@
                   <img src="@/assets/egg2.jpg" alt="" />
                 </div>
                 <div class="text-box">DragonEgg( Fire)</div>
-                <button class="red" @click="buy('fire')">20,000 SHUI</button>
+                <NSpin :show="loading">
+                  <button class="red" @click="buy('fire')">10,000 SHUI</button>
+                </NSpin>
               </div>
             </div>
           </div>
@@ -175,7 +179,7 @@
   </NModal>
 </template>
 <script lang="ts" setup>
-import { NCarousel, NModal, NImage, NCard, NGi, NGrid, useMessage, NProgress } from "naive-ui";
+import { NCarousel, NModal, NImage, NCard, NGi, NGrid, useMessage, NProgress, NSpin } from "naive-ui";
 import Garid from "./Garid.vue";
 import { ref, computed, onMounted } from "vue";
 import { useBaseStore } from "@/store";
@@ -192,12 +196,16 @@ const loading = ref(false);
 const showModal = ref(false);
 const nfts = ref<any>([]);
 const message = useMessage();
+const total = ref(999);
+
+const eggData = ref<any>([]);
 
 const registerStore = useBaseStore();
 const { address, signAndSendTxn } = useWallet();
-const { devInspectTransactionBlock } = useProvider();
 const userInfo = computed(() => registerStore.getUserInfo);
 const META_ID_ADDRESS = computed(() => userInfo.value?.id?.id);
+
+const { devInspectTransactionBlock } = useProvider();
 
 const getMyNfts = async () => {
   const { getOwnedNfts, nftsMapByAddressAndChain, addressNftKey } = useNftsOwnedByAddressInSpecificChain();
@@ -221,22 +229,37 @@ const getMyNfts = async () => {
 };
 
 const buy = async (type: "ice" | "fire") => {
-  const tx = new SuiTxBlock();
-  tx.moveCall(`${CONTRACT_PACKAGE}::dragon_egg::buy_dragon_egg_${type}`, [DRAGON_EGG_GLOBAL_ADDRESS, getAbleCoinsForSell(2e4, "SHUI", tx, CONTRACT_PACKAGE, address.value!)]);
-  const result = await signAndSendTxn(tx);
+  loading.value = true;
+  try {
+    const tx = new SuiTxBlock();
+    const coin = await getAbleCoinsForSell(1e4, "SHUI", tx, CONTRACT_PACKAGE, address.value!);
+    console.log(`${CONTRACT_PACKAGE}::dragon_egg::buy_dragon_egg_${type}`, [DRAGON_EGG_GLOBAL_ADDRESS, coin]);
 
-  console.log(result);
+    tx.moveCall(`${CONTRACT_PACKAGE}::dragon_egg::buy_dragon_egg_${type}`, [DRAGON_EGG_GLOBAL_ADDRESS, coin]);
+    const result = await signAndSendTxn(tx);
+
+    console.log(result);
+    message.error("领取成功");
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    message.error("领取失败");
+  }
 };
 
 const getEggInfo = async () => {
-  console.log("xxx");
+  console.log(`${CONTRACT_PACKAGE}::dragon_egg::get_left_egg_num`, [DRAGON_EGG_GLOBAL_ADDRESS]);
 
   const tx = new SuiTxBlock();
-  const { devInspectTransactionBlock } = useProvider();
   tx.moveCall(`${CONTRACT_PACKAGE}::dragon_egg::get_left_egg_num`, [DRAGON_EGG_GLOBAL_ADDRESS]);
-  const result = await devInspectTransactionBlock(tx.txBlock);
-
-  console.log(result);
+  const { results }: any = await devInspectTransactionBlock(tx.txBlock);
+  let resultString = results[0].returnValues[0][0]
+    .fill(undefined, 0, 1)
+    .filter(Boolean)
+    .map((item: number) => String.fromCharCode(item));
+  const [one, , three] = resultString;
+  eggData.value = [Number(one || 0), Number(three || 0)];
 };
 
 const checkInfo = async (item: any) => {
@@ -272,7 +295,9 @@ const checkInfo = async (item: any) => {
 };
 
 onMounted(() => {
-  getEggInfo();
+  setTimeout(() => {
+    getEggInfo();
+  }, 1000);
 });
 </script>
 
