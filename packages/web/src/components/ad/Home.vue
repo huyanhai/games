@@ -51,8 +51,8 @@
                 <div class="img-box">
                   <img src="@/assets/egg1.jpg" alt="" />
                 </div>
-                <div class="text-box">DragonEgg(lce)</div>
-                <button>20,000 SHUI</button>
+                <div class="text-box">DragonEgg(Ice)</div>
+                <button @click="buy('ice')">20,000 SHUI</button>
               </div>
               <div class="col-m">
                 <div class="text">999</div>
@@ -77,7 +77,7 @@
                   <img src="@/assets/egg2.jpg" alt="" />
                 </div>
                 <div class="text-box">DragonEgg( Fire)</div>
-                <button class="red">20,000 SHUI</button>
+                <button class="red" @click="buy('fire')">20,000 SHUI</button>
               </div>
             </div>
           </div>
@@ -178,10 +178,9 @@
 import { NCarousel, NModal, NImage, NCard, NGi, NGrid, useMessage, NProgress } from "naive-ui";
 import Garid from "./Garid.vue";
 import { ref, computed, onMounted } from "vue";
-import { getAssetsFile } from "@/utils/files";
 import { useBaseStore } from "@/store";
-import { SuiTxBlock, useProvider, useNftsOwnedByAddressInSpecificChain, useWallet } from "@game-web/base";
-import { CONTRACT_PACKAGE, META_INFO_GLOBAL_ADDRESS, AIRDROP_GLOBAL_ADDRESS } from "@/constants";
+import { SuiTxBlock, useProvider, useNftsOwnedByAddressInSpecificChain, useWallet, getAbleCoinsForSell } from "@game-web/base";
+import { CONTRACT_PACKAGE, META_INFO_GLOBAL_ADDRESS, AIRDROP_GLOBAL_ADDRESS, DRAGON_EGG_GLOBAL_ADDRESS } from "@/constants";
 
 import Nft from "./Nft.vue";
 
@@ -194,57 +193,8 @@ const showModal = ref(false);
 const nfts = ref<any>([]);
 const message = useMessage();
 
-const p2Item = computed(() => [
-  {
-    title: t("home.tree_t1"),
-    text: t("home.tree_i1"),
-  },
-  {
-    title: t("home.tree_t2"),
-    text: t("home.tree_i2"),
-  },
-  {
-    title: t("home.tree_t3"),
-    text: t("home.tree_i3"),
-  },
-  {
-    title: t("home.tree_t4"),
-    text: t("home.tree_i4"),
-  },
-  {
-    title: t("home.tree_t5"),
-    text: t("home.tree_i5"),
-  },
-]);
-
-const p3Item = ref([
-  {
-    text: t("home.magical_1"),
-    link: "",
-    color: "#d7bf7c",
-  },
-  {
-    text: t("home.magical_2"),
-    link: "",
-    color: "#747474",
-  },
-  {
-    text: t("home.magical_3"),
-    link: "",
-    color: "#a83a37",
-  },
-  {
-    text: t("home.magical_4"),
-    link: "",
-    color: "#449956",
-  },
-  {
-    text: t("home.magical_5"),
-    link: "",
-    color: "#48a0e4",
-  },
-]);
 const registerStore = useBaseStore();
+const { address, signAndSendTxn } = useWallet();
 const { devInspectTransactionBlock } = useProvider();
 const userInfo = computed(() => registerStore.getUserInfo);
 const META_ID_ADDRESS = computed(() => userInfo.value?.id?.id);
@@ -268,6 +218,25 @@ const getMyNfts = async () => {
     return (showModal.value = true);
   }
   message.error("不符合条件");
+};
+
+const buy = async (type: "ice" | "fire") => {
+  const tx = new SuiTxBlock();
+  tx.moveCall(`${CONTRACT_PACKAGE}::dragon_egg::buy_dragon_egg_${type}`, [DRAGON_EGG_GLOBAL_ADDRESS, getAbleCoinsForSell(2e4, "SHUI", tx, CONTRACT_PACKAGE, address.value!)]);
+  const result = await signAndSendTxn(tx);
+
+  console.log(result);
+};
+
+const getEggInfo = async () => {
+  console.log("xxx");
+
+  const tx = new SuiTxBlock();
+  const { devInspectTransactionBlock } = useProvider();
+  tx.moveCall(`${CONTRACT_PACKAGE}::dragon_egg::get_left_egg_num`, [DRAGON_EGG_GLOBAL_ADDRESS]);
+  const result = await devInspectTransactionBlock(tx.txBlock);
+
+  console.log(result);
 };
 
 const checkInfo = async (item: any) => {
@@ -301,6 +270,10 @@ const checkInfo = async (item: any) => {
     message.error("不符合条件");
   }
 };
+
+onMounted(() => {
+  getEggInfo();
+});
 </script>
 
 <style lang="scss" scoped>
