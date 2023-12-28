@@ -64,21 +64,21 @@
                     <span>Ice</span>
                     <p>Balance:{{ eggData[0] }}</p>
                   </div>
-                  <NProgress type="line" :indicator-placement="'inside'" :percentage="eggData[0] / total" />
+                  <NProgress type="line" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[0] / total}`)" />
                 </div>
                 <div class="jindu">
                   <div class="jindu-ts">
                     <span>Fire</span>
                     <p>Balance:{{ eggData[1] }}</p>
                   </div>
-                  <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="eggData[1] / total" />
+                  <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[1] / total}`)" />
                 </div>
               </div>
               <div class="col-r">
                 <div class="img-box">
                   <img src="@/assets/egg2.jpg" alt="" />
                 </div>
-                <div class="text-box">DragonEgg( Fire)</div>
+                <div class="text-box">DragonEgg(Fire)</div>
                 <NSpin :show="loading">
                   <button class="red" @click="buy('fire')">10,000 SHUI</button>
                 </NSpin>
@@ -232,7 +232,7 @@ const buy = async (type: "ice" | "fire") => {
   loading.value = true;
   try {
     const tx = new SuiTxBlock();
-    const coin = await getAbleCoinsForSell(1e4, "SHUI", tx, CONTRACT_PACKAGE, address.value!);
+    const coin = await getAbleCoinsForSell(1e13, "SHUI", tx, CONTRACT_PACKAGE, address.value!);
     console.log(`${CONTRACT_PACKAGE}::dragon_egg::buy_dragon_egg_${type}`, [DRAGON_EGG_GLOBAL_ADDRESS, coin]);
 
     tx.moveCall(`${CONTRACT_PACKAGE}::dragon_egg::buy_dragon_egg_${type}`, [DRAGON_EGG_GLOBAL_ADDRESS, coin]);
