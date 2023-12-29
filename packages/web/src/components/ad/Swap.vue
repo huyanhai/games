@@ -45,59 +45,62 @@
         </NTable>
       </div>
       <div class="col col-r">
-        <div class="card">
-          <div class="__title">
-            <!-- {{ $t('home.sui1') }} -->
-            <select v-model="redemptionType">
-              <option v-for="item in optionsInfo" :key="item.id" :value="item.id">
-                {{ item.name }}
-              </option>
-            </select>
-          </div>
-          <div class="__body">
-            <div class="__l l">
-              <img src="@/assets/img-sui.png" alt="" srcset="" />
-              <div class="input">
-                <input v-model="coinNum" type="text" :placeholder="`${max}`" :max="max" @keyup="check" />
-                <span>SUI</span>
+        <NTabs v-model:value="redemptionType" type="segment">
+          <NTabPane :name="item.id" :tab="item.name" v-for="item in optionsInfo" :key="item.id">
+            <div class="card">
+              <!-- <div class="__title">
+                <select v-model="redemptionType">
+                  <option v-for="item in optionsInfo" :key="item.id" :value="item.id">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div> -->
+              <div class="__body">
+                <div class="__l l">
+                  <img src="@/assets/img-sui.png" alt="" srcset="" />
+                  <div class="input">
+                    <input v-model="coinNum" type="text" :placeholder="`${max}`" :max="max" @keyup="check" />
+                    <span>SUI</span>
+                  </div>
+                </div>
+                <div class="__m">
+                  <img src="@/assets/img-swap.png" alt="" srcset="" />
+                  <span>{{ $t("home.ratio") }}</span>
+                  <p>1:{{ ratio }}</p>
+                </div>
+                <div class="__r l">
+                  <img src="@/assets/img-meta.png" alt="" srcset="" />
+                  <div class="input">
+                    <p>
+                      {{ formatMoney(parseInt(coinNum || "0") * ratio) }}
+                    </p>
+                    <span>SHUI</span>
+                  </div>
+                </div>
+              </div>
+              <div class="__foot">
+                <div class="row">
+                  {{ $t("home.min", { num: "1 SUI" }) }} |
+                  {{ $t("home.max", { num: `${max} SUI` }) }}
+                </div>
+                <div class="button">
+                  <SuiWallet :loading="loading" @moveCall="moveCall">
+                    <slot>
+                      <button>{{ $t("home.submit") }}</button>
+                    </slot>
+                  </SuiWallet>
+                </div>
               </div>
             </div>
-            <div class="__m">
-              <img src="@/assets/img-swap.png" alt="" srcset="" />
-              <span>{{ $t("home.ratio") }}</span>
-              <p>1:{{ ratio }}</p>
-            </div>
-            <div class="__r l">
-              <img src="@/assets/img-meta.png" alt="" srcset="" />
-              <div class="input">
-                <p>
-                  {{ formatMoney(parseInt(coinNum || "0") * ratio) }}
-                </p>
-                <span>SHUI</span>
-              </div>
-            </div>
-          </div>
-          <div class="__foot">
-            <div class="row">
-              {{ $t("home.min", { num: "1 SUI" }) }} |
-              {{ $t("home.max", { num: `${max} SUI` }) }}
-            </div>
-            <div class="button">
-              <SuiWallet :loading="loading" @moveCall="moveCall">
-                <slot>
-                  <button>{{ $t("home.submit") }}</button>
-                </slot>
-              </SuiWallet>
-            </div>
-          </div>
-        </div>
+          </NTabPane>
+        </NTabs>
       </div>
     </div>
     <NDivider class="user-divider" dashed>{{ $t("home.swap_list") }}</NDivider>
   </div>
 </template>
 <script lang="ts" setup>
-import { NDataTable, NDivider, NTable } from "naive-ui";
+import { NDataTable, NDivider, NTable, NTabs, NTabPane } from "naive-ui";
 import { computed } from "vue";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -361,6 +364,20 @@ watch(
     @include for_breakpoint("max", 800px) {
       padding: 0;
       margin-bottom: 20px;
+    }
+    ::v-deep(.n-tabs) {
+      .n-tabs-rail {
+        background: #383838 !important;
+        .n-tabs-tab__label {
+          color: #fff;
+        }
+        .n-tabs-tab--active {
+          background: #00c3ff;
+          .n-tabs-tab__label {
+            color: #383838;
+          }
+        }
+      }
     }
     .card {
       box-shadow: #888888 5px 5px 30px 1px;

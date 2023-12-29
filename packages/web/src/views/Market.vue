@@ -25,7 +25,7 @@
 </template>
 <script lang="ts" setup>
 import { NTab, NTabs, NSelect, NGrid, NGridItem, NSpace, NSpin, NButton, NDataTable, NImage, NEllipsis, NTag } from "naive-ui";
-import { computed, h, onMounted, ref, watch } from "vue";
+import { computed, h, ref, watch } from "vue";
 import { QueryMarket } from "@/api/index.d";
 
 import MarketCard from "@/components/market/Card.vue";
@@ -77,6 +77,9 @@ const columns = ref<any>([
     key: "price",
     align: "center",
     width: "100px",
+    render: (row: any) => {
+      return `${row.price/1e9}${row.coinType}`;
+    },
   },
   {
     title: "类型",
@@ -146,6 +149,7 @@ const queryMarketList = async () => {
   if (listType.value === CardType.record) {
     const list = (await getTransactionRecord()) as any;
     recordList.value = list.filter((item: any) => item.type === market.value);
+    console.log("recordList", recordList.value);
   }
   if (listType.value === CardType.asset) {
     data = (await getMyTrade(address.value!, META_ID_ADDRESS.value)) as any;
@@ -154,7 +158,6 @@ const queryMarketList = async () => {
     data = await getMySell(metaId.value!);
   }
   loading.value = false;
-
   list.value = data.filter((item: any) => item.type === market.value) as any;
 };
 

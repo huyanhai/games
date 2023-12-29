@@ -61,10 +61,11 @@ export const getMySell = async (address: string) => {
             .split(";")
             .filter(Boolean)
             .map((item) => {
-              const [id, name, num, price, coinType, type, owner] = item.split(",");
+              const [id, name, objectType, num, price, coinType, type, owner] = item.split(",");
               return {
                 id,
                 name,
+                objectType,
                 num,
                 price,
                 coinType,
@@ -222,9 +223,10 @@ export const downGameItem = async (metaId: string, row: CardItem) => {
       console.log("下架游戏参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"]);
       tx.moveCall(`${CONTRACT_PACKAGE}::market::unlist_game_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"]);
       const result = await signAndSendTxn(tx);
-      console.log(result);
+      console.log("result", result);
       return resolve(true);
     } catch (error) {
+      console.log("error", error);
       return resolve(false);
     }
   });
@@ -238,11 +240,12 @@ export const downNftItem = async (metaId: string, row: CardItem) => {
     try {
       console.log("下架Nft参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"], [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]);
 
-      tx.moveCall(`${CONTRACT_PACKAGE}::market::unlist_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"], [`${CONTRACT_PACKAGE}::boat_ticket::BoatTicket`]);
+      tx.moveCall(`${CONTRACT_PACKAGE}::market::unlist_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, row.num, Number(row.price), "0x06"], [row.objectType!]);
       const result = await signAndSendTxn(tx);
       console.log(result);
       return resolve(true);
     } catch (error) {
+      console.log("error", error);
       return resolve(false);
     }
   });

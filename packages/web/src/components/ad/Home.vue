@@ -62,14 +62,14 @@
                 <div class="jindu">
                   <div class="jindu-ts">
                     <span>Ice</span>
-                    <p>Balance:{{ eggData[0] }}</p>
+                    <p>Balance:{{ eggData[1] }}</p>
                   </div>
                   <NProgress type="line" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[0] / total}`)" />
                 </div>
                 <div class="jindu">
                   <div class="jindu-ts">
                     <span>Fire</span>
-                    <p>Balance:{{ eggData[1] }}</p>
+                    <p>Balance:{{ eggData[2] }}</p>
                   </div>
                   <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[1] / total}`)" />
                 </div>

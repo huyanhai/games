@@ -136,6 +136,8 @@ const operationHandler = (result: boolean, successMsg: string, errMsg: string) =
 // 下架操作
 const sellHandler = async () => {
   let result = false;
+  console.log("props.item", props.item);
+
   if (props.dataType === "gamefi") {
     result = (await downGameItem(META_ID_ADDRESS.value, props.item)) as any;
   } else {
