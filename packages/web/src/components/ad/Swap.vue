@@ -147,11 +147,12 @@ const moveCall = async () => {
   if (!coinNum.value) return message.error(t("home.input_tips"));
   loading.value = true;
   // 兑换的方法
-  const target = `${CONTRACT_PACKAGE}::shui::swap`;
+  const target = `${CONTRACT_PACKAGE}::swap::public_swap`;
 
   try {
     const tx = new SuiTxBlock();
     const [coins] = tx.splitSUIFromGas([Number(coinNum.value) * 1_000_000_000]);
+    
     // 兑换shui
     tx.moveCall(target, [SWAP_GLOBAL_ADDRESS, SWAP_RULE_INFO_ADDRESS, Number(coinNum.value), tx.makeMoveVec([coins]), Number(redemptionType.value)], ["0x2::sui::SUI"]);
 
@@ -162,6 +163,8 @@ const moveCall = async () => {
       message.success(t("home.success_tips"));
     }
   } catch (error) {
+    console.log("error", error);
+
     loading.value = false;
     message.error(t("home.fail_tips"));
   }

@@ -64,14 +64,14 @@
                     <span>Ice</span>
                     <p>Balance:{{ eggData[1] }}</p>
                   </div>
-                  <NProgress type="line" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[0] / total}`)" />
+                  <NProgress type="line" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[1] / total}`)" />
                 </div>
                 <div class="jindu">
                   <div class="jindu-ts">
                     <span>Fire</span>
-                    <p>Balance:{{ eggData[2] }}</p>
+                    <p>Balance:{{ eggData[0] }}</p>
                   </div>
-                  <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[1] / total}`)" />
+                  <NProgress type="line" :color="['#d03050', '#d03050']" :indicator-placement="'inside'" :percentage="parseInt(`${eggData[0] / total}`)" />
                 </div>
               </div>
               <div class="col-r">
@@ -259,7 +259,11 @@ const getEggInfo = async () => {
     .filter(Boolean)
     .map((item: number) => String.fromCharCode(item));
   const [one, , three] = resultString;
+  console.log(one,three);
+  
   eggData.value = [Number(one || 0), Number(three || 0)];
+  console.log(eggData.value);
+  
 };
 
 const checkInfo = async (item: any) => {
@@ -297,7 +301,7 @@ const checkInfo = async (item: any) => {
 onMounted(() => {
   setTimeout(() => {
     getEggInfo();
-  }, 1000);
+  }, 2000);
 });
 </script>
 

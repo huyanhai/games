@@ -18,4 +18,5 @@ export const IMG_URLS: any = {
   "Shui Meta Ticket": "https://bafybeihtdfqbum5wt4lynnkqlgz265knjq273zwuyxbtqb4atqib7jw3ni.ipfs.nftstorage.link/shipone.png?size=100",
   "Metagame Ice Dragon Egg": "https://bafybeifgrwsodbehvvahrqvtql3d7ta6ztjovjfmsbk7wslyswsymrnpzi.ipfs.nftstorage.link/dragoneggice.jpg?size=100",
   "Metagame Fire Dragon Egg": "https://bafybeifgrwsodbehvvahrqvtql3d7ta6ztjovjfmsbk7wslyswsymrnpzi.ipfs.nftstorage.link/dragoneggfire.jpg?size=100",
+  LuckyBox: "bafybeifgrwsodbehvvahrqvtql3d7ta6ztjovjfmsbk7wslyswsymrnpzi.ipfs.nftstorage.link/luckybox.png?size=100",
 };
