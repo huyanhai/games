@@ -78,24 +78,33 @@ const columns = ref<any>([
     align: "center",
     width: "100px",
     render: (row: any) => {
-      return `${row.price/1e9}${row.coinType}`;
+      return `${row.price/1e9} ${row.coinType}`;
     },
   },
   {
-    title: "类型",
-    key: "type",
-    align: "center",
-    width: "100px",
-  },
-  {
-    title: "交易类型",
-    key: "record_type",
+    title: "手续费",
+    key: "price_gas",
     align: "center",
     width: "100px",
     render: (row: any) => {
-      return h(NTag, { size: "small" }, row.record_type === "sell" ? "卖出" : "买入");
+      return `${row.price_gas/1e9 || 0} ${row.coinType}`;
     },
   },
+  // {
+  //   title: "类型",
+  //   key: "type",
+  //   align: "center",
+  //   width: "100px",
+  // },
+  // {
+  //   title: "交易类型",
+  //   key: "record_type",
+  //   align: "center",
+  //   width: "100px",
+  //   render: (row: any) => {
+  //     return h(NTag, { size: "small" }, row.record_type === "sell" ? "卖出" : "买入");
+  //   },
+  // },
   {
     title: "买家/卖家",
     key: "buyer",

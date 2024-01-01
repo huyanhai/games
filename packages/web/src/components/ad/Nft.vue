@@ -30,7 +30,7 @@ import SuiWallet from "../sui-wallet/Index.vue";
 import { useI18n } from "vue-i18n";
 import { computed, ref } from "vue";
 import { useBaseStore } from "@/store";
-import { CONTRACT_PACKAGE, BOAT_GLOBAL_ADDRESS } from "@/constants";
+import { CONTRACT_PACKAGE, BOAT_GLOBAL_ADDRESS, SWAP_GLOBAL_ADDRESS } from "@/constants";
 
 const { t } = useI18n();
 const baseStore = useBaseStore();
@@ -48,8 +48,11 @@ const moveCall = async () => {
     const target = `${CONTRACT_PACKAGE}::boat_ticket::buy_ticket`;
     const tx = new SuiTxBlock();
     const [coins] = tx.splitSUIFromGas([Number(5 * 1e9)]);
+
+    console.log(target, [BOAT_GLOBAL_ADDRESS, SWAP_GLOBAL_ADDRESS, tx.makeMoveVec([coins])]);
+
     // 兑换shui
-    tx.moveCall(target, [BOAT_GLOBAL_ADDRESS, tx.makeMoveVec([coins])]);
+    tx.moveCall(target, [BOAT_GLOBAL_ADDRESS, SWAP_GLOBAL_ADDRESS, tx.makeMoveVec([coins])]);
 
     // 发送签名
     const { digest } = await signAndSendTxn(tx);

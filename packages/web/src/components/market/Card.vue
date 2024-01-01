@@ -13,7 +13,7 @@
         <!-- <img src="@/assets/xy.svg" alt="" srcset="" /> -->
       </span>
       <p class="price" v-if="type === CardType.asset">{{ item.description }}</p>
-      <p class="price" v-else>{{ price }}{{ item.coinType }}</p>
+      <p class="price" v-else>{{ price }} {{ item.coinType }}</p>
     </div>
     <div class="count" v-if="item.num">{{ item.num }}</div>
     <div class="mask">

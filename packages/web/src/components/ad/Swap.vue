@@ -147,14 +147,18 @@ const moveCall = async () => {
   if (!coinNum.value) return message.error(t("home.input_tips"));
   loading.value = true;
   // 兑换的方法
-  const target = `${CONTRACT_PACKAGE}::swap::public_swap`;
+  let target = `${CONTRACT_PACKAGE}::swap::white_list_swap`;
+
+  if (redemptionType.value === 7) {
+    target = `${CONTRACT_PACKAGE}::swap::gold_reserve_swap`;
+  }
 
   try {
     const tx = new SuiTxBlock();
     const [coins] = tx.splitSUIFromGas([Number(coinNum.value) * 1_000_000_000]);
     
     // 兑换shui
-    tx.moveCall(target, [SWAP_GLOBAL_ADDRESS, SWAP_RULE_INFO_ADDRESS, Number(coinNum.value), tx.makeMoveVec([coins]), Number(redemptionType.value)], ["0x2::sui::SUI"]);
+    tx.moveCall(target, [SWAP_GLOBAL_ADDRESS, Number(coinNum.value), tx.makeMoveVec([coins])]);
 
     // 发送签名
     const { digest } = await signAndSendTxn(tx);
