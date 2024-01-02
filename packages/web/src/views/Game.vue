@@ -1,7 +1,7 @@
 <template>
   <div class="page-game">
     <!-- <button @click="sendMsg">发送消息</button> -->
-    <iframe ref="iframe" :src="`https://shui.one/demo/index.html`" width="100%" height="100%" frameborder="0"></iframe>
+    <iframe ref="iframe" :src="`https://shui.game/demo/index.html`" width="100%" height="100%" frameborder="0"></iframe>
   </div>
 </template>
 <script lang="ts" setup>

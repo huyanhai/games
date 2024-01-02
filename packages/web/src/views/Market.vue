@@ -2,8 +2,8 @@
   <div class="page-market">
     <div class="operation">
       <NTabs class="market-tabs" type="segment" :value="market" @update-value="(v) => (market = v)">
-        <NTab name="gamefi">GameFi</NTab>
         <NTab name="nft">NFT</NTab>
+        <NTab name="gamefi">GameFi</NTab>
       </NTabs>
       <NSelect v-model:value="listType" :options="options" class="market-select" />
     </div>
@@ -42,7 +42,7 @@ type PageType = "Model" | "Page";
 
 withDefaults(defineProps<{ type?: PageType }>(), { type: "Page" });
 
-const market = ref<QueryMarket["type"]>("gamefi");
+const market = ref<QueryMarket["type"]>("nft");
 const listType = ref<CardType>(CardType.all);
 const { address } = useWallet();
 const baseStore = useBaseStore();

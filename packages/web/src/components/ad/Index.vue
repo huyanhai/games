@@ -11,7 +11,7 @@ import { NTabs, NTab } from "naive-ui";
 import { useI18n } from "vue-i18n";
 import { onMounted, ref, computed } from "vue";
 
-import { queryOpenseaNft } from "@/api";
+// import { queryOpenseaNft } from "@/api";
 import { useBaseStore } from "@/store";
 import { useWallet } from "@game-web/base";
 
@@ -74,15 +74,15 @@ const lists = computed(() => {
 });
 
 onMounted(() => {
-  queryOpenseaNft().then((data: any) => {
-    if (data.shui_token) {
-      baseStore.setNftInfo({ shui: data.shui_token });
-    }
+  // queryOpenseaNft().then((data: any) => {
+  //   if (data.shui_token) {
+  //     baseStore.setNftInfo({ shui: data.shui_token });
+  //   }
 
-    if (data.meta_game) {
-      baseStore.setNftInfo({ meta: data.meta_game });
-    }
-  });
+  //   if (data.meta_game) {
+  //     baseStore.setNftInfo({ meta: data.meta_game });
+  //   }
+  // });
 
   setTimeout(() => {
     baseStore.fetchAirdropInfo();
