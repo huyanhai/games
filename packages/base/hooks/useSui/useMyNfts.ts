@@ -1,3 +1,5 @@
+import type { SuiMoveObject, SuiObjectResponse, SuiObjectData, ObjectId, SuiObjectDataOptions } from "@mysten/sui.js";
+
 import { useWallet } from "./useWallet";
 import type { NftObject } from "../../sdk";
 import { Provider } from "../../sdk";
@@ -23,9 +25,17 @@ export const useNftsOwnedByAddressInSpecificChain = (params?: { address: Ref<str
       nftsMapByAddressAndChain.set(`${targetAddress.value}_${targetChain.value}`, data);
     }
   };
+
+  const multiGetObjects = (input: { ids: ObjectId[]; options?: SuiObjectDataOptions }) => {
+    if (targetAddress.value && targetChain.value.rpcUrl) {
+      const provider = new Provider(targetChain.value?.rpcUrl || "");
+      return provider.query.multiGetObjects(input);
+    }
+  };
   return {
     getOwnedNfts,
+    multiGetObjects,
     nftsMapByAddressAndChain,
-    addressNftKey
+    addressNftKey,
   };
 };

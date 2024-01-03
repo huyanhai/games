@@ -1,4 +1,4 @@
-import type { SuiMoveObject, SuiObjectResponse, SuiObjectData } from "@mysten/sui.js";
+import type { SuiMoveObject, SuiObjectResponse, SuiObjectData, ObjectId, SuiObjectDataOptions } from "@mysten/sui.js";
 import { getMoveObject, JsonRpcProvider, Coin as CoinAPI, Connection, getSuiObjectData } from "@mysten/sui.js";
 import type { NftObject, CoinObjectDto } from "./objects";
 import { Coin, CoinObject, Nft } from "./objects";
@@ -96,5 +96,9 @@ class QueryProvider {
         return Nft.getNftObject(obj, item.previousTransaction as string);
       });
     return res;
+  }
+
+  public async multiGetObjects(input: { ids: ObjectId[]; options?: SuiObjectDataOptions }): Promise<SuiObjectResponse[]> {
+    return this.provider.multiGetObjects(input);
   }
 }

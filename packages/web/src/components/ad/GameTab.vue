@@ -70,7 +70,7 @@ const gameList = [
     key: 1,
     name: "火星前哨站",
     img: P1,
-    url: "https://shui.one/demo",
+    url: "`https://shui.game/game",
   },
   {
     key: 2,
