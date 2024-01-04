@@ -78,7 +78,7 @@ const columns = ref<any>([
     align: "center",
     width: "100px",
     render: (row: any) => {
-      return `${row.price/1e9} ${row.coinType}`;
+      return `${row.price / 1e9} ${row.coinType}`;
     },
   },
   {
@@ -87,7 +87,7 @@ const columns = ref<any>([
     align: "center",
     width: "100px",
     render: (row: any) => {
-      return `${row.price_gas/1e9 || 0} ${row.coinType}`;
+      return `${row.price_gas / 1e9 || 0} ${row.coinType}`;
     },
   },
   // {
@@ -158,7 +158,6 @@ const queryMarketList = async () => {
   if (listType.value === CardType.record) {
     const list = (await getTransactionRecord()) as any;
     recordList.value = list.filter((item: any) => item.type === market.value);
-    console.log("recordList", recordList.value);
   }
   if (listType.value === CardType.asset) {
     data = (await getMyTrade(address.value!, META_ID_ADDRESS.value)) as any;

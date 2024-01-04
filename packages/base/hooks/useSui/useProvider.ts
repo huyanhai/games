@@ -23,6 +23,8 @@ export const useProvider = () => {
     });
   };
 
+  
+
   return {
     provider,
     devInspectTransactionBlock,

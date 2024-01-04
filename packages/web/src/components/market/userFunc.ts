@@ -17,12 +17,20 @@ export const getMarkets = async () => {
           const arr = data
             .split(";")
             .filter(Boolean)
-            .map((item) => {
-              let [id, name, objectType, num, price, coinType, type, owner, metaId] = item.split(",");
+            .map(async (item) => {
+              let [id, name, objectType, num, price, coinType, type, owner, metaId, nftObjectId] = item.split(",");
 
               if (objectType && !objectType.startsWith("0x")) {
                 objectType = `0x${objectType}`;
-              }
+              }              
+
+              // if (nftObjectId) {
+              //   if (nftObjectId && !nftObjectId.startsWith("0x")) {
+              //     nftObjectId = `0x${nftObjectId}`;
+              //   }
+              //   const data = await provider.value?.multiGetObjects({ ids: [nftObjectId] });
+              //   console.log("data", data, nftObjectId);
+              // }
 
               return {
                 id,

@@ -217,17 +217,19 @@ const getMyNfts = async () => {
   const { getOwnedNfts, nftsMapByAddressAndChain, addressNftKey } = useNftsOwnedByAddressInSpecificChain();
   await getOwnedNfts();
 
-  nfts.value = nftsMapByAddressAndChain.get(addressNftKey.value)?.map((item) => {
-    return {
-      ...item,
-      type: "nft",
-      imgUrl: item.url,
-    };
-  });
-  // .filter((item) => {
-  //   const pkgName = item.objectType.split("::")[0];
-  //   return pkgName === CONTRACT_PACKAGE;
-  // });
+  nfts.value = nftsMapByAddressAndChain
+    .get(addressNftKey.value)
+    ?.map((item) => {
+      return {
+        ...item,
+        type: "nft",
+        imgUrl: item.url,
+      };
+    })
+    .filter((item) => {
+      const pkgName = item.objectType.split("::")[0];
+      return pkgName === CONTRACT_PACKAGE;
+    });
   if (nfts.value.length) {
     return (showModal.value = true);
   }
