@@ -1,6 +1,6 @@
 <template>
   <div class="carousel-box">
-    <NCarousel dot-type="dot" dot-placemen="bottom" show-arrow>
+    <NCarousel dot-type="dot" dot-placemen="bottom" show-arrow @update:current-index="indexChange">
       <div class="carousel-item pic-box1">
         <div class="container">
           <Garid>
@@ -205,6 +205,12 @@ const { address, signAndSendTxn } = useWallet();
 const userInfo = computed(() => registerStore.getUserInfo);
 const META_ID_ADDRESS = computed(() => userInfo.value?.id?.id);
 
+const indexChange = (v: number) => {
+  if (v === 1) {
+    getEggInfo();
+  }
+};
+
 const { devInspectTransactionBlock } = useProvider();
 
 const getMyNfts = async () => {
@@ -298,12 +304,6 @@ const checkInfo = async (item: any) => {
     message.error("不符合条件");
   }
 };
-
-onMounted(() => {
-  setTimeout(() => {
-    getEggInfo();
-  }, 2000);
-});
 </script>
 
 <style lang="scss" scoped>

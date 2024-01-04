@@ -21,7 +21,7 @@ import Home from "./Home.vue";
 import GameTab from "./GameTab.vue";
 import Swap from "./Swap.vue";
 import AirDrop from "./AirDrop.vue";
-import Task from './Task.vue';
+import Task from "./Task.vue";
 
 import Market from "@/views/Market.vue";
 
