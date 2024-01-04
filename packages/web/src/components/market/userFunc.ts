@@ -2,6 +2,8 @@ import { CONTRACT_PACKAGE, MARKET_GLOBAL_ADDRESS, ITEMS_GLOBAL_ADDRESS } from "@
 import { combineJsonArray, bytesArrayToString, useProvider, SuiTxBlock, useWallet, getAbleCoinsForSell, useNftsOwnedByAddressInSpecificChain } from "@game-web/base";
 import type { CardItem } from "./types";
 
+import { insertImage } from "@/api";
+
 const { devInspectTransactionBlock, provider } = useProvider();
 
 // 获取市场信息
@@ -22,7 +24,7 @@ export const getMarkets = async () => {
 
               if (objectType && !objectType.startsWith("0x")) {
                 objectType = `0x${objectType}`;
-              }              
+              }
 
               // if (nftObjectId) {
               //   if (nftObjectId && !nftObjectId.startsWith("0x")) {
@@ -122,8 +124,6 @@ export const getMyTrade = async (address: string, metaId: string) => {
 
         // "fruit:54,fruit desc;fragment_resurrect:15,holy water element fragment desc;fragment_life:20,holy water element fragment desc;water_element_life:3,life water element desc;water_element_memory:4,memory water element desc;fragment_blood:15,holy water element fragment desc;fragment_holy:5,holy water element fragment desc;water_element_resurrect:1,resurrect water element desc;"
         const asciiString: string = String.fromCharCode(...res);
-
-        console.log(asciiString);
 
         const regex = /(\w+):(\d+),([^;]+);/g;
         let match;
@@ -278,20 +278,20 @@ export const upGameItem = async (metaId: string, row: CardItem, form: any) => {
 
 // 上架NFT
 export const upNftItem = async (metaId: string, row: CardItem, form: any) => {
-  const tx = new SuiTxBlock();
-  const { signAndSendTxn } = useWallet();
-  console.log("row", row);
+  insertImage({ image_url: row.imgUrl, obj_id: row.objectId! });
+  // const tx = new SuiTxBlock();
+  // const { signAndSendTxn } = useWallet();
 
-  console.log("上架NFT参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
-  return new Promise(async (resolve) => {
-    try {
-      tx.moveCall(`${CONTRACT_PACKAGE}::market::list_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
-      const result = await signAndSendTxn(tx);
-      console.log(result);
-      return resolve(true);
-    } catch (error) {
-      console.log(error);
-      return resolve(false);
-    }
-  });
+  // console.log("上架NFT参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
+  // return new Promise(async (resolve) => {
+  //   try {
+  //     tx.moveCall(`${CONTRACT_PACKAGE}::market::list_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
+  //     const result = await signAndSendTxn(tx);
+  //     console.log(result);
+  //     return resolve(true);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return resolve(false);
+  //   }
+  // });
 };

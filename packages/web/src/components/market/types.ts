@@ -13,6 +13,7 @@ export type CardItem = {
   coinType: "SUI" | "SHUI";
   metaId: string;
   objectType?: string;
+  imgUrl: string;
 };
 
 export enum CardType {

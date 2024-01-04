@@ -98,3 +98,13 @@ export function genIp() {
     responseType: "json",
   });
 }
+
+export function insertImage(data: { obj_id: string; image_url: string }) {
+  return request.post(
+    "insert_image_url_by_obj_id",
+    data,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+}
