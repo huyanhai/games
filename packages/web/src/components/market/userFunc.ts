@@ -2,37 +2,40 @@ import { CONTRACT_PACKAGE, MARKET_GLOBAL_ADDRESS, ITEMS_GLOBAL_ADDRESS } from "@
 import { combineJsonArray, bytesArrayToString, useProvider, SuiTxBlock, useWallet, getAbleCoinsForSell, useNftsOwnedByAddressInSpecificChain } from "@game-web/base";
 import type { CardItem } from "./types";
 
-import { insertImage } from "@/api";
+import { insertImage, queryImage } from "@/api";
+import { useBaseStore } from "@/store";
 
 const { devInspectTransactionBlock, provider } = useProvider();
 
 // 获取市场信息
 export const getMarkets = async () => {
   const tx = new SuiTxBlock();
+  const baseStore = useBaseStore();
+  const ids: string[] = [];
   return new Promise(async (resolve) => {
     try {
       tx.moveCall(`${CONTRACT_PACKAGE}::market::get_game_sales`, [MARKET_GLOBAL_ADDRESS, "0x06"]);
       const { results }: any = await devInspectTransactionBlock(tx.txBlock);
       if (Array.isArray(results) && results[0]) {
         const data = bytesArrayToString(results[0].returnValues[0][0].slice(1));
+
         if (data) {
           const arr = data
             .split(";")
             .filter(Boolean)
-            .map(async (item) => {
+            .map((item) => {
               let [id, name, objectType, num, price, coinType, type, owner, metaId, nftObjectId] = item.split(",");
 
               if (objectType && !objectType.startsWith("0x")) {
                 objectType = `0x${objectType}`;
               }
 
-              // if (nftObjectId) {
-              //   if (nftObjectId && !nftObjectId.startsWith("0x")) {
-              //     nftObjectId = `0x${nftObjectId}`;
-              //   }
-              //   const data = await provider.value?.multiGetObjects({ ids: [nftObjectId] });
-              //   console.log("data", data, nftObjectId);
-              // }
+              if (nftObjectId) {
+                if (nftObjectId && !nftObjectId.startsWith("0x")) {
+                  nftObjectId = `0x${nftObjectId}`;
+                }
+                ids.push(nftObjectId);
+              }
 
               return {
                 id,
@@ -44,11 +47,20 @@ export const getMarkets = async () => {
                 type,
                 owner,
                 metaId,
+                nftObjectId,
               };
             });
+          const imgs = await queryImage({ strings: ids.filter(Boolean) });
+          if (Array.isArray(imgs) && imgs.length) {
+            imgs.forEach((item) => {
+              baseStore.setImgMap(item.obj_id, item.img_url);
+            });
+          }
+
           return resolve(arr);
         }
       }
+
       return resolve([]);
     } catch (error) {
       return resolve([]);
@@ -279,19 +291,19 @@ export const upGameItem = async (metaId: string, row: CardItem, form: any) => {
 // 上架NFT
 export const upNftItem = async (metaId: string, row: CardItem, form: any) => {
   insertImage({ image_url: row.imgUrl, obj_id: row.objectId! });
-  // const tx = new SuiTxBlock();
-  // const { signAndSendTxn } = useWallet();
+  const tx = new SuiTxBlock();
+  const { signAndSendTxn } = useWallet();
 
-  // console.log("上架NFT参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
-  // return new Promise(async (resolve) => {
-  //   try {
-  //     tx.moveCall(`${CONTRACT_PACKAGE}::market::list_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
-  //     const result = await signAndSendTxn(tx);
-  //     console.log(result);
-  //     return resolve(true);
-  //   } catch (error) {
-  //     console.log(error);
-  //     return resolve(false);
-  //   }
-  // });
+  console.log("上架NFT参数", [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
+  return new Promise(async (resolve) => {
+    try {
+      tx.moveCall(`${CONTRACT_PACKAGE}::market::list_nft_item`, [MARKET_GLOBAL_ADDRESS, metaId, row.name, Number(form.price) * 1e9, form.type, "0x06", row.objectId], [row.objectType as string]);
+      const result = await signAndSendTxn(tx);
+      console.log(result);
+      return resolve(true);
+    } catch (error) {
+      console.log(error);
+      return resolve(false);
+    }
+  });
 };

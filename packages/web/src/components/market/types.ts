@@ -14,6 +14,7 @@ export type CardItem = {
   metaId: string;
   objectType?: string;
   imgUrl: string;
+  nftObjectId: string;
 };
 
 export enum CardType {

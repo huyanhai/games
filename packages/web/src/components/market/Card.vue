@@ -2,7 +2,7 @@
   <div class="market-card">
     <div class="card-hd">
       <img class="empty" src="@/assets/empty-img.svg" />
-      <img :src="item.imgUrl" class="post" v-if="item.type === 'nft'"/>
+      <img :src="imgMap[item.nftObjectId]" class="post" v-if="item.type === 'nft'"/>
       <img :src="IMG_URLS[item.name]" class="post" v-else />
     </div>
     <div class="card-bd"></div>
@@ -121,6 +121,14 @@ const options = [
 
 const baseStore = useBaseStore();
 const { address } = useWallet();
+
+const imgMap = computed(() => {
+  return { ...baseStore.imgMap };
+});
+
+const getImgUrl = (name: string) => {
+  return imgMap.value[name];
+}
 
 // 获取用户信息
 const META_ID_ADDRESS = computed(() => baseStore.getUserInfo?.id?.id);

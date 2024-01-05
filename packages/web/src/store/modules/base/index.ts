@@ -11,6 +11,7 @@ export type TBaseStare = {
   nftInfo: Record<string, any>;
   airdropInfo: Record<string, any>;
   airdropCheck: Record<string, any>;
+  imgMap: Record<string, any>;
 };
 
 export const useBaseStore = defineStore("base", {
@@ -24,6 +25,7 @@ export const useBaseStore = defineStore("base", {
     },
     airdropInfo: {},
     airdropCheck: {},
+    imgMap: {},
   }),
   getters: {
     getLang(state) {
@@ -43,6 +45,9 @@ export const useBaseStore = defineStore("base", {
     },
     getAirdropCheck(state) {
       return state.airdropCheck;
+    },
+    getImgMap(state) {
+      return state.imgMap;
     },
   },
   actions: {
@@ -97,6 +102,9 @@ export const useBaseStore = defineStore("base", {
       const { data } = await checkAirDrop(params);
       this.airdropCheck = data as any;
       return Promise.resolve(true);
+    },
+    setImgMap(key: string, value: string) {
+      this.imgMap[key] = value;
     },
   },
   persist: {

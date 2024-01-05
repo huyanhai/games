@@ -50,6 +50,7 @@ const baseStore = useBaseStore();
 const list = ref<CardItem[]>([]);
 const recordList = ref([]);
 
+
 const columns = ref<any>([
   {
     title: "资产",
