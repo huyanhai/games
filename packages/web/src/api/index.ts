@@ -105,10 +105,6 @@ export function insertImage(params: { obj_id: string; image_url: string }) {
   });
 }
 
-export function queryImage(data: { strings: string[] }) {
-  return request.post("query_images_url_by_obj_id", data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+export function queryImage(params: { strings: string[] }) {
+  return request.get("query_images_url_by_obj_id", { params });
 }
