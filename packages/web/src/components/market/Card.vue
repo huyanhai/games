@@ -2,7 +2,8 @@
   <div class="market-card">
     <div class="card-hd">
       <img class="empty" src="@/assets/empty-img.svg" />
-      <img :src="imgMap[item.nftObjectId]" class="post" v-if="item.type === 'nft'"/>
+      <img :src="item.imgUrl" class="post" v-if="item.type === 'nft' && type === CardType.asset" />
+      <img :src="imgMap[item.nftObjectId]" class="post" v-else-if="item.type === 'nft'"/>
       <img :src="IMG_URLS[item.name]" class="post" v-else />
     </div>
     <div class="card-bd"></div>

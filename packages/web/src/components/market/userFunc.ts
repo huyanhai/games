@@ -83,7 +83,10 @@ export const getMySell = async (address: string) => {
             .split(";")
             .filter(Boolean)
             .map((item) => {
-              const [id, name, objectType, num, price, coinType, type, owner] = item.split(",");
+              let [id, name, objectType, num, price, coinType, type, owner, metaId, nftObjectId] = item.split(",");
+              if (nftObjectId && !nftObjectId.startsWith("0x")) {
+                nftObjectId = `0x${nftObjectId}`;
+              }
               return {
                 id,
                 name,
@@ -93,6 +96,8 @@ export const getMySell = async (address: string) => {
                 coinType,
                 type,
                 owner,
+                metaId,
+                nftObjectId,
               };
             });
           return resolve(arr);
