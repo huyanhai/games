@@ -145,9 +145,12 @@ export const getMyTrade = async (address: string, metaId: string) => {
         const regex = /(\w+):(\d+),([^;]+);/g;
         let match;
 
+        const [name, vInfo] = asciiString.split(":");
+        console.log(asciiString.split(":"), name);
+
         while ((match = regex.exec(asciiString)) !== null) {
           const jsonObject: any = {};
-          const name = match[1].trim();
+          // const name = match[1].trim();
           const num = parseInt(match[2]);
           const desc = match[3];
           jsonObject["name"] = name;
