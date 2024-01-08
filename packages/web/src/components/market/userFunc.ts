@@ -51,7 +51,7 @@ export const getMarkets = async () => {
               };
             });
           const imgs = await queryImage({ strings: ids.filter(Boolean) });
-          if (Array.isArray(imgs) && imgs.length) {
+          if (Array.isArray(imgs) && imgs.length > 0) {
             imgs.forEach((item) => {
               baseStore.setImgMap(item.obj_id, item.img_url);
             });
@@ -117,7 +117,7 @@ export const getMyTrade = async (address: string, metaId: string) => {
     try {
       // 查询nft
 
-      let gamefi_array = [];
+      let gamefi_array: any = [];
 
       const { getOwnedNfts, nftsMapByAddressAndChain, addressNftKey } = useNftsOwnedByAddressInSpecificChain();
       await getOwnedNfts();
@@ -142,23 +142,21 @@ export const getMyTrade = async (address: string, metaId: string) => {
         // "fruit:54,fruit desc;fragment_resurrect:15,holy water element fragment desc;fragment_life:20,holy water element fragment desc;water_element_life:3,life water element desc;water_element_memory:4,memory water element desc;fragment_blood:15,holy water element fragment desc;fragment_holy:5,holy water element fragment desc;water_element_resurrect:1,resurrect water element desc;"
         const asciiString: string = String.fromCharCode(...res);
 
-        const regex = /(\w+):(\d+),([^;]+);/g;
-        let match;
-
-        const [name, vInfo] = asciiString.split(":");
-        console.log(asciiString.split(":"), name);
-
-        while ((match = regex.exec(asciiString)) !== null) {
-          const jsonObject: any = {};
-          // const name = match[1].trim();
-          const num = parseInt(match[2]);
-          const desc = match[3];
-          jsonObject["name"] = name;
-          jsonObject["num"] = num;
-          jsonObject["description"] = desc;
-          jsonObject["type"] = "gamefi";
-          gamefi_array.push(jsonObject);
-        }
+        asciiString
+          .split(";")
+          .filter(Boolean)
+          .forEach((item) => {
+            
+            const [name, info] = item.split(":");
+            const [num, desc] = info.split(",");
+            console.log(item);
+            const jsonObject: any = {};
+            jsonObject["name"] = name;
+            jsonObject["num"] = num;
+            jsonObject["description"] = desc;
+            jsonObject["type"] = "gamefi";
+            gamefi_array.push(jsonObject);
+          });
       }
 
       const result = combineJsonArray(JSON.stringify(gamefi_array), JSON.stringify(nfts));
