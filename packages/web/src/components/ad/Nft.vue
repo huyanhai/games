@@ -5,13 +5,13 @@
         <div class="m-logo">
           <img :src="item.cardImg" alt="" />
         </div>
-        <!-- <div class="m-progress">
+        <div class="m-progress">
           <NProgress type="line" :height="14" :border-radius="0" :fill-border-radius="0" :percentage="item.progress" :indicator-placement="'inside'" :color="item.buttonBgColor" />
         </div>
         <div class="info">
           <div class="col">{{ item.cardTotal }}</div>
           <div class="col">{{ item.cardBalance }}</div>
-        </div> -->
+        </div>
       </div>
       <button :style="{ backgroundColor: item.buttonBgColor }">
         <SuiWallet :loading="loading" @moveCall="moveCall">
@@ -23,12 +23,12 @@
 </template>
 <script lang="ts" setup>
 import { NProgress, useMessage } from "naive-ui";
-import { SuiTxBlock, useWallet } from "@game-web/base";
+import { SuiTxBlock, convert, useProvider, useWallet } from "@game-web/base";
 import { getAssetsFile } from "@/utils/files";
 import SuiWallet from "../sui-wallet/Index.vue";
 
 import { useI18n } from "vue-i18n";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useBaseStore } from "@/store";
 import { CONTRACT_PACKAGE, BOAT_GLOBAL_ADDRESS, SWAP_GLOBAL_ADDRESS } from "@/constants";
 
@@ -36,10 +36,22 @@ const { t } = useI18n();
 const baseStore = useBaseStore();
 const message = useMessage();
 const { signAndSendTxn } = useWallet();
-
+const { devInspectTransactionBlock } = useProvider();
 const loading = ref(false);
 const shui = computed(() => baseStore.getNftInfo.shui);
-// const meta = computed(() => baseStore.getNftInfo.meta);
+const num = ref(0);
+const total = 10000;
+
+const getNum = async () => {
+  const tx = new SuiTxBlock();
+
+  // 兑换shui
+  tx.moveCall(`${CONTRACT_PACKAGE}::boat_ticket::get_left_boat_num`, [BOAT_GLOBAL_ADDRESS]);
+
+  // 发送签名
+  const { results }: any = await devInspectTransactionBlock(tx.txBlock);
+  num.value = convert(new Uint8Array(results[0].returnValues[0][0]));
+};
 
 const moveCall = async () => {
   try {
@@ -73,10 +85,10 @@ const items = computed(() => [
     theme: "",
     title: t("home.buy", { name: "OpenSea" }),
     cardTitle: t("home.shui_token"),
-    cardTotal: t("home.total", { num: shui.value.total_num }),
-    cardBalance: t("home.balance", { num: shui.value.remain_num }),
+    cardTotal: t("home.total", { num: total }),
+    cardBalance: t("home.balance", { num: num.value }),
     cardImg: "https://bafybeiami7cghfutcuy52qpb5ifmv5d4cxzdfzcnbip7ptggf73zcsss7a.ipfs.nftstorage.link/ship_card.png/",
-    progress: parseInt(`${(1 - shui.value.remain_num / shui.value.total_num) * 100}`),
+    progress: parseInt(`${(1 - num.value / total) * 100}`),
     buttonText: "100 SUI",
     buttonBgColor: "#ff1b72",
     link: "https://opensea.io/zh-CN/assets/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/30942048195930147045271123439947518623642095559354491168003220828348787730192",
@@ -97,6 +109,12 @@ const items = computed(() => [
   //   link: 'https://opensea.io/assets/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/30942048195930147045271123439947518623642095559354491168003220826149764465370'
   // }
 ]);
+
+onMounted(() => {
+  setTimeout(() => {
+    getNum();
+  }, 1000);
+});
 </script>
 
 <style lang="scss" scoped>
